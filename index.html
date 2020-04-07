@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Nokia Twin</title>
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+</head>
+
+<style>
+  #smallmultiples {
+    height: 100vh
+  }
+</style>
+
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        <div id="smallmultiples"></div>
+      </div>
+    </div>
+  </div>
+</body>
+
+<script>
+  'use strict'
+
+  var multiWidth = 300
+  var multiheight = 100
+  var margin = 50
+  var cols = ["review_title","pros","cons"]
+  var rows = ["knowledge", "power", "respect", "trust", "social_support", "romance", "similarity", "identity", "fun", "conflict"]
+
+  d3.csv('assets/nokia_glassdoor_scored.csv',
+  d3.autoType)
+  .then(function (data) {
+    var parseTime = d3.timeParse("%Y-%m");
+    data.forEach(d=> d.date = (typeof d.date === "string") ? parseTime(d.date) : d.date)
+    init(data)
+  });
+
+ /* function parsex(data) {
+    var obj = {}
+    data.forEach(d=>{
+      if(obj[d.date] == null) {
+        obj[d.date] = [d]
+      } else {
+        obj[d.date].push(d)
+      }
+    })
+    return obj;
+  }
+
+  function parse(data) {
+    var obj = {}
+    data.forEach(d=>{
+      if(obj[d.date] == null) {
+        obj[d.date] = {key: d.date, data: [d]}
+      } else {
+        obj[d.date].data.push(d)
+      }
+    })
+    return obj;
+  }
+
+  function parseArr(data) {
+    var arr = []
+    data.forEach((d,i)=>{
+      var current = arr.find(x => x.date == d.date)
+      if(typeof current == "undefined") {
+        arr.push({date: d.date, data: [d]})
+      } else {
+        current.data.push(d)
+      }
+    })
+    console.log(arr)
+    return arr
+  }*/
+
+function findPosition(str) {
+  var x, y;
+  cols.forEach((r,i) => {if(str.includes(r)) x=i*(multiWidth + margin)});
+  rows.forEach((r,i) => {if(str.includes(r)) y=margin+i*(multiheight + margin)})
+  return "translate("+x+","+y+")"
+}
+
+function parseCategories(data) {
+  console.time()
+  var dimensions = ["review_title_knowledge","review_title_power","review_title_respect","review_title_trust","review_title_social_support","review_title_romance","review_title_similarity","review_title_identity","review_title_fun","review_title_conflict","pros_knowledge","pros_power","pros_respect","pros_trust","pros_social_support","pros_romance","pros_similarity","pros_identity","pros_fun","pros_conflict","cons_knowledge","cons_power","cons_respect","cons_trust","cons_social_support","cons_romance","cons_similarity","cons_identity","cons_fun","cons_conflict"].map(x=> {return {key: x, data: []}})
+
+  var obj = {}
+  data.forEach(d=>{
+    if(obj[d.date] == null) {
+      obj[d.date] = {key: d.date, data: [d]}
+    } else {
+      obj[d.date].data.push(d)
+    }
+  })
+
+  Object.values(obj).map((month,i)=>{
+    if(true) {
+    //if(i==0) {
+      month.dimensions = {}
+      Object.values(dimensions).forEach(dimension => { 
+        month.dimensions[dimension.key] = 0
+        month.data.forEach(review => {
+          Object.entries(review).forEach(line => {
+            month.dimensions[dimension.key] += (line[0].toLowerCase() == dimension.key) ? line[1] : 0 // NOT EXACT MATCH
+            if((line[0].toLowerCase() == dimension.key)) {
+            }
+          })
+        })
+        month.dimensions[dimension.key] = month.dimensions[dimension.key] / month.data.length // this can be optimized!
+        dimension.data.push({date: month.key, average: month.dimensions[dimension.key]})
+      })
+      }
+  })
+  console.timeEnd()
+  return dimensions
+}
+
+function init(data) {
+  var dimensions = parseCategories(data)
+  console.log(dimensions)
+
+  var sm = d3.select("#smallmultiples")
+  var svg = sm.append("svg")
+    .attr("width",sm.node().getBoundingClientRect().width)
+    .attr("height",2*margin+(multiheight + margin) * rows.length)
+
+  var scales = {
+    x: d3.scaleTime().domain(d3.extent(data, d => d.date)).range([0,multiWidth]),
+    y: d3.scaleLinear().domain([0,1]).range([multiheight,0])
+  }
+
+  var graphs = {}
+  dimensions.forEach((dimension) => {
+    graphs[dimension.key] = {}
+    graphs[dimension.key].svg = svg.append("g").attr("transform", findPosition(dimension.key))
+    graphs[dimension.key].x = graphs[dimension.key].svg.append("g")
+      .attr("transform", "translate(0,"+multiheight+")")
+      .call(d3.axisBottom(scales.x).ticks(2));
+    graphs[dimension.key].y = graphs[dimension.key].svg.append("g")
+      .call(d3.axisLeft(scales.y).ticks(5));
+  
+    var path  = d3.line()
+    .x(function(d, i) { return scales.x(d.date); }) // set the x values for the line generator
+    .y(function(d) { return scales.y(d.average); }) // set the y values for the line generator 
+    .curve(d3.curveMonotoneX) // apply smoothing to the line
+  
+    graphs[dimension.key].svg.append("path")
+    .datum(dimension.data.sort((a,b) => a.date-b.date))
+    .attr("d",path)
+    .attr("stroke","black")
+    .attr("stroke.width",.5)
+    .attr("fill","none")
+  
+    graphs[dimension.key].svg.append("text").text(dimension.key.replace("_"," ")).attr("x",10).attr("y",10).attr("font-size","10pt")
+  })
+}
+  </script>
+</html>
+
+
+
+
+
+
