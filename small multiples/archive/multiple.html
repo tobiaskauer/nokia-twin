@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Nokia Twin</title>
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://unpkg.com/d3-regression@1.3.4/dist/d3-regression.min.js"></script>
+</head>
+
+<style>
+  #smallmultiples {
+    height: 100vh
+  }
+</style>
+
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        <div id="smallmultiples"></div>
+      </div>
+    </div>
+  </div>
+</body>
+
+<script>
+  'use strict'
+
+  var multiWidth = 250
+  var multiheight = 100
+  var margin = 50
+  var cols = ["review_title","pros","cons"]
+  var rows = ["knowledge", "power", "respect", "trust", "social_support", "romance", "similarity", "identity", "fun", "conflict"]
+
+  d3.csv('assets/nokia_glassdoor_scored.csv',
+  d3.autoType)
+  .then(function (data) {
+    var parseTime = d3.timeParse("%Y-%m");
+    data.forEach(d=> d.date = (typeof d.date === "string") ? parseTime(d.date) : d.date)
+    init(data)
+  });
+
+function findPosition(str) {
+  var x, y;
+  cols.forEach((r,i) => {if(str.includes(r)) x=margin+i*(multiWidth + margin)});
+  rows.forEach((r,i) => {if(str.includes(r)) y=margin+i*(multiheight + margin)})
+  return "translate("+x+","+y+")"
+}
+
+function parseCategories(data) {
+  var dimensions = ["review_title_knowledge","review_title_power","review_title_respect","review_title_trust","review_title_social_support","review_title_romance","review_title_similarity","review_title_identity","review_title_fun","review_title_conflict","pros_knowledge","pros_power","pros_respect","pros_trust","pros_social_support","pros_romance","pros_similarity","pros_identity","pros_fun","pros_conflict","cons_knowledge","cons_power","cons_respect","cons_trust","cons_social_support","cons_romance","cons_similarity","cons_identity","cons_fun","cons_conflict"].map(x=> {return {key: x, data: []}})
+ dimensions.forEach(dimension => {
+    dimension.data = d3.nest()
+    .key(d=>d.date)
+    .rollup(function(v) { return {
+      count: v.length,
+      total: d3.sum(v, function(d) { return d[dimension.key]; }),
+      avg: d3.mean(v, function(d) { return d[dimension.key]; }),
+      med: d3.median(v, function(d) { return d[dimension.key]; }),
+      dev: d3.deviation(v, function(d) { return d[dimension.key]; }),
+      max: d3.max(v, function(d) { return d[dimension.key]; }),
+      min: d3.min(v, function(d) { return d[dimension.key]; })
+    }})
+    .entries(data)
+    dimension.data.sort((a,b)=>Date.parse(a.key) - Date.parse(b.key))
+  })
+
+ 
+  return dimensions
+}
+
+function init(data) {
+  var dimensions = parseCategories(data)
+  //console.log(dimensions)
+
+  var sm = d3.select("#smallmultiples")
+  var svg = sm.append("svg")
+    .attr("width",sm.node().getBoundingClientRect().width)
+    .attr("height",2*margin+(multiheight + margin) * rows.length)
+
+  var scales = {
+    x: d3.scaleTime().domain(d3.extent(data, d => d.date)).range([0,multiWidth]),
+    y: d3.scaleLinear().domain([0,1]).range([multiheight,0])
+  }
+
+
+  var smallSingle = svg.selectAll("unique").data(dimensions).enter().append("g").attr("class",d=>d.key)
+    smallSingle.attr("transform", d=>findPosition(d.key))
+    smallSingle.append("g").attr("transform", "translate(0,"+multiheight+")").call(d3.axisBottom(scales.x).ticks(5))
+    smallSingle.append("g").call(d3.axisLeft(scales.y).ticks(5))
+    smallSingle.append("text").text(d=>d.key.replace("_"," ")).attr("x",10).attr("y",10).attr("font-size","10pt")
+    
+    var confidence = smallSingle.append("path").datum(d=>d.data)
+    .attr("fill-opacity",.1)
+    .attr("fill","green")
+    .attr("d",d3.area()
+      .x(d=>scales.x(Date.parse(d.key)))
+      .y0(d=>scales.y(d.value.avg+d.value.dev/2))
+      .y1(d=>scales.y(d.value.avg-d.value.dev/2))
+      .curve(d3.curveMonotoneX)
+    )
+
+
+    const regression = d3.regressionLinear()
+      .x(d =>{return scales.x(Date.parse(d.key))})
+      .y(d =>{return scales.y(d.value.avg)})
+      //.y(d => d.y)
+      .domain([0, multiWidth]);
+
+    var regLine = smallSingle.append("path").datum(d=>regression(d.data)).attr("d",d3.line()).attr("class","regLine").attr("stroke","black").style("stroke-dasharray", ("3, 3"))
+
+
+
+
+    var path = d3.line()
+      .x((d,i)=> scales.x(Date.parse(d.key)))
+      .y(d=> scales.y(d.value.med))
+      .curve(d3.curveMonotoneX)
+
+    var lines = smallSingle.append("g").attr("class","lines")
+    lines.selectAll("path").data(dimensions).enter().append("path")//.attr("class","dimension")
+    //group.selectAll("path").data(d=>d.data).enter().append("path")
+    .attr("class",d=>{return d.key})
+    .attr("d",(d,i)=>path(d.data))
+    .attr("stroke",(d,i,nodes) => (d3.select(nodes[i].parentNode.parentNode).attr("class") == d.key) ? "green" : "grey") 
+    .attr("stroke-width",(d,i,nodes) => (d3.select(nodes[i].parentNode.parentNode).attr("class") == d.key) ? 1 : .5) 
+    .attr("stroke-opacity",(d,i,nodes) => (d3.select(nodes[i].parentNode.parentNode).attr("class") == d.key) ? 1 : .1) 
+    //.attr("stroke-opacity",(d,i,nodes) => (d3.select(this.parentNode.parentNode).attr("class") === d.key) ? 1 : .1) 
+    .attr("fill","none")
+}
+  </script>
+</html>
+
+
+
+
+
+

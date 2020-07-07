@@ -1,0 +1,278 @@
+location	country	region
+Tirana	albania	emea
+Buenos Aires	argentina	americas
+Rosario, Santa Fe	argentina	americas
+San Miguel de Tucumán'	argentina	americas
+Melbourne	australia	apac
+North Sydney	australia	apac
+Chatswood	australia	apac
+Vienna	austria	emea
+Baku	azerbaijan	apac
+Dhaka	bangladesh	apac
+Brussels	belgium	emea
+Antwerp	belgium	emea
+Belo Horizonte, Minas Gerais	brazil	americas
+São Paulo, São Paulo	brazil	americas
+Rio de Janeiro	brazil	americas
+Curitiba	brazil	americas
+Lima, Lima Region	brazil	americas
+Manaus, Amazonas	brazil	americas
+Fortaleza, Ceará	brazil	americas
+Macapá, Amapá	brazil	americas
+Belém, Pará	brazil	americas
+Campo Grande, Mato Grosso do Sul	brazil	americas
+Recife, Pernambuco	brazil	americas
+Sofia	bulgaria	emea
+Toronto, ON	canada	us_canada
+Ottawa, ON	canada	us_canada
+Vancouver, BC	canada	us_canada
+Ontario, CA	canada	us_canada
+Mississauga, ON	canada	us_canada
+Kanata, ON	canada	us_canada
+Montreal, QC	canada	us_canada
+Markham, ON	canada	us_canada
+Santiago	chile	americas
+Nanjing, Jiangsu	china	apac
+Chengdu, Sichuan	china	apac
+Shanghai, Shanghai	china	apac
+Hangzhou, Zhejiang	china	apac
+Beijing, Beijing	china	apac
+Qingdao, Shandong	china	apac
+Pudong, Shanghai	china	apac
+Hong Kong	china	apac
+Shunyi	china	apac
+Beijigou	china	apac
+Bogotá, Bogota	colombia	americas
+Kfely	czech republic	emea
+Copenhagen	denmark	emea
+Quito	ecuador	americas
+Cairo	egypt	emea
+Dubai	emirates	emea
+Tampere	finland	emea
+Helsinki, Southern Finland	finland	emea
+Espoo	finland	emea
+Oulu	finland	emea
+Paris	france	emea
+Lannion	france	emea
+Nozay, Ile-de-France	france	emea
+Colombes	france	emea
+Berlin	germany	emea
+Munich, Bavaria	germany	emea
+Nuremberg	germany	emea
+Düsseldorf	germany	emea
+Ulm, Baden-Wurttemberg	germany	emea
+Stuttgart	germany	emea
+Athens	greece	emea
+Rhodes	greece	emea
+Guatemala City	guatemala	americas
+Budapest	hungary	emea
+Buda, Budapest	hungary	emea
+Chennai	india	apac
+Mumbai	india	apac
+Noida	india	apac
+Bangalore	india	apac
+Jhānsi	india	apac
+Hyderābād	india	apac
+Calcutta	india	apac
+Oragadam	india	apac
+Ahmedabad	india	apac
+Karāchi	india	apac
+Gurgaon, Haryana	india	apac
+New Delhi	india	apac
+Lucknow	india	apac
+Shillong	india	apac
+Gwalior, Madhya Pradesh	india	apac
+Kānchipuram	india	apac
+Pune	india	apac
+Balikpapan	india	apac
+Karnāl	india	apac
+Indi, Karnataka	india	apac
+Indo	india	apac
+Greater Noida	india	apac
+Indore	india	apac
+Guindy	india	apac
+Jaipur, Rajasthan	india	apac
+Kol	india	apac
+Dondaicha	india	apac
+Safidon	india	apac
+Kampala	india	apac
+Pune City	india	apac
+Srīperumbūdūr	india	apac
+Bangalore Rural	india	apac
+Mohali, Punjab	india	apac
+Gorakhpur, Uttar Pradesh	india	apac
+Thanjāvūr	india	apac
+Meerut	india	apac
+Phum Chenn	india	apac
+Coimbatore	india	apac
+Guwahati	india	apac
+Sholinganallur	india	apac
+Hosūr, Tamil Nadu	india	apac
+Nadiad	india	apac
+Nalgonda	india	apac
+Jakarta	indonesia	apac
+Tehran, Tehran	iran	emea
+Shīrāz, Fars	iran	emea
+Bābol Sar	iran	emea
+Dublin, Dublin	ireland	emea
+Blanchardstown	ireland	emea
+Tel Aviv-Yafo	israel	emea
+Hod HaSharon	israel	emea
+Kfar Saba	israel	emea
+Milan	italy	emea
+Milano	italy	emea
+Rome	italy	emea
+Abidjan	ivory coast	emea
+Tokyo	japan	apac
+Nairobi	kenya	emea
+Seoul	korea	apac
+Al Aḩmadī	kuwait	emea
+Kuwait City	kuwait	emea
+Beirut	lebanon	emea
+Kuala Lumpur	malaysia	apac
+Monterrey, Nuevo León	mexico	americas
+Cuautitlán Izcalli	mexico	americas
+Ciudad de México	mexico	americas
+Zapopan	mexico	americas
+Guadalajara, Jalisco	mexico	americas
+Tulancingo	mexico	americas
+Cuautitlán, México	mexico	americas
+Poza Rica de Hidalgo	mexico	americas
+Reynosa, Tamaulipas	mexico	americas
+Rabat	morocco	emea
+Casablanca	morocco	emea
+Rangoon	myanmar	apac
+nan,	nan	nan
+South West	nan	nan
+Asia	nan	apac
+Nokia	nan	nan
+Amsterdam	netherlands	emea
+The Hague	netherlands	emea
+Auckland, Auckland	new zealand	apac
+Wellington, Wellington	new zealand	apac
+Abuja Nigeria	nigeria	emea
+Abuja, Federal Capital Territory	nigeria	emea
+Islamabad, Islamabad	pakistan	apac
+Quezon City, National Capital Region	philippines	apac
+Manila, Manila	philippines	apac
+New Manila	philippines	apac
+Diliman, Quezon City	philippines	apac
+Wrocław	poland	emea
+Kraków	poland	emea
+Warsaw	poland	emea
+Lisbon	portugal	emea
+Amadora	portugal	emea
+Ílhavo	portugal	emea
+Alfragide	portugal	emea
+Lagos	portugal	emea
+Aveiro	portugal	emea
+Doha	qatar	emea
+Timişoara	romania	emea
+Bucharest	romania	emea
+Rostov-na-Donu	russia	emea
+Kiev	russia	emea
+Moscow	russia	emea
+Saint Petersburg	russia	emea
+Malina	russia	emea
+Makhachkala	russia	emea
+Riyadh	saudi arabia	emea
+Mecca	saudi arabia	emea
+Belgrade	serbia	emea
+Singapore	singapore	apac
+Bukit Merah Estate, Central	singapore	apac
+Bedok New Town, East	singapore	apac
+Johannesburg	south africa	emea
+Pretoria, Gauteng	south africa	emea
+Barcelona	spain	emea
+Córdoba	spain	emea
+Madrid	spain	emea
+Kista	sweden	emea
+Stockholm, Stockholm	sweden	emea
+Zürich	switzerland	emea
+Taipei	taiwan	apac
+Ksar el Kradem	tunisia	emea
+Bārdaw	tunisia	emea
+Istanbul	turkey	emea
+Ankara	turkey	emea
+Dnipropetrovsk	ucraine	emea
+Cambridge, England	uk	emea
+Reading, England	uk	emea
+Woolwich, England	uk	emea
+London, England	uk	emea
+Harefield, England	uk	emea
+Bristol, England	uk	emea
+Ipswich, England	uk	emea
+Farnborough, Hampshire, South East England, England	uk	emea
+Birmingham, England	uk	emea
+Huntingdon and Peterborough, England	uk	emea
+Huntingdon, England	uk	emea
+Greenwich, England	uk	emea
+Fleet, South East England, England	uk	emea
+Dallas, TX	us	us_canada
+New York, NY	us	us_canada
+Bellevue, WA	us	us_canada
+Naperville, IL	us	us_canada
+Sydney	us	us_canada
+Mountain View, CA	us	us_canada
+Birmingham, AL	us	us_canada
+Los Angeles, CA	us	us_canada
+Irving, TX	us	us_canada
+Tampa, FL	us	us_canada
+Murray Hill, NJ	us	us_canada
+San Diego, CA	us	us_canada
+New Brunswick, NJ	us	us_canada
+San Francisco, CA	us	us_canada
+Sunnyvale, CA	us	us_canada
+Sandy Springs, Fulton, GA	us	us_canada
+Plano, TX	us	us_canada
+Atlanta, GA	us	us_canada
+Ann Arbor, MI	us	us_canada
+Surrey, BC	us	us_canada
+Chicago, IL	us	us_canada
+Westford, MA	us	us_canada
+Phoenix, AZ	us	us_canada
+Elizabeth, NJ	us	us_canada
+Newark, NJ	us	us_canada
+Raleigh, NC	us	us_canada
+Arlington Heights, IL	us	us_canada
+Austin, TX	us	us_canada
+New Providence, NJ	us	us_canada
+Columbus, OH	us	us_canada
+Boston, MA	us	us_canada
+Charlotte, NC	us	us_canada
+Saint Cloud, MN	us	us_canada
+Redmond, WA	us	us_canada
+Burlington, MA	us	us_canada
+Oklahoma City, OK	us	us_canada
+Flower Mound, TX	us	us_canada
+San Jose, CA	us	us_canada
+China, MO	us	us_canada
+Cambridge, MA	us	us_canada
+China, ME	us	us_canada
+New Providence, Union, NJ	us	us_canada
+White Plains, NY	us	us_canada
+Dublin, OH	us	us_canada
+Holmdel, NJ	us	us_canada
+India, TN	us	us_canada
+Calabasas, CA	us	us_canada
+Hartford, CT	us	us_canada
+Houston, TX	us	us_canada
+Denver, CO	us	us_canada
+Richardson, TX	us	us_canada
+Bothell, WA	us	us_canada
+Taichung	us	us_canada
+Seattle, WA	us	us_canada
+Roswell, GA	us	us_canada
+Arlington, TX	us	us_canada
+Athens, GA	us	us_canada
+Saint Louis, MO	us	us_canada
+Remote, OR	us	us_canada
+Fresno, CA	us	us_canada
+Brooksville, FL	us	us_canada
+Reno, NV	us	us_canada
+Edmond, OK	us	us_canada
+Arlington Heights, Cook, IL	us	us_canada
+Burnaby, BC	us	us_canada
+East China, MI	us	us_canada
+Hanoi	vietnam	apac
+Boulder, CO	us	us_canada

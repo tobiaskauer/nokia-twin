@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Nokia Twin</title>
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/regression/1.4.0/regression.min.js"></script>
+  <script src="assets/dictionary.js"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+</head>
+
+<style>
+  #smallmultiples {
+    height: 100vh
+  }
+  svg {
+    margin: 50px;
+  }
+</style>
+
+<body>
+  <div class="co ntainer-fluid">
+    <div class="row">
+      <div class="col">
+        <div id="smallmultiples"></div>
+      </div>
+    </div>
+  </div>
+</body>
+
+<script>
+'use strict'
+
+var multiWidth = 300 //width of each chart
+var multiheight = 150 //height of each Chart
+var padding = 40
+var topMargin = 50
+var leftMargin = 100
+var minData = 50 //minimum datapoints per chart
+/*var scales = {regScale: {}}
+var rows = ["overall","balance","career","culture","comp","knowledge", "power", "respect", "trust", "social_support", "romance", "similarity", "identity", "fun", "conflict"]
+var countries = ["US","India","UK","China","Canada","Sweden","Australia","Finland","Spain","Germany"] 
+var companies = ["apple","amazon","nokia","ericsson","macys","mcdonalds","huawei","starbucks","telefonica"]*/
+
+  var ratings = ["culture", "mgmt", "overall", "balance", "career", "comp"]
+  var scores = ["conflict","fun","identity","knowledge","power","respect","romance","similarity","social_support","trust"]
+  var dimensions = ratings.concat(scores).map(dimension => {
+    return {
+      key: dimension 
+    }
+  })
+
+
+
+
+
+
+//d3.csv('assets/all.csv',).then(all => {
+d3.csv('api.php?query=yearly',d3.autoType).then(all => init(all));
+
+
+
+function parse(raw) {
+  var arr = []
+  raw.forEach(r => {
+    ratings.forEach(rating=>arr.push({country: r.country, year: r.year, dimension: rating, value: r[rating]}))
+    scores.forEach(score=>arr.push({country: r.country, year: r.year, dimension: score, value: r[score] * 5}))
+  })
+
+  dimensions.forEach(dimension => {
+    var subset = arr.filter(x=>x.dimension == dimension.key)
+    var average = d3.mean(subset, d=>d.value)
+    var extent = d3.extent(subset, d=> d.value)
+    extent.splice(1,0,average)
+    dimension.color = d3.scaleLinear().range(["#A50026", "#F9F8C3", "#313795"]).domain(extent) 
+  })
+
+
+  /*var scales = dimensions.map(dimension=> {
+    var subset = data.filter(x=>x.dimension == dimension)
+    var average = d3.mean(subset, d=>d.value)
+    var extent = d3.extent(subset, d=> d.value)
+    extent.splice(1,0,average)
+
+    return {
+      key: dimension,
+      average: "foo",
+      color:  
+    }
+  }) */
+
+  /*raw = raw.map(d=>{
+    var obj = {}
+    ratings.forEach(rating => obj[rating] = d[rating])
+    scores.forEach(score => obj[score] = d[score] * 5)
+  
+    return {
+      year: d.year,
+      country: d.country,
+      count: d.count,
+      dimensions: obj,
+    }
+  })*/
+
+  return d3.nest()
+    .key(d=>d.country)
+    .entries(arr)
+    .filter(x=>x.values.length > 150).sort((a,b)=>b.values.length - a.values.length)
+
+}
+
+
+function drawFingerprint(data,svg) {
+
+  //data = data.filter(d=>d.key == 'Finland ')[0].values
+
+  var years = [2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018]
+  //var dimensions = d3.map(data[0].values, d=> d.dimension).keys()
+
+
+
+
+
+    // Build X scales and axis:
+  var x = d3.scaleBand()
+    .range([ 0, multiWidth ])
+    .domain(years)
+    .padding(0.01)
+
+  
+  // Build X scales and axis:
+  var y = d3.scaleBand()
+    .range([ multiheight, 0 ])
+    .domain(dimensions.map(x=>x.key))
+    .padding(0.01);
+
+
+
+  data.forEach((country,i) => {
+    var xt = i/3
+    var yt = i%3
+    //makin that grid yo
+
+    //console.log(country)
+    var map = svg.append("g").attr("transform","translate(100,"+(i*(multiheight+topMargin)+topMargin)+")").attr("class",country.key)
+    map.append("text").text(country.key)
+    map.append("g")
+      .call(d3.axisLeft(y))
+      
+
+    map.append("g")
+      .attr("transform", "translate(0," + multiheight + ")")
+      .call(d3.axisBottom(x).ticks(1))
+
+
+    var top = {}
+    country.values.forEach(x => {
+      if(!top[x.year]) {
+        top[x.year] = {key: x.dimension, value: x.value}
+      } else {
+        if(x.value > top[x.year].value) top[x.year] = {key: x.dimension, value: x.value}
+      }
+
+    })
+      console.log(top)
+
+    //console.log(d3.nest().key("year").entries(country.values))
+    console.log("......")
+
+
+    map.selectAll()
+        .data(country.values)
+        .enter()
+        .append("rect")
+        .attr("x", d=>x(d.year) )
+        .attr("y", function(d) {return y(d.dimension) })
+        .attr("width", x.bandwidth() )
+        .attr("height", y.bandwidth() )
+        .style("fill",  function(d) {
+          return (d.value > 0) ? dimensions.find(x=>x.key == d.dimension).color(d.value) : "white" //"black"//myColor(d.value)
+        })
+        .attr("stroke",d=>{
+          if(top[d.year].key == d.dimension) return "red";
+        })
+    })
+
+}
+
+
+function init(raw) {
+  var sm = d3.select("#smallmultiples")
+  var svg = sm.append("svg")
+    .attr("width",1000)
+    .attr("height",10000)
+
+
+  var data = parse(raw) 
+  //setScales(raw)
+  //drawMultiples(dimensions, svg)
+  drawFingerprint(data,svg)
+}
+  </script>
+</html>

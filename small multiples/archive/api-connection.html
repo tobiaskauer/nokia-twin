@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Nokia Twin</title>
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/regression/1.4.0/regression.min.js"></script>
+  <script src="assets/dictionary.js"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+</head>
+
+<style>
+  #smallmultiples {
+    height: 100vh
+  }
+</style>
+
+<body>
+  <div class="co ntainer-fluid">
+    <div class="row">
+      <div class="col">
+        <div id="smallmultiples"></div>
+      </div>
+    </div>
+  </div>
+</body>
+
+<script>
+'use strict'
+
+var multiWidth = 250 //width of each chart
+var multiheight = 100 //height of each Chart
+var padding = 40
+var topMargin = 100
+var leftMargin = 100
+var minData = 50 //minimum datapoints per chart
+var scales = {regScale: {}}
+var rows = ["overall","balance","career","culture","comp","knowledge", "power", "respect", "trust", "social_support", "romance", "similarity", "identity", "fun", "conflict"]
+var countries = ["US","India","UK","China","Canada","Sweden","Australia","Finland","Spain","Germany"] 
+var companies = ["apple","amazon","nokia","ericsson","macys","mcdonalds","huawei","starbucks","telefonica"]
+
+
+
+
+
+
+d3.csv('assets/all.csv',).then(all => {
+    console.log(all)
+    var parseTime = d3.timeParse("%Y-%m-%d");
+  all.forEach(review => {
+    review.date = parseTime(review.date);
+    ["knowledge", "power", "respect", "trust", "social_support", "romance", "similarity", "identity", "fun", "conflict"].forEach(x=>review[x] = review[x] * 5)
+  })
+ init(all) 
+});
+
+
+
+function parseCategories(data) {
+  var dimensions = rows.map(x=> {return {key: x, data: []}})
+  dimensions.forEach(dimension => {
+    countries.forEach(country=>{
+      companies.forEach(company => {
+        var chart = d3.nest()
+          .key(d=>d.date)
+          .rollup(function(v) { 
+            return {
+            count: v.length,
+            total: d3.sum(v, function(d) {return +d[dimension.key]; }),
+            avg: d3.mean(v, function(d) { return +d[dimension.key] ? ++d[dimension.key] : 0 ; }),
+            med: d3.median(v, function(d) { return +d[dimension.key] ? +d[dimension.key] : 0; }),
+            dev: d3.deviation(v, function(d) { return  +d[dimension.key] ? +d[dimension.key] : 0; }),
+            max: d3.max(v, function(d) { return +d[dimension.key] ? +d[dimension.key] : 0; }),
+            min: d3.min(v, function(d) { return +d[dimension.key] ? +d[dimension.key] : 0; }),
+          }})
+          .entries(data.filter(d=>d.company == company && d.country == country))
+
+          var reg = regression('linear',
+            chart.map(date=>{
+              let x = scales.x(Date.parse(date.key))
+              let y = scales.y(date.value.avg)
+              return [x,y]
+            })
+          )
+        dimension.data.push({country: country, company: company, chart:chart, regression: reg})
+      })
+    })
+   
+    //create a scale that translates each steigerung into a position AND colors each country
+    dimension.data = dimension.data.filter(d=>d.chart.length > minData)
+    scales.regScale[dimension.key] = d3.scaleOrdinal().range(d3.range(dimension.data.length)).domain(dimension.data.map(x=>x.regression.equation[0]).sort((a,b) => a-b))
+    scales.countryColor = d3.scaleOrdinal(d3.schemeCategory10).domain(countries)//this is not accurate, as the listed countries may change per dimension. ok for now.
+    
+  })
+  return dimensions
+}
+
+
+
+
+function drawMultiples(dimensions, svg) {
+
+  var sm_row = svg.selectAll("g.row").data(dimensions).enter().append("g")
+    .attr("class",d=>{return d.key})
+    .attr("transform", (d,i) => "translate(200,"+(i*(multiheight+padding))+")")
+
+    sm_row.append("text").text(d=>d.key).attr("text-anchor","end").attr("transform","translate(-20,"+(topMargin+multiheight/2)+")")
+
+  var smallSingle = sm_row.selectAll("g.col").data(d=>{return d.data}).enter().append("g").attr("class",d=>d.key)
+  smallSingle.attr("transform", (d,i,nodes)=> {
+    let dim = d3.select(nodes[i].parentNode).attr("class")
+    let pos = scales.regScale[dim](d.regression.equation[0])
+    let x = pos * (multiWidth+padding)
+    return "translate("+x+","+topMargin+")"
+  })
+  smallSingle.append("g").attr("transform", "translate(0,"+multiheight+")").call(d3.axisBottom(scales.x).ticks(5))
+  smallSingle.append("g").call(d3.axisLeft(scales.y).ticks(5))
+  smallSingle.append("text").text(d=>d.company+"-"+d.country).attr("x",10).attr("y",10).attr("font-size","10pt")
+
+  var line = smallSingle.append("path").datum(d=>d.chart)
+  .attr("fill","none")
+  .attr("stroke",(d,i,nodes)=>scales.countryColor(d3.select(nodes[i].parentNode).attr("class")))
+  .attr("d",d3.line()
+    .x(d=>{
+     return scales.x(Date.parse(d.key)) 
+    })
+    .y(d=>scales.y(d.value.avg))
+    .curve(d3.curveMonotoneX)
+  )
+  
+  var confidence = smallSingle.append("path").datum(d=>d.chart)
+  .attr("fill-opacity",.4)
+  .attr("fill",(d,i,nodes)=>scales.countryColor(d3.select(nodes[i].parentNode).attr("class")))
+  .attr("d",d3.area()
+    .x(d=>{
+      return scales.x(Date.parse(d.key))
+    })
+    .y0(d=>{
+      let dev = (d.value.dev != null) ? d.value.dev : 0 //check for standard deviation (some don'T have it because n=1)
+      return scales.y(d.value.avg+(dev/2)) 
+    })
+    .y1(d=>{
+      let dev = (d.value.dev != null) ? d.value.dev : 0
+      return scales.y(d.value.avg-(dev/2))
+    })
+    .curve(d3.curveMonotoneX)
+  )
+
+
+
+  
+  var regLine = smallSingle.append("line").datum(d=>d.regression.equation)
+    .attr("x1",0)
+    .attr("y1",d=> d[0]+d[1])
+    .attr("x2",multiWidth)
+    .attr("y2",d=>{return multiWidth * d[0] + d[1]})
+    .attr("class","regLine")
+    .attr("stroke","black")
+    .style("stroke-dasharray", ("3, 3"))
+
+  var path = d3.line()
+    .x((d,i)=> scales.x(Date.parse(d.key)))
+    .y(d=> scales.y(d.value.med))
+    .curve(d3.curveMonotoneX)
+
+  var lines = smallSingle.append("g").attr("class","lines")
+  lines.selectAll("path").data(dimensions).enter().append("path")
+  .attr("class",d=>{return d.key})
+  .attr("d",(d,i,nodes)=>{
+    var current_dimension =  d3.select(nodes[i].parentNode.parentNode.parentNode).attr("class") //
+    var current_country =  d3.select(nodes[i].parentNode.parentNode).attr("class")
+    return path(d.data.find(x=>x.key == current_country).values) 
+  })
+  .attr("stroke","grey")
+  .attr("stroke-width","grey")
+  .attr("stroke-opacity",.1)
+  .attr("fill","none")
+}
+
+
+
+function setScales(data) {
+  scales.x = d3.scaleTime().domain(d3.extent(data, d => d.date)).range([0,multiWidth])
+  scales.y =  d3.scaleLinear().domain([0,5]).range([multiheight,0])
+}
+
+
+
+function init(raw) {
+
+  var sm = d3.select("#smallmultiples")
+  var svg = sm.append("svg")
+    //.attr("width",sm.node().getBoundingClientRect().width)
+    .attr("width",40000)
+    .attr("height",topMargin+(multiheight + padding) * rows.length)
+
+  setScales(raw)
+  var dimensions = parseCategories(raw)
+  drawMultiples(dimensions, svg)
+}
+  </script>
+</html>

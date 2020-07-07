@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Nokia Twin</title>
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <script src="https://d3js.org/d3-queue.v3.min.js"></script>
+
+  <!--<script src="https://unpkg.com/d3-regression@1.3.4/dist/d3-regression.min.js"></script>-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/regression/1.4.0/regression.min.js"></script>
+  <script src="assets/dictionary.js"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+</head>
+
+<style>
+  #smallmultiples {
+    height: 100vh
+  }
+</style>
+
+<body>
+  <div class="co ntainer-fluid">
+    <div class="row">
+      <div class="col">
+        <div id="smallmultiples"></div>
+      </div>
+    </div>
+  </div>
+</body>
+
+<script>
+'use strict'
+
+var multiWidth = 1200 //width of each chart
+var multiheight = 500 //height of each Chart
+var padding = 40
+var topMargin = 100
+var leftMargin = 100
+var minReviews = 70 //minimum reviews per country and dimension
+var scales = {regScale: {}}
+var rows = ["rating_overall","rating_balance","rating_career","rating_culture","rating_comp","knowledge", "power", "respect", "trust", "social_support", "romance", "similarity", "identity", "fun", "conflict"]
+
+
+
+
+d3.csv('assets/nokia_glassdoor_scored.csv',
+d3.autoType).then(data => init(data));
+
+/*d3.queue()
+//.defer(d3.csv, "assets/nokia_glassdoor_scored.csv", d3.autoType)
+.defer(d3.csv, "assets/amazon_glassdoor_scored.csv", d3.autoType)
+.await(function(error, nokia, amazon) {
+  if (error) throw error;
+console.log(nokia)
+});*/
+
+/*console.time("load")
+Promise.all([
+  d3.csv('assets/amazon_glassdoor_scored.csv',d3.autoType),
+  d3.csv('assets/nokia_glassdoor_scored.csv'),
+])
+.then(([amazon, nokia]) =>  {
+  init(amazon)
+  // Do your stuff. Content of both files is now available in stations and svg
+});
+console.timeEnd("load")*/
+
+
+function parse(data) {
+  var parseTime = d3.timeParse("%Y-%m");
+  data
+  //.filter((d,i)=>i<1000) //filter for performance
+  .forEach(review=> {
+    // parse dates that were not recognized by autotype
+    review.date = (typeof review.date === "string") ? parseTime(review.date) : review.date
+
+    //check dictionary for country
+    if(review.location != null) {
+      for (let i = 0; i < dictionary.length; i++) {
+        let country = dictionary[i]
+        if(country.arr.indexOf(review.location) != -1) {
+          review.country = country.key
+          continue;
+        }
+      }
+    };
+
+    //compute mean of data across different parts of the review
+    var arr = ["knowledge", "power", "respect", "trust", "social_support", "romance", "similarity", "identity", "fun", "conflict"]
+    arr.forEach(current => {
+      review[current] = 5* d3.mean( //multiply by 5 (because i'm lazy)
+        Object.keys(review) //get all keys of review
+        .filter(key => key.includes(current)) //check which one has the current quality
+        .map(x => review[x]) //map back to full review (more performant)
+      );
+    })
+
+    if(review.country == null) console.log("Location: ", review.location)
+  })
+  return data
+}
+
+
+
+
+
+function parseCategories(data) {
+  var dimensions = rows.map(x=> {return {key: x}})
+
+  dimensions.forEach(dimension => {
+    //calculate some metrics and drop the rest
+    dimension.data = d3.nest()
+    .key(d=>d.country)
+    .key(d=>d.date)
+    .rollup(function(v) {
+      return {
+      count: v.length,
+      total: d3.sum(v, function(d) { return d[dimension.key]; }),
+      avg: d3.mean(v, function(d) { return d[dimension.key] ? d[dimension.key] : 0 ; }),
+      med: d3.median(v, function(d) { return d[dimension.key] ? d[dimension.key] : 0; }),
+      dev: d3.deviation(v, function(d) { return  d[dimension.key] ? d[dimension.key] : 0; }),
+      max: d3.max(v, function(d) { return d[dimension.key] ? d[dimension.key] : 0; }),
+      min: d3.min(v, function(d) { return d[dimension.key] ? d[dimension.key] : 0; }),
+    }})
+    .entries(
+      data
+      .filter((x,i)=> x.country != null)
+    )
+
+    //compute more metrics and clean the data of each dimension
+    dimension.data.forEach(country => {
+
+      //compute linear regression and clean if its too weak
+      country.regression = regression('linear',
+        country.values.map(date=>{
+          let x = scales.x(Date.parse(date.key))
+          let y = scales.y(date.value.avg)
+          return [x,y]
+        })
+      )
+
+      //sort by date within countries
+      country.values.sort((a,b)=>Date.parse(a.key) - Date.parse(b.key))
+    })
+
+    //only keep those countries that have enough reviews (this here is reviews per country AND dimension, this could also be done just by country)
+    dimension.data = dimension.data.filter(d=> d.values.length > minReviews)
+
+    //create a scale that translates each steigerung into a position AND colors each country
+    scales.regScale[dimension.key] = d3.scaleOrdinal().range(d3.range(dimension.data.length)).domain(dimension.data.map(x=>x.regression.equation[0]).sort((a,b) => a-b))
+    scales.countryColor = d3.scaleOrdinal(d3.schemeCategory10).domain(dimension.data.map(x=> x.key))//this is not accurate, as the listed countries may change per dimension. ok for now.
+
+
+  })
+  return dimensions
+}
+
+
+
+
+
+
+
+
+
+function drawMultiples(dimensions, svg) {
+  console.log(dimensions)
+  var sm_row = svg.selectAll("g.row").data(dimensions).enter().append("g")
+    .attr("class",d=>d.key)
+    .attr("transform", (d,i) => "translate(200,"+(i*(multiheight+padding))+")")
+
+    sm_row.append("text").text(d=>d.key).attr("text-anchor","end").attr("transform","translate(-20,"+(topMargin+multiheight/2)+")")
+
+  var smallSingle = sm_row.selectAll("g.col").data(d=>d.data).enter().append("g").attr("class",d=>d.key)
+  smallSingle.attr("transform", (d,i,nodes)=> {
+    let dim = d3.select(nodes[i].parentNode).attr("class")
+    let pos = scales.regScale[dim](d.regression.equation[0])
+    let x = pos * (multiWidth+padding)
+    return "translate("+x+","+topMargin+")"
+  })
+  smallSingle.append("g").attr("transform", "translate(0,"+multiheight+")").call(d3.axisBottom(scales.x).ticks(5))
+  smallSingle.append("g").call(d3.axisLeft(scales.y).ticks(5))
+  //smallSingle.append("text").text(d=>d.key.replace("_"," ")).attr("x",10).attr("y",10).attr("font-size","10pt")
+
+  var line = smallSingle.append("path").datum(d=>d.values)
+  .attr("fill","none")
+  .attr("stroke","#BD10E0")
+  //.attr("stroke",(d,i,nodes)=>scales.countryColor(d3.select(nodes[i].parentNode).attr("class")))
+  .attr("d",d3.line()
+    .x(d=>scales.x(Date.parse(d.key)))
+    .y(d=>scales.y(d.value.avg))
+    .curve(d3.curveMonotoneX)
+  )
+
+  var confidence = smallSingle.append("path").datum(d=>d.values)
+  .attr("fill-opacity",.4)
+  .attr("fill","#BD10E0")
+  //.attr("fill",(d,i,nodes)=>scales.countryColor(d3.select(nodes[i].parentNode).attr("class")))
+  .attr("d",d3.area()
+    .x(d=>{
+      return scales.x(Date.parse(d.key))
+    })
+    .y0(d=>{
+      let dev = (d.value.dev != null) ? d.value.dev : 0 //check for standard deviation (some don'T have it because n=1)
+      return scales.y(d.value.avg+(dev/2))
+    })
+    .y1(d=>{
+      let dev = (d.value.dev != null) ? d.value.dev : 0
+      return scales.y(d.value.avg-(dev/2))
+    })
+    .curve(d3.curveMonotoneX)
+  )
+
+
+
+
+  var regLine = smallSingle.append("line").datum(d=>d.regression.equation)
+    .attr("x1",0)
+    .attr("y1",d=> d[0]+d[1])
+    .attr("x2",multiWidth)
+    .attr("y2",d=>{return multiWidth * d[0] + d[1]})
+    .attr("class","regLine")
+    .attr("stroke","black")
+    .style("stroke-dasharray", ("3, 3"))
+
+  var path = d3.line()
+    .x((d,i)=> scales.x(Date.parse(d.key)))
+    .y(d=> scales.y(d.value.med))
+    .curve(d3.curveMonotoneX)
+
+  var lines = smallSingle.append("g").attr("class","lines")
+  lines.selectAll("path").data(dimensions).enter().append("path")
+  .attr("class",d=>{return d.key})
+  .attr("d",(d,i,nodes)=>{
+    var current_dimension =  d3.select(nodes[i].parentNode.parentNode.parentNode).attr("class") //
+    var current_country =  d3.select(nodes[i].parentNode.parentNode).attr("class")
+    return path(d.data.find(x=>x.key == current_country).values)
+  })
+  .attr("stroke","grey")
+  .attr("stroke-width","grey")
+  .attr("stroke-opacity",.1)
+  .attr("fill","none")
+}
+
+
+
+function setScales(data) {
+  scales.x = d3.scaleTime().domain(d3.extent(data, d => d.date)).range([0,multiWidth])
+  scales.y =  d3.scaleLinear().domain([0,5]).range([multiheight,0])
+}
+
+
+
+function init(raw) {
+
+  var sm = d3.select("#smallmultiples")
+  var svg = sm.append("svg")
+    //.attr("width",sm.node().getBoundingClientRect().width)
+    .attr("width",40000)
+    .attr("height",topMargin+(multiheight + padding) * rows.length)
+
+
+
+  console.time()
+  var data = parse(raw)
+  setScales(data)
+  var dimensions = parseCategories(data)
+
+  //console.log(dimensions)
+  drawMultiples(dimensions, svg)
+  console.timeEnd()
+}
+  </script>
+</html>

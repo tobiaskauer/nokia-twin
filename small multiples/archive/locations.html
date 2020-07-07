@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Nokia Twin</title>
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <script src="https://unpkg.com/d3-regression@1.3.4/dist/d3-regression.min.js"></script>
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+</head>
+
+<style>
+  #smallmultiples {
+    height: 100vh
+  }
+</style>
+
+<body>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col">
+        <div id="smallmultiples"></div>
+      </div>
+    </div>
+  </div>
+</body>
+
+<script>
+  'use strict'
+
+  var multiWidth = 250
+  var multiheight = 100
+  var margin = 50
+  var cols = ["China","UK","US","India"]
+  var rows = ["rating_overall","rating_balance","rating_culture","rating_career","rating_comp",
+  //][
+  "review_title_knowledge","review_title_power","review_title_respect","review_title_trust","review_title_social_support","review_title_romance","review_title_similarity","review_title_identity","review_title_fun","review_title_conflict","pros_knowledge","pros_power","pros_respect","pros_trust","pros_social_support","pros_romance","pros_similarity","pros_identity","pros_fun","pros_conflict","cons_knowledge","cons_power","cons_respect","cons_trust","cons_social_support","cons_romance","cons_similarity","cons_identity","cons_fun","cons_conflict"]
+
+  d3.csv('assets/nokia_glassdoor_scored.csv',
+  d3.autoType)
+  .then(function (data) {
+
+    var parseTime = d3.timeParse("%Y-%m");
+    var dictionary = [
+      {key: "UK", arr: ["Cambridge, England","Reading, England","Woolwich, England","London, England","Harefield, England","Bristol, England","Ipswich, England","Farnborough, Hampshire, South East England, England","Birmingham, England","Huntingdon and Peterborough, England","Huntingdon, England","Greenwich, England","Fleet, South East England, England","Farnborough, London, England","Solihull, England","Swindon, Gloucestershire, South West England, England"]},
+      {key: "India", arr: ["Pune","Karnāl","Indi, Karnataka","Greater Noida","Indore","Guindy","Jaipur, Rajasthan","Dondaicha","Safidon","Pune City","Sambalpur, Orissa","Āsansol, West Bengal","Mohāli, Maharashtra","Aurangābād, Maharashtra","Ahmedabad","Murray Hill, Gurgaon, Haryana","Gurgaon, Haryana","New Delhi","Lucknow","Shillong","Gwalior, Madhya Pradesh","Kānchipuram","Chennai","Mumbai","Noida","Bangalore","Jhānsi","Hyderābād","Calcutta","Oragadam"]},
+      {key: "Romania", arr: ["Timişoara","Bucharest","Cluj-Napoca"]},
+      {key: "Greece", arr: ["Athens"]},
+      {key: "Germany", arr: ["Stuttgart","Berlin","Munich, Bavaria","Ulm, Baden-Wurttemberg","Frankfurt am Main","Bochum, North Rhine-Westphalia","Nuremberg","Düsseldorf"]},
+      {key: "Indonesia", arr: ["Jakarta","Balikpapan"]},
+      {key: "Poland", arr: ["Wrocław","Kraków","Warsaw"]},
+      {key: "Philippines", arr: ["Quezon City, National Capital Region","Manila, Manila"]},
+      {key: "Finland", arr: ["Tampere","Helsinki, Southern Finland","Espoo","Oulu","Nokia"]},
+      {key: "France", arr: ["Paris","Lannion"]},
+      {key: "China", arr: ["Daxing, Beijing","Shenzhen, Guangdong","Guangzhou, Guangdong","Shanghai, Shanghai","Hangzhou, Zhejiang","Beijing, Beijing","Qingdao, Shandong","Pudong, Shanghai","South China, ME","Nanjing, Jiangsu","Chengdu, Sichuan"]},
+      {key: "Sweden", arr: ["Kista","Stockholm, Stockholm"]},
+      {key: "Saudi Arabia", arr: ["Riyadh","Mecca"]},
+      {key: "Australia", arr: ["Melbourne","North Sydney","Sydney"]},
+      {key: "Hungary", arr: ["Budapest","Buda, Budapest"]},
+      {key: "UAE", arr: ["Dubai"]},
+      {key: "Egypt", arr: ["Cairo"]},
+      {key: "Singapore", arr: ["Singapore"]},
+      {key: "Pakistan", arr: ["Islamabad, Islamabad","Karāchi","Islamabad, Islamabad"]},
+      {key: "Nigeria", arr: ["Abuja Nigeria"]},
+      {key: "Kenya", arr: ["Nairobi"]},
+      {key: "Argentinia", arr: ["Buenos Aires"]},
+      {key: "Iran", arr: ["Tehran, Tehran"]},
+      {key: "Portugal", arr: ["Lisbon","Amadora","Porto, Oporto"]},
+      {key: "Turkey", arr: ["Istanbul"]},
+      {key: "New Zealand", arr: ["Auckland, Auckland","Wellington, Wellington"]},
+      {key: "Vietnam", arr: ["Hanoi"]},
+      {key: "Chile", arr: ["Santiago"]},
+      {key: "Brazil", arr: ["Belo Horizonte, Minas Gerais","São Paulo, São Paulo"]},
+      {key: "Mexico", arr: ["Monterrey, Nuevo León","Cuautitlán Izcalli"]},
+      {key: "Israel", arr: ["Tel Aviv-Yafo"]},
+      {key: "Tunisia", arr: ["Ksar el Kradem"]},
+      {key: "Serbia", arr: ["Belgrade"]},
+      {key: "South Africa", arr: ["Johannesburg"]},
+      {key: "Ireland", arr: ["Dublin, Dublin","Blanchardstown"]},
+      {key: "Denmark", arr: ["Copenhagen"]},
+      {key: "Spain", arr: ["Barcelona"]},
+      {key: "Malaysia", arr: ["Kuala Lumpur"]},
+      {key: "Belgium", arr: ["Brussels","Antwerp"]},
+      {key: "Japan", arr: ["Tokyo"]},
+      {key: "Canada", arr: ["Kanata, ON","Mississauga, ON","Burnaby, BC","Montreal, QC","Calgary, AB","Ontario, CA","Toronto, ON", "Ottawa, ON", "Surrey, BC","Vancouver, BC","Markham, ON"]},
+      {key: "Netherlands", arr: ["Amsterdam"]},
+      {key: "Colombia", arr: ["Bogotá, Bogota"]},
+      {key: "South Korea", arr: ["Seoul"]},
+      {key: "Myanmar", arr: ["Rangoon"]},
+      {key: "Bulgaria", arr: ["Sofia"]},
+      {key: "Ukraine", arr: ["Kiev"]},
+      {key: "Guatemala", arr: ["Guatemala City"]},
+      {key: "Russia", arr: ["Rostov-na-Donu","Moscow","Voronezh, Voronezhskaya Oblast"]},
+      {key: "Lebanon", arr: ["Beirut"]},
+      {key: "Austria", arr: ["Vienna"]},
+      {key: "Italy", arr: ["Milan","Milano","Rome"]},
+      {key: "US", arr: ["Fresno, CA","Buford, GA","Mount Prospect, IL","Burlington, VT","Gainesville, VA","Remote, OR","Brooksville, FL","Reno, NV","Edmond, OK","Baltimore, MD","Germany, GA","Fort Worth, TX","Encino, CA","Arlington Heights, Cook, IL","Saint Louis, MO","Athens, GA","Boulder, CO","Roswell, GA","Arlington, TX","Seattle, WA","Denver, CO","Cambridge, MA","Boston, MA","Dublin, OH","Holmdel, NJ","Itasca, IL","Malvern, PA","Schaumburg, IL","Cary, NC","Morocco, IN","Burnsville, MN","Detroit, MI","Cleveland, OH","Miami, FL","Philadelphia, PA","Oswego, IL","Coral Springs, FL","Simsbury, CT","Carlsbad, CA","Leesburg, VA","Alpharetta, GA","Switzerland, SC","Fargo, ND","Rancho Bernardo, CA","Richmond, VA","Iselin, NJ","San Mateo, CA","Santa Clara, CA","Munich, ND","Fairfax, VA","Jacksonville, FL","Frisco, TX","Keller, TX","Bedminster, NJ","Methuen, MA","El Cajon, CA","Coppell, TX","Hoffman Estates, IL","Dunstable, MA","Aiken, SC","Korea, KY","Deland, FL","Turkey, TX","North Andover, MA","Algonquin, IL","Palo Alto, CA","Kansas City, MO","Kansas City, KS","Pembroke Pines, FL","North Chicago, IL","Roselle, IL","Austin, TX","Murray Hill, NJ","Arlington Heights, IL","Calabasas, CA","Houston, TX","Richardson, TX","Hartford, CT","Redmond, WA","Saint Cloud, MN","Burlington, MA","Oklahoma City, OK","Charlotte, NC","Flower Mound, TX","San Jose, CA","New Providence, Union, NJ","Westmont, IL","Carrollton, TX","Tempe, AZ","Boca Raton, FL","San Antonio, TX","Greenville, NC","San Diego, TX","Birmingham, AL","Los Angeles, CA","Irving, TX","San Diego, CA","Tampa, FL","New Brunswick, NJ","San Francisco, CA","Sunnyvale, CA","Sandy Springs, Fulton, GA","Plano, TX","Atlanta, GA","Ann Arbor, MI","Westford, MA","Phoenix, AZ","Chicago, IL","Elizabeth, NJ","New Providence, NJ","Newark, NJ","Raleigh, NC","Columbus, OH","Dallas, TX","New York, NY","Bellevue, WA","Naperville, IL","Mountain View, CA"]},
+      {key: "Switzerland", arr: ["Geneva"]},
+    ]
+
+    data.forEach(d=> {
+    // parse dates that were not recognized by autotype
+    d.date = (typeof d.date === "string") ? parseTime(d.date) : d.date 
+
+    //check dictionary for country
+    if(d.location != null) {
+      for (let i = 0; i < dictionary.length; i++) {
+        let country = dictionary[i]
+        if(country.arr.indexOf(d.location) != -1) {
+          d.country = country.key
+          continue;
+        }
+      }
+    }
+
+    ["review_title_knowledge","review_title_power","review_title_respect","review_title_trust","review_title_social_support","review_title_romance","review_title_similarity","review_title_identity","review_title_fun","review_title_conflict","pros_knowledge","pros_power","pros_respect","pros_trust","pros_social_support","pros_romance","pros_similarity","pros_identity","pros_fun","pros_conflict","cons_knowledge","cons_power","cons_respect","cons_trust","cons_social_support","cons_romance","cons_similarity","cons_identity","cons_fun","cons_conflict"].forEach(dimension => {
+      d[dimension] = d[dimension] *5
+    })
+    })
+
+   
+    init(data)
+    /*data.forEach(review => {
+      if(review.country == null && review.location != null) console.log(review.location)
+    })*/
+  });
+
+function findPosition(review) {
+  var x, y;
+  cols.forEach((r,i) => {if(review.country.includes(r)) x=margin+i*(multiWidth + margin)});
+  rows.forEach((r,i) => {if(str.includes(r)) y=margin+i*(multiheight + margin)})
+  return "translate("+x+","+y+")"
+}
+
+function parseCategories(data) {
+  var dimensions = rows.map(x=> {return {key: x, data: []}})
+  dimensions.forEach(dimension => {
+    dimension.data = d3.nest()
+    .key(d=>d.country)
+    .key(d=>d.date)
+    .rollup(function(v) { return {
+      count: v.length,
+      total: d3.sum(v, function(d) { return d[dimension.key]; }),
+      avg: d3.mean(v, function(d) { return d[dimension.key]; }),
+      med: d3.median(v, function(d) { return d[dimension.key]; }),
+      dev: d3.deviation(v, function(d) { return d[dimension.key]; }),
+      max: d3.max(v, function(d) { return d[dimension.key]; }),
+      min: d3.min(v, function(d) { return d[dimension.key]; })
+    }})
+    .entries(
+      data
+      .filter(x=> cols.indexOf(x.country) !== -1)
+      //.sort((a,b)=>Date.parse(a.key)-Date.parse(b.key))
+    )
+    
+
+    dimension.data.forEach(country => {
+      country.values.sort((a,b)=>Date.parse(a.key) - Date.parse(b.key))
+    })
+  })
+
+ 
+  return dimensions
+}
+
+function drawMultiples(dimensions, svg, scales) {
+
+    var sm_row = svg.selectAll("g.row").data(dimensions).enter().append("g")
+      .attr("class",d=>d.key)
+      .attr("transform", (d,i) => "translate(250,"+(i*150+100)+")")
+
+      sm_row.append("text").text(d=>d.key).attr("text-anchor","end")
+
+    var smallSingle = sm_row.selectAll("g.col").data(d=>d.data).enter().append("g")
+    smallSingle.attr("transform", (d,i)=>"translate("+i*300+",0)")
+    smallSingle.append("g").attr("transform", "translate(0,"+multiheight+")").call(d3.axisBottom(scales.x).ticks(5))
+    smallSingle.append("g").call(d3.axisLeft(scales.y).ticks(5))
+    smallSingle.append("text").text(d=>d.key.replace("_"," ")).attr("x",10).attr("y",10).attr("font-size","10pt")
+
+    var line = smallSingle.append("path").datum(d=>d.values)
+    .attr("fill","none")
+    //.attr("foo",d=>{console.log(d)})
+    .attr("stroke","green")
+    .attr("stroke","green")
+    .attr("d",d3.line()
+      .x(d=>{
+        //console.log(d); 
+        return scales.x(Date.parse(d.key))
+      })
+      //.y0(d=>scales.y(d.value.avg+d.value.dev/2))
+      .y(d=>scales.y(d.value.avg))
+      .curve(d3.curveMonotoneX)
+    )
+    
+    var confidence = smallSingle.append("path").datum(d=>d.values)
+    .attr("fill-opacity",.4)
+    .attr("fill","green")
+    .attr("d",d3.area()
+      .x(d=>{
+        return scales.x(Date.parse(d.key))
+      })
+      .y0(d=>{
+        let dev = (d.value.dev != null) ? d.value.dev : 0
+        return scales.y(d.value.avg+(dev/2)) 
+      })
+      .y1(d=>{
+        let dev = (d.value.dev != null) ? d.value.dev : 0
+        return scales.y(d.value.avg-(dev/2))
+      })
+      .curve(d3.curveMonotoneX)
+    )
+
+    const regression = d3.regressionLinear()
+  .x(d =>{return scales.x(Date.parse(d.key))})
+  .y(d =>{return scales.y(d.value.avg)})
+  //.y(d => d.y)
+  .domain([0, multiWidth]);
+
+  /*const regline = d3.line()
+    x(d=>{console})*/
+
+  var regLine = smallSingle.append("path").datum(d=>regression(d.values)).attr("d",d3.line()).attr("class","regLine").attr("stroke","black").style("stroke-dasharray", ("3, 3"))  // <== This line here!!
+
+
+
+    var path = d3.line()
+      .x((d,i)=> {
+        //console.log(d)
+       return scales.x(Date.parse(d.key)) 
+      })
+      .y(d=> scales.y(d.value.med))
+      .curve(d3.curveMonotoneX)
+
+ /*  var lines = smallSingle.append("g").attr("class","lines")
+    lines.selectAll("path").data(dimensions).enter().append("path")
+    .attr("class",d=>{return d.key})
+    .attr("d",(d,i)=>{
+      console.log(d.data[0])
+      return path(d.data[0].values) 
+    })
+    .attr("stroke",(d,i,nodes) => (d3.select(nodes[i].parentNode.parentNode).attr("class") == d.key) ? "green" : "grey") 
+    .attr("stroke-width",(d,i,nodes) => (d3.select(nodes[i].parentNode.parentNode).attr("class") == d.key) ? 1 : .5) 
+    .attr("stroke-opacity",(d,i,nodes) => (d3.select(nodes[i].parentNode.parentNode).attr("class") == d.key) ? 1 : .1) 
+    .attr("fill","none")*/
+}
+
+function init(data) {
+
+  var sm = d3.select("#smallmultiples")
+  var svg = sm.append("svg")
+    .attr("width",sm.node().getBoundingClientRect().width)
+    .attr("height",2*margin+(multiheight + margin) * rows.length)
+
+  var scales = {
+    x: d3.scaleTime().domain(d3.extent(data, d => d.date)).range([0,multiWidth]),
+    y: d3.scaleLinear().domain([0,5]).range([multiheight,0])
+  }
+
+
+  /*console.log(data)
+  console.log(
+    d3.nest()
+
+    .key(d=>d.country)
+    .key(d=>d.date)
+    .rollup(function(v) { return {
+      count: v.length,
+      total: d3.sum(v, function(d) { return d[dimension.key]; }),
+      avg: d3.mean(v, function(d) { return d[dimension.key]; }),
+      med: d3.median(v, function(d) { return d[dimension.key]; }),
+      dev: d3.deviation(v, function(d) { return d[dimension.key]; }),
+      max: d3.max(v, function(d) { return d[dimension.key]; }),
+      min: d3.min(v, function(d) { return d[dimension.key]; })
+    }})
+    .entries(data.filter(x=>
+      (x.country == "China") ||
+      (x.country == "UK") ||
+      (x.country == "US") ||
+      (x.country == "India") 
+      )
+    .sort((a,b)=>Date.parse(a.key)-Date.parse(b.key))
+    )
+    )*/
+
+  console.time('parse')
+  var dimensions = parseCategories(data)
+  console.log(dimensions)
+  console.log(data.filter(x=> (x.country == null) && (x.location != null)))
+  console.timeEnd("parse")
+  console.time('draw')
+ drawMultiples(dimensions, svg, scales)
+  console.timeEnd("draw")
+
+}
+  </script>
+</html>
+
+
+
+
+
+
