@@ -1,0 +1,78 @@
+<template>
+  <ul class="metric">
+    <li v-for="metric in metrics" :key="metric.key">
+      <span v-on:click="select(metric)" :class="{active: metric.key == active}">{{metric.display}}</span>
+    </li>
+  </ul>
+</template>
+
+<script>
+//import * as d3 from 'd3'
+
+export default {
+  props: {
+    initial: String
+  },
+
+  data() {
+    return {
+      active: this.initial
+    }
+  },
+
+  computed: {
+    metrics() {
+      return this.$store.state.metrics;
+    }
+  },
+
+  created () {
+  },
+
+  mounted () {
+    //this.$emit('clicked', {identifier: false, filter: 'metric', query: {key: this.initial}})
+  },
+
+  methods: {
+    //emit selected element to sidebar, which will update the query
+    select: function(item) {
+      if(item.key != this.active){
+        this.active = item.key
+        this.$emit('clicked', {identifier: false, filter: 'metric', query: item}) //false to indicate that all lines are affected
+        //this.$forceUpdate()
+      }
+    }
+  }
+}
+</script>
+
+<style scoped>
+ul {
+  background-image: linear-gradient(135deg, #20C5A0 0%, #BD10E0 47%, #F5A623 100%);
+  padding: 20px !important;
+  list-style: none;
+  font-size: 12px;
+}
+ul li {
+  width: inline-block;
+  text-align: center;
+  margin: 0;
+  padding: 2px 0;
+}
+
+ul li:hover {
+  font-weight: bold;
+  cursor: pointer;
+}
+
+span {
+  padding: 4px 2px;
+  line-height: 150%;
+  border-radius: 4px;
+}
+.active {
+  background: white;
+  color: black;
+  font-weight: bold;
+}
+</style>
