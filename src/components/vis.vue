@@ -14,17 +14,34 @@
           <text x="10" :y="style.margin.top+20">{{item.text}}</text>
         </g>
       </g>
-      <!--<g class="legend" :transform="`translate(${style.width-style.margin.right-200},100)`">
-        <path :d="legend" fill="black"/>
-      </g>-->
-      <g class="lines" v-for="line in lines" v-bind:key="line.identifier">
+      <g class="extremeValues" v-if="dataState">
+        <g v-for="(extremeLine, index) in extremeValues" v-bind:key="'extreme-'+index">
+          <circle v-for="(circle, index) in extremeLine.circles" :key="'circle-'+index" :cx="circle.x" :cy="circle.y" r="10" fill="none" :stroke="extremeLine.color" stroke-width="1" stroke-dasharray="4 1"/>
+        </g>
+      </g>
+      <g class="legend" :transform="`translate(${style.width-style.margin.right-50},${style.height-style.margin.bottom-50})`">
+        <g>
+          <text text-anchor="end">less confident</text>
+          <line x0="0" x1="20" y0="0" y1="0" transform="translate(2,-3)" stroke="black" stroke-width="2"/>
+        </g>
+        <g transform="translate(0,10)">
+          <text text-anchor="end">more confident</text>
+          <line x0="0" x1="20" y0="0" y1="0" transform="translate(2,-3)" stroke="black" stroke-width="5"/>
+        </g>
+
+      </g>
+      <g class="lines" v-for="line in lines" v-bind:key="line.identifier" >
         <path v-if="line.path" :d="line.path" :fill="line.color" stroke="none"/>
+        <!--<path v-if="line.path" :d="line.path" :stroke="line.color" fill="none"/>-->
       </g>
     </svg>
 
-    <svg :width="style.width" height="50" v-if="dataState" style="background-color: lightgrey">
-      <g class="lines" v-for="line in lines" v-bind:key="line.identifier" >
-        <path v-if="line.micro" :d="line.micro" :stroke="line.color" stroke-opacity="0.5" fill="none"/>
+    <!--brush for x-axis transformation -->
+    <svg :width="style.width" height="50" style="background-color: lightgrey">
+      <g v-if="dataState">
+        <g class="lines" v-for="line in lines" v-bind:key="line.identifier" >
+          <path v-if="line.micro" :d="line.micro" :stroke="line.color" stroke-opacity="0.5" fill="none"/>
+        </g>
       </g>
       <g class="brush" />
     </svg>
@@ -41,6 +58,7 @@
 
 <script>
 import * as d3 from 'd3'
+
 //import { regressionLinear } from 'd3-regression';
 
 
@@ -49,7 +67,7 @@ export default {
     style: function() {
       return {
         width: 1000, //TODO: set to window width
-        height: 500,
+        height: 300,
         margin: {
           top: 25,
           right: 25,
@@ -72,7 +90,7 @@ export default {
     },
 
 
-    data: { //get data from store
+    data: { //get data from store (this is the computed property "data", not vue's data property)
       cache: false,
       get: function() {
         return this.$store.getters.getLines.map(line => {
@@ -95,7 +113,7 @@ export default {
         let parseTime = d3.timeParse("%Y-%m");
         let style = this.style
 
-        const width = d3.scaleLinear().range([2,6])
+        const width = d3.scaleLinear().range([3,6])
         const x = d3.scaleTime().range([style.margin.left,style.width - style.margin.left - style.margin.right]);
         const y = d3.scaleLinear().range([
           style.height - style.margin.top - style.margin.bottom,
@@ -119,7 +137,7 @@ export default {
 
           x.domain(domain);
           microX.domain(d3.extent(arr, d => parseTime(d.d))); //definitely set this to the maximum data domain so we can push it to the limit
-          y.domain(d3.extent(arr, d => +d.r));
+          y.domain(d3.extent(arr, d => +d.r)).nice();
           microY.domain(d3.extent(arr, d => +d.r));
           width.domain(d3.extent(arr, d => +d.c))
         }
@@ -128,22 +146,36 @@ export default {
       }
     },
 
-    /*legend: {
-      cache: true,
-      get: function() {
+    extremeValues: function(){
+      let parseTime = d3.timeParse("%Y-%m");
+      let domain = this.scales.x.domain()
 
-        const path = d3.area()
-        .curve(d3.curveBasis)
-        .x(d => d.x)
-        .y0(d => d.y0)
-        .y1(d => d.y1);
+      return this.data.map(line => { //create array for all lines. look in all lines...
 
-        return path([
-          {x:1, y0:1, y1:1},
-          {x:10, y0:10, y1:10}
-        ])
-      }
-    },*/
+        //look for values that are within the visible boundaries of the x-axis
+        let visible = line.values.filter(value => {
+          let date = parseTime(value.d)
+          return (date > domain[0] && date < domain[1]) ? true : false;
+        })
+
+        //form those, get two peaks and two valley values
+        let sorted = visible.sort((a,b) => a.r - b.r)
+        let extreme = sorted.slice(0,2).concat(sorted.slice(sorted.length-2,sorted.length))
+
+        let circles = extreme.map(value => {
+          return {
+            x: this.scales.x(parseTime(value.d)),
+            y: this.scales.y(value.r)
+          }
+        })
+        let obj = {
+          color: line.color,
+          circles: circles
+        }
+        console.log(obj)
+        return obj
+      })
+    },
 
 
 
@@ -152,11 +184,16 @@ export default {
       get: function() {
         let parseTime = d3.timeParse("%Y-%m");
          const path = d3.area()
-         //.curve(d3.curveNatural)
          .curve(d3.curveBasis)
+         //.x0(d => this.scales.x(parseTime(d.d))-this.scales.width(d.c) /3)
+         //.x1(d => this.scales.x(parseTime(d.d))+this.scales.width(d.c) /3)
          .x(d => this.scales.x(parseTime(d.d)))
          .y0(d => this.scales.y(d.r)-this.scales.width(d.c))
          .y1(d => this.scales.y(d.r)+this.scales.width(d.c));
+
+         /*const path = d3.line()
+         .x(d => this.scales.x(parseTime(d.d)))
+         .y(d => this.scales.y(d.r));*/
 
          const micro = d3.line()
          .curve(d3.curveBasis)
@@ -175,6 +212,8 @@ export default {
     },
   },
 
+
+
   directives: {
     axis(el, binding) {//dynamically call and update axis
 
@@ -184,21 +223,19 @@ export default {
       const methodArg = binding.value[axis];
       d3.select(el).transition().call(d3[axisMethod](methodArg).ticks(5));
     },
+  },
 
-    /*brush(el, binding) {
-      let scales = binding.value
-      const brush = d3.brushX()
-        .extent(scales.microX.range().map((e,i) => [e,i*50]))
-        .on("start brush", updateX)
+  watch: {
+    dataState: function(newState) {
 
-      d3.select(el).call(brush).call(brush.move, scales.x.range())
-    }*/
+      if(newState) this.brush() //initialize brush as soon as you have data
+    }
   },
 
 
 
   mounted () {
-    if(this.dataState) this.brush()
+    //if(this.dataState) this.brush() //initialize brush if you got data
   },
 
   data() {
@@ -217,6 +254,8 @@ export default {
       d3.select("g.brush")
         .call(brush)
         .call(brush.move, this.scales.x.range())
+
+
     },
     updateX: function() {
       //TODO domain seems to work, but uses inexicably high values
@@ -225,7 +264,6 @@ export default {
         value
         this.$set(this.xDomain,i,value) //iterate over this array to trigger reactivity
       })
-
 
       d3.select(".xAxes").transition().call(d3.axisBottom(this.scales.x)) //update Axis
 
@@ -255,6 +293,10 @@ svg.lines {
 }
 path {
   transition: d .3s
+}
+
+.legend {
+  font-size: 6pt;
 }
 
 .context text {

@@ -16,10 +16,12 @@ export default new Vuex.Store({
       {key: "rating_comp", display: "Compensation & Benefits"},
       {key: "rating_mgmt", display: "Senior Leadership"}
     ],
+
+    //generate lists of columns, then fill them with filters
     filterColumns: [
       {name: "Company", db_columns: ["company"]},
-      //{name: "Role", db_columns: ["employee_title"]},
       {name: "Location", db_columns: ["location","country"]},
+      //{name: "Role", db_columns: ["employee_title"]},
     ].map(filter => {
       filter.elements = [] //bucket to fill
 
@@ -28,7 +30,7 @@ export default new Vuex.Store({
           type: 'selectors',
           listSelector: column
         }
-        axios.post( "http://localhost:8080/nokia/nokia-twin/comparison-api.php?",query,
+        axios.post( "http://localhost:8080/nokia-twin/api.php?",query,
           {headers: {'Content-Type': 'application/json;charset=UTF-8'}
         })
         .then(response => {
@@ -47,6 +49,10 @@ export default new Vuex.Store({
       return filter
     }),
 
+     //initialize array for filters the user added via typeahead
+    addedFilters: [],
+
+    //time-based annotations
     context: [
       {date: "2009-11", text:"Barrack Obama elected president"},
       {date: "2017-06", text:"Tobi starts at Bell Labs"}
@@ -56,13 +62,17 @@ export default new Vuex.Store({
 
 
   getters: {
-
     //get reduced list of possible values to display
     getFilterColumns: state => {
-      return state.filterColumns.map(filter => {
+      return state.filterColumns.map(col => {
+        let visible = col.elements.slice(0,5) //select five most frequent labels
+        //identify filters that were added for the current column
+        let added = state.addedFilters.filter(x=>x.filter.toLowerCase() == col.name.toLowerCase()) //select added filters that match the column
+        visible = visible.concat(added)
         return {
-          name: filter.name,
-          elements: filter.elements.slice(0,5)
+          name: col.name,
+          elements: visible,
+          autocomplete: col.elements
         }
       })
     },
@@ -72,16 +82,20 @@ export default new Vuex.Store({
   },
 
 
-
   mutations: {
     //initialize a new line (incl. filters in sidebar and actual line in graph), triggered from sidebar
-    addLine(state, line) {
+    addLine(state) {
+      let line = {}
       //set a color for to identify the line
-      let colors = ["#20C5A0","#BD10E0","#F5A623"]
+      //TODO Does not select last two colors for some reason
+      let colors = ["#20C5A0","#BD10E0","#F5A623","4A90E2","ACC000"]
       line.color = colors[state.lines.length]
 
-      //initialize empty query for db with all possible filters
+      //TODO: FIX! adding a new line flushes queries of existing lines
+      //check if any parameters were passed, if so, take them, if not initialize empty query for db with all possible filters
+      //line.query = (Object.keys(query).length !== 0) ? query : {}
       line.query = {}
+
       let filters = []
       state.filterColumns.forEach(col => {
         col.db_columns.forEach(dbcol => {
@@ -92,6 +106,12 @@ export default new Vuex.Store({
       filters.forEach(filter => line.query[filter] = undefined)
       line.identifier = uniqid.time() //unique identifier to update query or delete line
       Vue.set(state.lines, state.lines.length, line) //push new line at end of lines array
+    },
+
+    //remove line from sidebar
+    removeLine(state, identifier) {
+      if(state.lines.length > 1)
+      state.lines.splice(state.lines.findIndex(x=>x.identifier == identifier),1)
     },
 
     //write query to lines
@@ -105,6 +125,11 @@ export default new Vuex.Store({
       //console.log("writeData called", payload)
       Vue.set(state.lines[payload.index], "values", payload.values)
     },
+
+    //add filter via typeahead
+    addFilter(state, payload) {
+      Vue.set(state.addedFilters,state.addedFilters.length,payload)
+    }
 
   },
 
@@ -132,16 +157,16 @@ export default new Vuex.Store({
       }
     },
 
+    //get data from API
     callAPI( {commit,state}, identifier) {
       let query = state.lines.find(x=>x.identifier == identifier).query
       if(!query.metric) query.metric = "rating_overall" //avoid crash because initial metric has not been defined
       query.type = 'result' //set query end (quasi endpoint) for api.php
 
-      axios.post( "http://localhost:8080/nokia/nokia-twin/comparison-api.php?",query,
+      axios.post( "http://localhost:8080/nokia-twin/api.php?",query,
         {headers: {'Content-Type': 'application/json;charset=UTF-8'}
       })
       .then(response => {
-
         commit('writeValues',{
           index: state.lines.findIndex(x=>x.identifier == identifier),
           values: response.data

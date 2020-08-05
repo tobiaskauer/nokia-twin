@@ -43,7 +43,10 @@ export default {
 
   methods: {
     addLine: function() {
-      this.$store.commit('addLine',{})
+      //if there are any previous lines, get their queries and pass them to addLine()
+      let previousQuery = this.lines[this.lines.length-1] == undefined ? {} : this.lines[this.lines.length-1].query
+      this.$store.commit('addLine',previousQuery)
+      //after adding the line, get it's data
       this.$store.dispatch('getData', {identifier: false, filter: "metric", query: {key: "rating_overall"}})
       //TODO: Adding a lines crashes the brush - no idea why (maybe force Reload?)
     },
