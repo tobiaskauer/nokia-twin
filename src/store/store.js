@@ -7,8 +7,8 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    lines: [],
-    metrics:[
+    lines: [], //empty array, filled by addLine() and removeLine(), triggered via sidebar.vue
+    metrics:[ //Add metrics (and corresponding db-column as key) here
       {key: "rating_overall", display: "Overall Ratings"},
       {key: "rating_balance", display: "Work-Life Balance"},
       {key: "rating_culture", display: "Culture & Values"},
@@ -18,19 +18,20 @@ export default new Vuex.Store({
     ],
 
     //generate lists of columns, then fill them with filters
+    //Add additional filter columns (and corresponding db_columns) here
     filterColumns: [
       {name: "Company", db_columns: ["company"]},
       {name: "Location", db_columns: ["location","country"]},
       //{name: "Role", db_columns: ["employee_title"]},
     ].map(filter => {
       filter.elements = [] //bucket to fill
-
       filter.db_columns.forEach(column => {
         let query = {
           type: 'selectors',
           listSelector: column
         }
-        axios.post( "http://localhost:8080/nokia-twin/api.php?",query,
+        //axios.post( "http://social-dynamics.net/nokiatwin/api.php",query,
+        axios.post( "http://localhost:8080/nokiatwin/api.php",query,  //for development, this is overwritten in vue.config.js
           {headers: {'Content-Type': 'application/json;charset=UTF-8'}
         })
         .then(response => {
@@ -45,7 +46,6 @@ export default new Vuex.Store({
           filter.elements.sort((a,b) => b.count - a.count)
         })
       })
-
       return filter
     }),
 
@@ -77,6 +77,7 @@ export default new Vuex.Store({
       })
     },
 
+    //get Lines (triggered via sidebar and )
     getLines: (state) => state.lines,
     getContext: (state) => state.context
   },
@@ -120,7 +121,7 @@ export default new Vuex.Store({
       Vue.set(state.lines[payload.index].query, payload.filter, payload.key)
     },
 
-    //write API return to lines (gotten from callAPI())
+    //write A PI return to lines (gotten from callAPI())
     writeValues(state, payload) {
       //console.log("writeData called", payload)
       Vue.set(state.lines[payload.index], "values", payload.values)
@@ -163,7 +164,8 @@ export default new Vuex.Store({
       if(!query.metric) query.metric = "rating_overall" //avoid crash because initial metric has not been defined
       query.type = 'result' //set query end (quasi endpoint) for api.php
 
-      axios.post( "http://localhost:8080/nokia-twin/api.php?",query,
+      //axios.post( "http://social-dynamics.net/nokiatwin/api.php",query,
+      axios.post( "http://localhost:8080/nokiatwin/api.php?",query, //for development, this is overwritten in vue.config.js
         {headers: {'Content-Type': 'application/json;charset=UTF-8'}
       })
       .then(response => {

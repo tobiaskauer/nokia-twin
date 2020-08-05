@@ -227,7 +227,7 @@ export default {
 
   watch: {
     dataState: function(newState) {
-
+      //TODO: Brush is not initialized when the size is initially loaded. No idea why.
       if(newState) this.brush() //initialize brush as soon as you have data
     }
   },
@@ -235,7 +235,6 @@ export default {
 
 
   mounted () {
-    //if(this.dataState) this.brush() //initialize brush if you got data
   },
 
   data() {
