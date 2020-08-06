@@ -89,8 +89,8 @@ export default {
       }
     },
 
-
-    data: { //get data from store (this is the computed property "data", not vue's data property)
+    //get data from store (this is the computed property "data", not vue's data property)
+    data: {
       cache: false,
       get: function() {
         return this.$store.getters.getLines.map(line => {
@@ -100,52 +100,62 @@ export default {
       }
     },
 
-    dataState: function() { //check if every line we received also has data values before we render
+    //check if every line we received also has data values before we render
+    dataState: function() {
       let state = false //asume that condition is not met
       let hasData = this.data.map(line => (line.values) ? true : false) //check if value array exists
       if(hasData.length > 0 && hasData.every(bool => bool)) state = true //check if all lines have data (and if we have lines at all, otherwise condition for every() would be true)
       return state
     },
 
-    scales: {//compute scales
+    //compute scales based on values of all passed lines
+    scales: {
       cache: true,
       get() {
         let parseTime = d3.timeParse("%Y-%m");
         let style = this.style
 
-        const width = d3.scaleLinear().range([3,6])
+        //set range vor all scales on main chart
         const x = d3.scaleTime().range([style.margin.left,style.width - style.margin.left - style.margin.right]);
         const y = d3.scaleLinear().range([
           style.height - style.margin.top - style.margin.bottom,
           style.margin.bottom
         ]);
-        const microY = d3.scaleLinear().range([45,5]);
-        const microX = d3.scaleLinear().range([style.margin.left,style.width - style.margin.left - style.margin.right]);
+        const confidence = d3.scaleLinear().range([3,6])
 
+        //set range vor all scales on brushable micro chart
+        const microX = d3.scaleLinear().range([style.margin.left,style.width - style.margin.left - style.margin.right]);
+        const microY = d3.scaleLinear().range([45,5]);
+
+        //bind scales to axes
         d3.axisLeft().scale(x);
         d3.axisBottom().scale(y);
 
+        //get minimum and maximum values for each line (i know, it's not elegant :)
         if(this.dataState) {
-          let arr = [] //not elegant, but easiest way to find extreme values across all lines
+          let arr = []
           this.data.forEach(line => {
             line.values.forEach(value => {
               arr.push(value)
             })
           })
 
-          let domain = (this.xDomain.length > 0) ? this.xDomain : d3.extent(arr, d => parseTime(d.d)) //if this is the first time, get a the xDomain from data, otherwise it has been set by the brush
+          //if this is the first time, get a the xDomain from data, otherwise it has been set by the brush
+          let domain = (this.xDomain.length > 0) ? this.xDomain : d3.extent(arr, d => parseTime(d.d))
 
+          //set domain of all sccales
           x.domain(domain);
           microX.domain(d3.extent(arr, d => parseTime(d.d))); //definitely set this to the maximum data domain so we can push it to the limit
           y.domain(d3.extent(arr, d => +d.r)).nice();
           microY.domain(d3.extent(arr, d => +d.r));
-          width.domain(d3.extent(arr, d => +d.c))
+          confidence.domain(d3.extent(arr, d => +d.c))
         }
 
-        return { x, y, microX, microY, width };
+        return { x, y, microX, microY, confidence };
       }
     },
 
+    
     extremeValues: function(){
       let parseTime = d3.timeParse("%Y-%m");
       let domain = this.scales.x.domain()
@@ -172,29 +182,30 @@ export default {
           color: line.color,
           circles: circles
         }
-        console.log(obj)
         return obj
       })
     },
 
 
-
+    //for each line, compute
     lines: {
       cache: false,
       get: function() {
         let parseTime = d3.timeParse("%Y-%m");
+
+        //generator for area for main visualization
          const path = d3.area()
-         .curve(d3.curveBasis)
-         //.x0(d => this.scales.x(parseTime(d.d))-this.scales.width(d.c) /3)
-         //.x1(d => this.scales.x(parseTime(d.d))+this.scales.width(d.c) /3)
+         .curve(d3.curveBasis) //make curve smooth
          .x(d => this.scales.x(parseTime(d.d)))
-         .y0(d => this.scales.y(d.r)-this.scales.width(d.c))
-         .y1(d => this.scales.y(d.r)+this.scales.width(d.c));
+         //compute two y-values based on confidence() --> number of reviews that produce the average value
+         .y0(d => this.scales.y(d.r)-this.scales.confidence(d.c))
+         .y1(d => this.scales.y(d.r)+this.scales.confidence(d.c));
 
          /*const path = d3.line()
          .x(d => this.scales.x(parseTime(d.d)))
          .y(d => this.scales.y(d.r));*/
 
+         //generator line for brushable micro visualzation
          const micro = d3.line()
          .curve(d3.curveBasis)
          .x(d => this.scales.microX(parseTime(d.d)))
@@ -202,10 +213,10 @@ export default {
 
          return this.data.map(line => {
            if(line.values) {
+             //compute paths based on line values
              line.path = path(line.values)
              line.micro = micro(line.values)
            }
-           //if(line.values) line.regLine = reg(line.values)
            return line
          })
       }
@@ -216,8 +227,6 @@ export default {
 
   directives: {
     axis(el, binding) {//dynamically call and update axis
-
-      //let parseTime = d3.timeParse("%Y-%m");
       const axis = binding.arg;
       const axisMethod = { x: "axisBottom", y: "axisLeft" }[axis];
       const methodArg = binding.value[axis];
@@ -245,10 +254,12 @@ export default {
   },
 
   methods: {
+    //initialize brush (dragable selector for x-axis) and add it to DOM
     brush: function() {
       const brush = d3.brushX()
         .extent(this.scales.microX.range().map((e,i) => [e,i*50]))
         .on("end", this.updateX)
+        //.on("brush end", this.updateX) //update continously while moving (this may result in crap performance)
 
       d3.select("g.brush")
         .call(brush)
@@ -256,11 +267,10 @@ export default {
 
 
     },
+    //scale x-axis of visualization to fit boundaries of brush
     updateX: function() {
-      //TODO domain seems to work, but uses inexicably high values
       let domain = d3.event.selection.map(value => this.scales.microX.invert(value)) //get new domain by getting edges of overlay and translate them to dates
       domain.forEach((value,i) => {
-        value
         this.$set(this.xDomain,i,value) //iterate over this array to trigger reactivity
       })
 
