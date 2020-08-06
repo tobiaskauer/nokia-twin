@@ -1,5 +1,5 @@
 <template>
-  <div class="col-9">
+  <div class="col-8" ref="vis">
     <!--<div v-if="dataState">
       <div v-for="(line,index) in lines" v-bind:key="index">{{line.query}}</div>
     </div>-->
@@ -63,9 +63,11 @@ import * as d3 from 'd3'
 
 
 export default {
-  computed: {
-    style: function() {
-      return {
+  data() {
+    return {
+      showContext: true,
+      xDomain: [],
+      style: {
         width: 1000, //TODO: set to window width
         height: 300,
         margin: {
@@ -74,8 +76,11 @@ export default {
           bottom: 0 ,
           left: 40
         }
-      }
-    },
+      },
+    }
+  },
+
+  computed: {
 
     context: { //get additional information from store
       cache: false,
@@ -155,7 +160,7 @@ export default {
       }
     },
 
-    
+
     extremeValues: function(){
       let parseTime = d3.timeParse("%Y-%m");
       let domain = this.scales.x.domain()
@@ -244,20 +249,17 @@ export default {
 
 
   mounted () {
-  },
-
-  data() {
-    return {
-      showContext: true,
-      xDomain: []
-    }
+    this.getWidth()
+    this.$nextTick(function() {
+      window.addEventListener('resize', this.getWidth);
+    })
   },
 
   methods: {
     //initialize brush (dragable selector for x-axis) and add it to DOM
     brush: function() {
       const brush = d3.brushX()
-        .extent(this.scales.microX.range().map((e,i) => [e,i*50]))
+        .extent(this.scales.microX.range().map((e,i) => [e,i*50])) //brush width is range of scale, height is fixed at 50
         .on("end", this.updateX)
         //.on("brush end", this.updateX) //update continously while moving (this may result in crap performance)
 
@@ -275,7 +277,15 @@ export default {
       })
 
       d3.select(".xAxes").transition().call(d3.axisBottom(this.scales.x)) //update Axis
+    },
 
+    getWidth: function() {
+      if(this.$refs.vis) {
+        this.style.width = this.$refs.vis.clientWidth
+        if(this.dataState) {
+          this.brush()
+        }
+      }
     }
   }
 

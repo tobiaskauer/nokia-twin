@@ -1,10 +1,15 @@
 <template>
-  <div class="col-sm-3 sidebar hidden-md-down">
+  <div class="col-4 sidebar hidden-md-down">
     <h1>Twin DB</h1>
     <metrics v-bind:initial="'rating_overall'" @clicked="select" />
     <ul>
       <!-- display filterRow for every lines that is displayed -->
-      <filterRow v-for="(line, index) in lines" :key="index" :line="line"  @clicked="select" />
+      <filterRow
+        v-for="(line, index) in lines"
+        :key="index"
+        :line="line"
+        @clicked="select"
+      />
     </ul>
     <div class="addLine">
       <button v-on:click="addLine">Add Line</button>
@@ -17,15 +22,9 @@ import filterRow from './filterRow.vue'
 import metrics from './metrics.vue'
 
 export default {
-  data() {
-    return {
-    }
-  },
-
-
   computed: {
+    //get lines (incl. color, identifier, filters, and selections) from store
     lines() {
-      //get lines from store
       return this.$store.state.lines
     }
   },
@@ -38,10 +37,8 @@ export default {
 
   },
 
-  created() {
-  },
-
   methods: {
+    //add new lines
     addLine: function() {
       //if there are any previous lines, get their queries and pass them to addLine()
       let previousQuery = this.lines[this.lines.length-1] == undefined ? {} : this.lines[this.lines.length-1].query
@@ -51,18 +48,23 @@ export default {
       //TODO: Adding a lines crashes the brush - no idea why (maybe force Reload?)
     },
 
+    //as soon as a filter is clicked in filterRow (child component), get its data from store (which will trigger vis update)
     select: function(payload) {
-      //mutation (coming from filterRow / metric; going to vueX)
-      //this.$store.commit('updateQuery', payload) //use mutation because actions wont Work
-
       this.$store.dispatch('getData', payload) //use seperate action for API request (cant call action from mutation)
-      //this.$store.dispatch('getData', payload) //use seperate action for API request (cant call action from mutation)
     }
   },
 
   components: {
     filterRow, metrics
-  }
+  },
+
+  data() {
+    return {
+    }
+  },
+
+  created() {
+  },
 }
 </script>
 

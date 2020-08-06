@@ -1,5 +1,7 @@
 <template>
-<li class="filterRow" :style="'border-color: ' +this.line.color" :key="refreshCount">
+<!--<li class="filterRow" :style="'border-color: ' +this.line.color" :key="refreshCount">-->
+<li class="filterRow" :style="'border-color: ' +this.line.color">
+  <!-- line control elements, always visible -->
   <ul class="controls">
     <li :class="{rotate: !collapsed}"><!-- toggle collapse -->
       <a v-on:click="collapse(collapsed)">
@@ -17,6 +19,7 @@
     </li>
   </ul>
 
+  <!-- collapsed view of line -->
   <div class="collapsed" :class="{hidden: !collapsed}">
     <div v-if="collapsedItems.length > 0">
       <ul class="items">
@@ -30,8 +33,7 @@
     </div>
   </div>
 
-
-
+  <!-- expanded view of line -->
   <div class="expanded" :class="{hidden: collapsed}" v-for="(col, index) in filterColumns" :key="'list-'+index">
     <strong>{{col.name}}</strong>
       <ul class="items">
@@ -45,6 +47,8 @@
 
         </li>
       </ul>
+
+      <!-- typeahead field to add additional filters -->
       <div class="typeahead">
         <vue-bootstrap-typeahead
           :data="col.autocomplete"
@@ -55,16 +59,7 @@
           @hit="addFilter(col,$event)"
         />
       </div>
-      <!--<autocomplete :suggestions="col.autocomplete"  :selection.sync="" />-->
-
-      <!--<form class="typeahead">
-        <input class="form-control form-control-sm" type="text" :placeholder="'Add '+col.name">
-      </form>-->
     </div>
-
-
-
-
 </li>
 </template>
 
@@ -78,19 +73,21 @@ export default {
 
   data() {
     return {
-      collapsed: false,
-      refreshCount: 0
+      collapsed: false, //view state for each ui element
+      //refreshCount: 0 //not currently used, delete if no bugs are thrown
     }
   },
 
   computed: {
+    //get filter columns (e.g. company, Location, etc) from store
     filterColumns: {
       cache: true,
       get: function() {
-        return this.$store.getters.getFilterColumns //get ~5+x elements from store
+        return this.$store.getters.getFilterColumns
       }
     },
 
+    //selected lines for UI view
     selected: {
       cache: true,
       get: function() {
@@ -102,7 +99,8 @@ export default {
       }
     },
 
-    collapsedItems: { //compute list to show in collasped filterRow view (or to display message when nothing is selected)
+    //compute list to show in collasped filterRow view (or to display message when nothing is selected)
+    collapsedItems: {
       cache: false,
       get: function() {
         return this.selected.filter(col => col.selected)
@@ -111,29 +109,27 @@ export default {
     },
 
   methods: {
+    //select a filteritem
     select: function(col,item) {
-      console.log(col,item)
-
+      //console.log(col,item)
+      //find currently selected item to compare the newly clicked item to
       let currentCol = this.selected.find(x=>x.name == col)
-
       if(currentCol.selected == item.key) { //if already selected
-        this.$set(currentCol, 'selected', "") //deselected in view
+        this.$set(currentCol, 'selected', "") //deselected in UI view
         this.$emit('clicked', {identifier: this.line.identifier, col: col, query: {filter: item.filter, key: undefined}}) //remove filter from query
-
-      } else {
-
-        this.$set(currentCol, 'selected', item.key)
-        this.$emit('clicked', {identifier: this.line.identifier, col: col, query: item})
-        //this.$store.commit('updateQuery', {line: this.line.identifier, query: item})
+      } else { //if new item
+        this.$set(currentCol, 'selected', item.key) //select in UI view
+        this.$emit('clicked', {identifier: this.line.identifier, col: col, query: item}) //add filter to query (via sidebar.vue)
       }
-      //console.log(col,item,currentCol)
       this.$forceUpdate()
     },
 
+    //remove line when control-close is clicked
     removeLine: function(identifier) {
       this.$store.commit('removeLine',identifier)
     },
 
+    //toggle collapse state when control-collapse is clicked
     collapse: function(collapse) {
       this.collapsed = !collapse
     },
@@ -151,8 +147,7 @@ export default {
   },
 
   props: {
-    //filterColumns: Array,
-    line: Object
+    line: Object //line-item (including colors, identifier and selected filters) will be passed from sidebar.vue
   }
 }
 </script>

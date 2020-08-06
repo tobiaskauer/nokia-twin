@@ -131,22 +131,22 @@ export default new Vuex.Store({
     addFilter(state, payload) {
       Vue.set(state.addedFilters,state.addedFilters.length,payload)
     }
-
   },
 
 
 
   actions: {
+    //update queries and get data for them
     getData({dispatch, commit, state}, payload) {
       //console.log("getData() called", payload)
-      if(payload.identifier) {
+      if(payload.identifier) { //if payload just applies to a single line
         commit('writeQuery',{
           index: state.lines.findIndex(x=>x.identifier == payload.identifier),
           filter: payload.query.filter,
           key: payload.query.key
         })
         dispatch('callAPI',payload.identifier)
-      } else {
+      } else { //if it affects all lines (e.g. when a metric is changed)
         state.lines.forEach((line, i) => {
           commit('writeQuery',{
             index: i,
@@ -177,7 +177,6 @@ export default new Vuex.Store({
       .catch(error => {
         console.log(error)
       });
-
     }
   }
 })
