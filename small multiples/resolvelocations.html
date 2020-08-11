@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+</head>
+
+
+<body>
+
+</body>
+
+<script>
+  'use strict'
+
+  Promise.all([
+    d3.tsv('assets/country_regions_new.tsv'),
+    d3.csv("../import/example_data.csv")
+]).then(function(files) {
+    let dictionary = files[0]
+    let reviews = files[1]
+
+console.log(dictionary)
+    reviews.forEach((review,i) => {
+      if(true) {
+        if(review.filter_location) {
+          let target =  dictionary.find(x => x.location == review.filter_location)
+          if(target) {
+            let country = target.country
+            console.log(i+"\t"+country)
+          } else {
+            console.log(i)
+          }
+        } else {
+          console.log(i)
+        }
+      }
+    })
+  })
+  </script>
+</html>
+
+
+
+
+
+

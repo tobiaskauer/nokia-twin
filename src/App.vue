@@ -21,6 +21,10 @@ export default {
     sidebar,
     vis
   },
+
+  created: function() {
+    this.$store.dispatch('getMetricsAndFilters') //load metrics and filters
+  },
   methods: {
 
   }

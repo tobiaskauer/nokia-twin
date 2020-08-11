@@ -11,12 +11,11 @@
 
 export default {
   props: {
-    initial: String
   },
 
   data() {
     return {
-      active: this.initial
+      active: undefined
     }
   },
 
@@ -26,11 +25,16 @@ export default {
     }
   },
 
+  watch: {
+    metrics: function() {
+      this.active = this.metrics[0].key
+    }
+  },
+
   created () {
   },
 
   mounted () {
-    //this.$emit('clicked', {identifier: false, filter: 'metric', query: {key: this.initial}})
   },
 
   methods: {

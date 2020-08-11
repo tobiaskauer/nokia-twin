@@ -8,46 +8,8 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     lines: [], //empty array, filled by addLine() and removeLine(), triggered via sidebar.vue
-    metrics:[ //Add metrics (and corresponding db-column as key) here
-      {key: "rating_overall", display: "Overall Ratings"},
-      {key: "rating_balance", display: "Work-Life Balance"},
-      {key: "rating_culture", display: "Culture & Values"},
-      {key: "rating_career", display: "Career Opportunities"},
-      {key: "rating_comp", display: "Compensation & Benefits"},
-      {key: "rating_mgmt", display: "Senior Leadership"}
-    ],
-
-    //generate lists of columns, then fill them with filters
-    //Add additional filter columns (and corresponding db_columns) here
-    filterColumns: [
-      {name: "Company", db_columns: ["company"]},
-      {name: "Location", db_columns: ["location","country"]},
-      //{name: "Role", db_columns: ["employee_title"]},
-    ].map(filter => {
-      filter.elements = [] //bucket to fill
-      filter.db_columns.forEach(column => {
-        let query = {
-          type: 'selectors',
-          listSelector: column
-        }
-        //axios.post( "http://social-dynamics.net/nokiatwin/api.php",query,
-        axios.post( "http://localhost:8080/nokiatwin/api.php",query,  //for development, this is overwritten in vue.config.js
-          {headers: {'Content-Type': 'application/json;charset=UTF-8'}
-        })
-        .then(response => {
-          response.data.forEach(element => { //for each item in the list, create a unique object to pass on
-            let item = {
-              key: element[column],
-              filter: column,
-              count: element.count
-            }
-            filter.elements.push(item) //fill the bucket
-          })
-          filter.elements.sort((a,b) => b.count - a.count)
-        })
-      })
-      return filter
-    }),
+    metrics:[], //metrics to display (metric_ columns in db)
+    filterColumns: [], //filters to apply (filter_ columns in db)
 
      //initialize array for filters the user added via typeahead
     addedFilters: [],
@@ -67,10 +29,10 @@ export default new Vuex.Store({
       return state.filterColumns.map(col => {
         let visible = col.elements.slice(0,5) //select five most frequent labels
         //identify filters that were added for the current column
-        let added = state.addedFilters.filter(x=>x.filter.toLowerCase() == col.name.toLowerCase()) //select added filters that match the column
+        let added = state.addedFilters.filter(x=>x.filter.toLowerCase() == col.display.toLowerCase()) //select added filters that match the column
         visible = visible.concat(added)
         return {
-          name: col.name,
+          display: col.display,
           elements: visible,
           autocomplete: col.elements
         }
@@ -130,7 +92,12 @@ export default new Vuex.Store({
     //add filter via typeahead
     addFilter(state, payload) {
       Vue.set(state.addedFilters,state.addedFilters.length,payload)
-    }
+    },
+
+  /*  writeMetrics(state, payload) {
+
+      //Vue.set(state.metrics,payload)
+    }*/
   },
 
 
@@ -140,6 +107,7 @@ export default new Vuex.Store({
     getData({dispatch, commit, state}, payload) {
       //console.log("getData() called", payload)
       if(payload.identifier) { //if payload just applies to a single line
+
         commit('writeQuery',{
           index: state.lines.findIndex(x=>x.identifier == payload.identifier),
           filter: payload.query.filter,
@@ -161,14 +129,15 @@ export default new Vuex.Store({
     //get data from API
     callAPI( {commit,state}, identifier) {
       let query = state.lines.find(x=>x.identifier == identifier).query
-      if(!query.metric) query.metric = "rating_overall" //avoid crash because initial metric has not been defined
+      if(!query.metric) query.metric = "metric_rating_overall" //avoid crash because initial metric has not been defined
       query.type = 'result' //set query end (quasi endpoint) for api.php
 
       //axios.post( "http://social-dynamics.net/nokiatwin/api.php",query,
-      axios.post( "http://localhost:8080/nokiatwin/api.php?",query, //for development, this is overwritten in vue.config.js
+      axios.post( "http://localhost:8080/nokiatwin/api_new.php",query, //for development, this is overwritten in vue.config.js
         {headers: {'Content-Type': 'application/json;charset=UTF-8'}
       })
       .then(response => {
+        console.log(response)
         commit('writeValues',{
           index: state.lines.findIndex(x=>x.identifier == identifier),
           values: response.data
@@ -177,6 +146,71 @@ export default new Vuex.Store({
       .catch(error => {
         console.log(error)
       });
+    },
+
+
+    //get
+    getMetricsAndFilters({dispatch, state}) {
+      let query = {type: 'metrics'}
+      axios.post( "http://localhost:8080/nokiatwin/api_new.php",query, //for development, this is overwritten in vue.config.js
+        {headers: {'Content-Type': 'application/json;charset=UTF-8'}
+      })
+      .then(response => {
+        //filter response by metric_ and write it to store
+        let metrics = response.data.filter(x=>x.key.startsWith('metric_')).map(item => {
+          //if no display name given, use db column
+          if(!item.display) item.display = item.key
+          return item
+        })
+        Vue.set(state,'metrics',metrics)
+
+        //filter by filter_ and hand to getFilters() (which can get values for each filter)
+        dispatch('getFilters', response.data.filter(x=>x.key.startsWith('filter_')))
+      })
+      .catch(error => {
+        console.log(error)
+      });
+    },
+
+    getFilters({state}, payload) {
+      //transform filters with the same name into a group with multiple db_columns
+      let filters = []
+      payload.forEach(filter => {
+        let exists = filters.find(x=>x.display == filter.display)
+        if(exists) {
+          exists.db_columns.push(filter.key)
+        } else {
+          filters.push({display: filter.display, db_columns: [filter.key]})
+        }
+      })
+
+      //generate lists of columns, then fill them with filters
+      filters = filters.map(filter => {
+        filter.elements = [] //bucket to fill
+        filter.db_columns.forEach(column => {
+          let query = {
+            type: 'selectors',
+            listSelector: column
+          }
+          //axios.post( "https://social-dynamics.net/nokiatwin/api.php",query,
+          axios.post( "http://localhost:8080/nokiatwin/api_new.php",query,  //for development, this is overwritten in vue.config.js
+            {headers: {'Content-Type': 'application/json;charset=UTF-8'}
+          })
+          .then(response => {
+            response.data.forEach(element => { //for each item in the list, create a unique object to pass on
+              let item = {
+                key: element[column],
+                filter: column,
+                count: element.count
+              }
+              filter.elements.push(item) //fill the bucket
+            })
+            filter.elements.sort((a,b) => b.count - a.count)
+          })
+        })
+        return filter
+      })
+      Vue.set(state,'filterColumns',filters)
     }
   }
 })
