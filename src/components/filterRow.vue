@@ -49,7 +49,9 @@
       </ul>
 
       <!-- typeahead field to add additional filters -->
-      <div class="typeahead">
+      <div class="typeahead" v-if="col.autocomplete.length > 5">
+        <!--{{log(selected)}}
+        {{log(col.autocomplete)}}-->
         <vue-bootstrap-typeahead
           :data="col.autocomplete"
           v-model="selected.find(x=>x.display == col.display).selected"
@@ -74,7 +76,6 @@ export default {
   data() {
     return {
       collapsed: false, //view state for each ui element
-      //refreshCount: 0 //not currently used, delete if no bugs are thrown
     }
   },
 
@@ -89,13 +90,20 @@ export default {
 
     //selected lines for UI view
     selected: {
-      cache: true,
+      cache: false,
       get: function() {
-        return this.filterColumns.map(col => {
-          //TODO get lines from query and select
-          return {display: col.display}
-
+        //go through each filter column (e.g. company, country, role, etc)
+        let activeFilters = this.filterColumns.map(col => {
+          //search the query of the line for active filters
+          let value = ""
+          col.filters.forEach(filter => { //here we have to iterate through all existing filters in case we have multuple database columns combined in one filter column (e.g. "city" and "country" in "location")
+            if(this.line.query[filter])
+              value = this.line.query[filter]
+          })
+          //assign them to a display name and return themg
+          return {display: col.display, selected: value}
         })
+        return activeFilters;
       }
     },
 
@@ -115,11 +123,11 @@ export default {
       //find currently selected item to compare the newly clicked item to
       let currentCol = this.selected.find(x=>x.display == col)
       if(currentCol.selected == item.key) { //if already selected
-        this.$set(currentCol, 'selected', "") //deselected in UI view
-        this.$emit('clicked', {identifier: this.line.identifier, col: col, query: {filter: item.filter, key: undefined}}) //remove filter from query
+        this.$store.dispatch('getData', {identifier: this.line.identifier, col: col, query: {filter: item.filter, key: undefined}})
+        //this.$emit('clicked', {identifier: this.line.identifier, col: col, query: {filter: item.filter, key: undefined}}) //remove filter from query
       } else { //if new item
-        this.$set(currentCol, 'selected', item.key) //select in UI view
-        this.$emit('clicked', {identifier: this.line.identifier, col: col, query: item}) //add filter to query (via sidebar.vue)
+        this.$store.dispatch('getData', {identifier: this.line.identifier, col: col, query: item})
+        //this.$emit('clicked', {identifier: this.line.identifier, col: col, query: item}) //add filter to query (via sidebar.vue)
       }
       this.$forceUpdate()
     },
@@ -138,6 +146,10 @@ export default {
       this.$store.commit('addFilter',filter)
       this.select(col.display,filter)
       //TODO also select filter
+    },
+
+    log: function(message) {
+      console.log(message)
     }
 
 

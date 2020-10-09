@@ -10,7 +10,6 @@
 </template>
 
 <script>
-
 import sidebar from './components/sidebar.vue'
 import vis from './components/vis.vue'
 //import { bus } from './main'
@@ -22,8 +21,9 @@ export default {
     vis
   },
 
-  created: function() {
+  beforeCreate: function() {
     this.$store.dispatch('getMetricsAndFilters') //load metrics and filters
+    this.$store.dispatch('getEvents') //load metrics and filters
   },
   methods: {
 

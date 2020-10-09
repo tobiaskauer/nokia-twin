@@ -5,20 +5,23 @@ import uniqid from 'uniqid';
 
 Vue.use(Vuex)
 
+let server = "http://localhost:8080/nokiatwin/api.php" //development
+//let server = "https://social-dynamics.net/nokiatwin/api.php" // production
+
 export default new Vuex.Store({
   state: {
     lines: [], //empty array, filled by addLine() and removeLine(), triggered via sidebar.vue
     metrics:[], //metrics to display (metric_ columns in db)
     filterColumns: [], //filters to apply (filter_ columns in db)
-
-     //initialize array for filters the user added via typeahead
-    addedFilters: [],
-
-    //time-based annotations
-    context: [
-      {date: "2009-11", text:"Barrack Obama elected president"},
-      {date: "2017-06", text:"Tobi starts at Bell Labs"}
-    ]
+    colors: [
+      {hex: "#20C5A0", used: false},
+      {hex: "#BD10E0", used: false},
+      {hex: "#F5A623", used: false},
+      {hex: "#4A90E2", used: false},
+      {hex: "#ACC000", used: false}
+    ],
+    addedFilters: [], //initialize array for filters the user added via typeahead
+    events: []
   },
 
 
@@ -29,12 +32,14 @@ export default new Vuex.Store({
       return state.filterColumns.map(col => {
         let visible = col.elements.slice(0,5) //select five most frequent labels
         //identify filters that were added for the current column
-        let added = state.addedFilters.filter(x=>x.filter.toLowerCase() == col.display.toLowerCase()) //select added filters that match the column
+        let added = state.addedFilters.filter(x=>col.db_columns.includes(x.filter)) //select added filters that match any of the given db columns
         visible = visible.concat(added)
+
         return {
           display: col.display,
+          filters: col.db_columns,
           elements: visible,
-          autocomplete: col.elements
+          autocomplete: col.elements.filter(x=>x.key != null)
         }
       })
     },
@@ -46,35 +51,12 @@ export default new Vuex.Store({
 
 
   mutations: {
-    //initialize a new line (incl. filters in sidebar and actual line in graph), triggered from sidebar
-    addLine(state) {
-      let line = {}
-      //set a color for to identify the line
-      //TODO Does not select last two colors for some reason
-      let colors = ["#20C5A0","#BD10E0","#F5A623","4A90E2","ACC000"]
-      line.color = colors[state.lines.length]
-
-      //TODO: FIX! adding a new line flushes queries of existing lines
-      //check if any parameters were passed, if so, take them, if not initialize empty query for db with all possible filters
-      //line.query = (Object.keys(query).length !== 0) ? query : {}
-      line.query = {}
-
-      let filters = []
-      state.filterColumns.forEach(col => {
-        col.db_columns.forEach(dbcol => {
-          filters.push(dbcol)
-        })
-      })
-      filters.push("metric")
-      filters.forEach(filter => line.query[filter] = undefined)
-      line.identifier = uniqid.time() //unique identifier to update query or delete line
-      Vue.set(state.lines, state.lines.length, line) //push new line at end of lines array
-    },
-
-    //remove line from sidebar
+      //remove line from sidebar
     removeLine(state, identifier) {
-      if(state.lines.length > 1)
-      state.lines.splice(state.lines.findIndex(x=>x.identifier == identifier),1)
+      //make used color available again
+      Vue.set(state.colors.find(x=>x.used == identifier),'used',false)
+      //delete line from state
+      if(state.lines.length > 1) state.lines.splice(state.lines.findIndex(x=>x.identifier == identifier),1)
     },
 
     //write query to lines
@@ -93,21 +75,43 @@ export default new Vuex.Store({
     addFilter(state, payload) {
       Vue.set(state.addedFilters,state.addedFilters.length,payload)
     },
-
-  /*  writeMetrics(state, payload) {
-
-      //Vue.set(state.metrics,payload)
-    }*/
   },
 
 
 
   actions: {
+    //initialize a new line (incl. filters in sidebar and actual line in graph), triggered from sidebar
+    addLine(
+      {state, dispatch},
+      //query //query is provided as payload in sidebar.vue
+    ) {
+      let line = {}
+
+      //TODO: hand over previous query to newly created line
+      line.query = {}
+
+      //unique identifier to update query or delete line
+      line.identifier = uniqid.time()
+
+      //assign an unused color and mark it used
+      let colorIndex = state.colors.findIndex(element  => !element.used)
+      line.color = state.colors[colorIndex].hex
+      Vue.set(state.colors[colorIndex],'used',line.identifier)
+      Vue.set(state.lines, state.lines.length, line) //push new line at end of lines array
+
+      dispatch('getData', {
+        identifier: false,
+        filter: "metric",
+        query: {key: state.metrics[0].key} //TODO replace with first metric (as soon as its initialized)
+      })
+    },
+
+
     //update queries and get data for them
     getData({dispatch, commit, state}, payload) {
       //console.log("getData() called", payload)
-      if(payload.identifier) { //if payload just applies to a single line
 
+      if(payload.identifier) { //if payload just applies to a single line
         commit('writeQuery',{
           index: state.lines.findIndex(x=>x.identifier == payload.identifier),
           filter: payload.query.filter,
@@ -122,22 +126,22 @@ export default new Vuex.Store({
             key: payload.query.key
           })
           dispatch('callAPI',line.identifier)
+          //dispatch('debugAPI')
         })
       }
     },
 
     //get data from API
     callAPI( {commit,state}, identifier) {
+      //get query for line based on its identifier
       let query = state.lines.find(x=>x.identifier == identifier).query
-      if(!query.metric) query.metric = "metric_rating_overall" //avoid crash because initial metric has not been defined
       query.type = 'result' //set query end (quasi endpoint) for api.php
 
-      //axios.post( "http://social-dynamics.net/nokiatwin/api.php",query,
-      axios.post( "http://localhost:8080/nokiatwin/api_new.php",query, //for development, this is overwritten in vue.config.js
+      //axios.post( "https://social-dynamics.net/nokiatwin/api.php",query,
+      axios.post( server,query, //for development, this is overwritten in vue.config.js
         {headers: {'Content-Type': 'application/json;charset=UTF-8'}
       })
       .then(response => {
-        console.log(response)
         commit('writeValues',{
           index: state.lines.findIndex(x=>x.identifier == identifier),
           values: response.data
@@ -148,11 +152,30 @@ export default new Vuex.Store({
       });
     },
 
+    debugAPI() {
+      let query = {
+        type: 'debug',
+        metric: 'metric_rating_overall',
+        filter_company: 'starbucks',
+        filter_country: 'United Kingdom',
+        filter_employee_title: 'Barista'
+      }
+      axios.post( server,query, //for development, this is overwritten in vue.config.js
+        {headers: {'Content-Type': 'application/json;charset=UTF-8'}
+      })
+      .then(response => {
+        console.log(response.data.split("end_output")[0])
+      })
+      .catch(error => {
+        console.log(error)
+      });
+    },
 
-    //get
+
+    //get Metrics and Filters once to write them to storage
     getMetricsAndFilters({dispatch, state}) {
       let query = {type: 'metrics'}
-      axios.post( "http://localhost:8080/nokiatwin/api_new.php",query, //for development, this is overwritten in vue.config.js
+      axios.post( server,query, //for development, this is overwritten in vue.config.js
         {headers: {'Content-Type': 'application/json;charset=UTF-8'}
       })
       .then(response => {
@@ -164,8 +187,22 @@ export default new Vuex.Store({
         })
         Vue.set(state,'metrics',metrics)
 
+
         //filter by filter_ and hand to getFilters() (which can get values for each filter)
         dispatch('getFilters', response.data.filter(x=>x.key.startsWith('filter_')))
+      })
+      .catch(error => {
+        console.log(error)
+      });
+    },
+
+    getEvents({state}) {
+      let query = {type: 'events'}
+      axios.post( server,query, //for development, this is overwritten in vue.config.js
+        {headers: {'Content-Type': 'application/json;charset=UTF-8'}
+      })
+      .then(response => {
+        Vue.set(state,'events',response.data)
       })
       .catch(error => {
         console.log(error)
@@ -192,8 +229,7 @@ export default new Vuex.Store({
             type: 'selectors',
             listSelector: column
           }
-          //axios.post( "https://social-dynamics.net/nokiatwin/api.php",query,
-          axios.post( "http://localhost:8080/nokiatwin/api_new.php",query,  //for development, this is overwritten in vue.config.js
+          axios.post( server,query,  //for development, this is overwritten in vue.config.js
             {headers: {'Content-Type': 'application/json;charset=UTF-8'}
           })
           .then(response => {

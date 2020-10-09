@@ -14,8 +14,7 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 Vue.config.productionTip = false
-export const bus = new Vue();
-
+//export const bus = new Vue();
 
 new Vue({
   store,

@@ -1,14 +1,13 @@
 <template>
   <div class="col-4 sidebar hidden-md-down">
     <h1>Twin DB</h1>
-    <metrics @clicked="select" />
+    <metrics />
     <ul>
       <!-- display filterRow for every lines that is displayed -->
       <filterRow
         v-for="(line, index) in lines"
         :key="index"
         :line="line"
-        @clicked="select"
       />
     </ul>
     <div class="addLine">
@@ -24,36 +23,38 @@ import metrics from './metrics.vue'
 export default {
   computed: {
     //get lines (incl. color, identifier, filters, and selections) from store
-    lines() {
-      return this.$store.state.lines
+    lines: {
+      cache: false,
+      get: function(){
+        return this.$store.state.lines
+      }
     },
+    hasMetrics: {
+      cache: false,
+      get: function() {
+        return this.$store.state.metrics.length > 0 ? true : false
+      }
+    }
+  },
+
+  //if there are no lines on store when page is mounted, add one to always have one line available
+  watch: {
+    hasMetrics: function(newBool) {
+      if(this.lines.length < 1 && newBool) {
+        this.addLine()
+      }
+    }
   },
 
   mounted() {
-    //if there are no lines on store when page is mounted, add one to always have one line available
-    if(this.lines.length < 1) {
-      this.addLine()
-    }
-
   },
 
   methods: {
     //add new lines
     addLine: function() {
-      //TODO: if there are any previous lines, get their queries and pass them to addLine()
-      //let previousQuery = this.lines[this.lines.length-1] == undefined ? {} : this.lines[this.lines.length-1].query
-      this.$store.commit('addLine')
-
-      //after adding the line, get it's data
-      this.$store.dispatch('getData', {identifier: false, filter: "metric", query: {key: "metric_rating_overall"}})
-
-      //TODO re-introduce getting data after line is added
+      let previousQuery = this.lines[this.lines.length-1] == undefined ? {} : this.lines[this.lines.length-1].query
+      this.$store.dispatch('addLine',previousQuery)
     },
-
-    //as soon as a filter is clicked in filterRow (child component), get its data from store (which will trigger vis update)
-    select: function(payload) {
-      this.$store.dispatch('getData', payload) //use seperate action for API request (cant call action from mutation)
-    }
   },
 
   components: {

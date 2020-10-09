@@ -42,8 +42,7 @@ export default {
     select: function(item) {
       if(item.key != this.active){
         this.active = item.key
-        this.$emit('clicked', {identifier: false, filter: 'metric', query: item}) //false to indicate that all lines are affected
-        //this.$forceUpdate()
+        this.$store.dispatch('getData', {identifier: false, filter: 'metric', query: item})
       }
     }
   }

@@ -14,24 +14,23 @@
 
   Promise.all([
     d3.tsv('assets/country_regions_new.tsv'),
-    d3.csv("../import/example_data.csv")
+    d3.dsv(";","../import/example_data_large.csv")
 ]).then(function(files) {
     let dictionary = files[0]
     let reviews = files[1]
 
-console.log(dictionary)
     reviews.forEach((review,i) => {
       if(true) {
-        if(review.filter_location) {
-          let target =  dictionary.find(x => x.location == review.filter_location)
+        if(review.filter_city) {
+          let target =  dictionary.find(x => x.location == review.filter_city)
           if(target) {
             let country = target.country
-            console.log(i+"\t"+country)
+            console.log(i%2+"\t"+country)
           } else {
-            console.log(i)
+            console.log(i%2+"\t"+"")
           }
         } else {
-          console.log(i)
+          console.log(i%2+"\t"+"")
         }
       }
     })

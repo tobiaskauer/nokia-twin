@@ -4,21 +4,28 @@
       <div v-for="(line,index) in lines" v-bind:key="index">{{line.query}}</div>
     </div>-->
     <svg :width="style.width" :height="style.height" v-if="dataState" class="lines">
+      <defs>
+        <clipPath id="mask">
+          <rect :x="style.margin.left" y="0" :width="style.width" :height="style.height-style.margin.top-style.margin.bottom" />
+        </clipPath>
+      </defs>
       <g class="axes">
         <g v-axis:x="scales" class="xAxes" :transform="`translate(0,${style.height-style.margin.top-style.margin.bottom})`"></g>
         <g v-axis:y="scales" class="yAxes" :transform="`translate(${style.margin.left},0)`"></g>
       </g>
-      <g class="context" v-if="showContext">
-        <g v-for="(item, index) in context" :key="`context-${index}`" :transform="`translate(${item.x},0)`">
-          <line x1="0" x2="0" :y1="style.margin.top" :y2="style.height-style.margin.bottom-style.margin.top" stroke="black" stroke-dasharray="4" />
-          <text x="10" :y="style.margin.top+20">{{item.text}}</text>
+      <g class="events" v-if="showEvents" clip-path="url(#mask)">
+        <g v-for="(event, index) in events" :class="'event-'+index" :key="`event-${index}`" :transform="`translate(${event.x},0)`">
+          <!--<rect x="0" :y="style.margin.top" width="2" :height="style.height-style.margin.bottom-style.margin.top" fill="lightgrey" @mouseover="showText(true,index)" @mouseout="showText(false,index)" />-->
+          <line x0="0" :y0="style.margin.top" x1="0" :y1="style.height-style.margin.bottom-style.margin.top" stroke="lightgrey" stroke-width="2" fill="lightgrey" @mouseover="showText(true,index)" @mouseout="showText(false,index)" />
+          <text x="10" opacity="0" :y="style.margin.top+20" style="font-weight: bold">{{event.date}}</text>
+          <text x="10" opacity="0" :y="style.margin.top+30">{{event.text}}</text>
         </g>
       </g>
-      <g class="extremeValues" v-if="dataState">
+      <!--<g class="extremeValues" v-if="dataState">
         <g v-for="(extremeLine, index) in extremeValues" v-bind:key="'extreme-'+index">
           <circle v-for="(circle, index) in extremeLine.circles" :key="'circle-'+index" :cx="circle.x" :cy="circle.y" r="10" fill="none" :stroke="extremeLine.color" stroke-width="1" stroke-dasharray="4 1"/>
         </g>
-      </g>
+      </g>-->
       <g class="legend" :transform="`translate(${style.width-style.margin.right-50},${style.height-style.margin.bottom-50})`">
         <g>
           <text text-anchor="end">less confident</text>
@@ -30,9 +37,10 @@
         </g>
 
       </g>
-      <g class="lines" v-for="line in lines" v-bind:key="line.identifier" >
-        <path v-if="line.path" :d="line.path" :fill="line.color" stroke="none"/>
-        <!--<path v-if="line.path" :d="line.path" :stroke="line.color" fill="none"/>-->
+      <g clip-path="url(#mask)">
+        <g class="lines" v-for="line in lines" v-bind:key="line.identifier" >
+          <path v-if="line.path" :d="line.path" :fill="line.color" stroke="none"/>
+        </g>
       </g>
     </svg>
 
@@ -49,8 +57,8 @@
 
     <form>
       <div class="form-check">
-        <input type="checkbox" class="form-check-input" id="exampleCheck1" v-model="showContext" @click="showContext = !showContext">
-        <label class="form-check-label" for="exampleCheck1">Show context</label>
+        <input type="checkbox" class="form-check-input" id="exampleCheck1" v-model="showEvents" @click="showEvents = !showEvents">
+        <label class="form-check-label" for="exampleCheck1">Show Events</label>
       </div>
     </form>
   </div>
@@ -65,7 +73,7 @@ import * as d3 from 'd3'
 export default {
   data() {
     return {
-      showContext: true,
+      showEvents: true,
       xDomain: [],
       style: {
         width: 1000, //TODO: set to window width
@@ -81,16 +89,16 @@ export default {
   },
 
   computed: {
-
-    context: { //get additional information from store
-      cache: false,
+    events: { //get additional information from store
+      cache: true,
       get: function() {
-        let parseTime = d3.timeParse("%Y-%m");
-        let items = this.$store.getters.getContext.map(item => {
-          item.x = this.scales.x(parseTime(item.date)) //translate date to position
-          return item
+        let parseTime = d3.timeParse("%d-%m-%Y");
+        let events = this.$store.state.events.map(event => {
+
+          event.x = this.scales.x(parseTime(event.date)) //translate date to position
+          return event
         })
-        return items
+        return events
       }
     },
 
@@ -126,7 +134,7 @@ export default {
           style.height - style.margin.top - style.margin.bottom,
           style.margin.bottom
         ]);
-        const confidence = d3.scaleLinear().range([3,6])
+        const confidence = d3.scaleLinear().range([3,100])
 
         //set range vor all scales on brushable micro chart
         const microX = d3.scaleLinear().range([style.margin.left,style.width - style.margin.left - style.margin.right]);
@@ -192,7 +200,7 @@ export default {
     },
 
 
-    //for each line, compute
+    //for each line, compute the actual plot
     lines: {
       cache: false,
       get: function() {
@@ -266,8 +274,6 @@ export default {
       d3.select("g.brush")
         .call(brush)
         .call(brush.move, this.scales.x.range())
-
-
     },
     //scale x-axis of visualization to fit boundaries of brush
     updateX: function() {
@@ -286,8 +292,20 @@ export default {
           this.brush()
         }
       }
+    },
+    showText: function(active,index) {
+      if(active) {
+        d3.selectAll(".event-"+index+" text").transition().style("opacity",1)
+        d3.select(".event-"+index+" line").transition().attr("stroke-width",8).attr("x",-4)
+      } else {
+        d3.selectAll(".event-"+index+" text").transition().style("opacity",0)
+        d3.select(".event-"+index+" line").transition().attr("stroke-width",2).attr("x",0)
+      }
+
     }
   }
+
+
 
   /*props: {
   },
@@ -318,7 +336,7 @@ path {
   font-size: 6pt;
 }
 
-.context text {
+.events text {
   font-size: 10px;
 }
 </style>
