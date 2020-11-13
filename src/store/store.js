@@ -10,8 +10,11 @@ let server = "http://localhost:8080/nokiatwin/api.php" //development
 
 export default new Vuex.Store({
   state: {
+    error: "",
+    table: "",
     lines: [], //empty array, filled by addLine() and removeLine(), triggered via sidebar.vue
     metrics:[], //metrics to display (metric_ columns in db)
+    activeMetric: "",
     filterColumns: [], //filters to apply (filter_ columns in db)
     colors: [
       {hex: "#20C5A0", used: false},
@@ -46,11 +49,22 @@ export default new Vuex.Store({
 
     //get Lines (triggered via sidebar and )
     getLines: (state) => state.lines,
-    getContext: (state) => state.context
+    getContext: (state) => state.context,
+    getActiveMetric: (state) => state.activeMetric
   },
 
 
   mutations: {
+    setTable(state,payload) {
+      if(payload) {
+        state.table = payload
+      } else {
+        state.error = "No Table."
+      }
+    },
+    setActiveMetric(state,payload) {
+      if(payload) state.activeMetric = payload
+    },
       //remove line from sidebar
     removeLine(state, identifier) {
       //make used color available again
@@ -61,7 +75,6 @@ export default new Vuex.Store({
 
     //write query to lines
     writeQuery(state, payload) {
-      //console.log("writeQuery() called", payload)
       Vue.set(state.lines[payload.index].query, payload.filter, payload.key)
     },
 
@@ -86,7 +99,6 @@ export default new Vuex.Store({
       //query //query is provided as payload in sidebar.vue
     ) {
       let line = {}
-
       //TODO: hand over previous query to newly created line
       line.query = {}
 
@@ -136,12 +148,13 @@ export default new Vuex.Store({
       //get query for line based on its identifier
       let query = state.lines.find(x=>x.identifier == identifier).query
       query.type = 'result' //set query end (quasi endpoint) for api.php
-
+      query.table = state.table
       //axios.post( "https://social-dynamics.net/nokiatwin/api.php",query,
       axios.post( server,query, //for development, this is overwritten in vue.config.js
         {headers: {'Content-Type': 'application/json;charset=UTF-8'}
       })
       .then(response => {
+
         commit('writeValues',{
           index: state.lines.findIndex(x=>x.identifier == identifier),
           values: response.data
@@ -174,7 +187,7 @@ export default new Vuex.Store({
 
     //get Metrics and Filters once to write them to storage
     getMetricsAndFilters({dispatch, state}) {
-      let query = {type: 'metrics'}
+      let query = {type: 'metrics', table: state.table}
       axios.post( server,query, //for development, this is overwritten in vue.config.js
         {headers: {'Content-Type': 'application/json;charset=UTF-8'}
       })
@@ -197,7 +210,7 @@ export default new Vuex.Store({
     },
 
     getEvents({state}) {
-      let query = {type: 'events'}
+      let query = {type: 'events', table: state.table}
       axios.post( server,query, //for development, this is overwritten in vue.config.js
         {headers: {'Content-Type': 'application/json;charset=UTF-8'}
       })
@@ -227,7 +240,8 @@ export default new Vuex.Store({
         filter.db_columns.forEach(column => {
           let query = {
             type: 'selectors',
-            listSelector: column
+            listSelector: column,
+            table: state.table
           }
           axios.post( server,query,  //for development, this is overwritten in vue.config.js
             {headers: {'Content-Type': 'application/json;charset=UTF-8'}

@@ -1,24 +1,21 @@
 <template>
   <div class="col-8" ref="vis">
-    <!--<div v-if="dataState">
-      <div v-for="(line,index) in lines" v-bind:key="index">{{line.query}}</div>
-    </div>-->
-    <svg :width="style.width" :height="style.height" v-if="dataState" class="lines">
+    <svg :width="style.width" :height="style.height+style.margin.top + style.margin.bottom" v-if="dataState" class="lines">
       <defs>
         <clipPath id="mask">
           <rect :x="style.margin.left" y="0" :width="style.width" :height="style.height-style.margin.top-style.margin.bottom" />
         </clipPath>
       </defs>
-      <g class="axes">
+      <g class="axes" :transform="`translate(0,${style.margin.top})`">
+        <text font-size="6pt" y="-10" :x="style.margin.left+10" text-anchor="middle">{{activeMetric.display}}</text>
         <g v-axis:x="scales" class="xAxes" :transform="`translate(0,${style.height-style.margin.top-style.margin.bottom})`"></g>
         <g v-axis:y="scales" class="yAxes" :transform="`translate(${style.margin.left},0)`"></g>
       </g>
-      <g class="events" v-if="showEvents" clip-path="url(#mask)">
+      <g class="events" v-if="showEvents" clip-path="url(#mask)" :transform="`translate(0,${style.margin.top})`"  >
         <g v-for="(event, index) in events" :class="'event-'+index" :key="`event-${index}`" :transform="`translate(${event.x},0)`">
-          <!--<rect x="0" :y="style.margin.top" width="2" :height="style.height-style.margin.bottom-style.margin.top" fill="lightgrey" @mouseover="showText(true,index)" @mouseout="showText(false,index)" />-->
-          <line x0="0" :y0="style.margin.top" x1="0" :y1="style.height-style.margin.bottom-style.margin.top" stroke="lightgrey" stroke-width="2" fill="lightgrey" @mouseover="showText(true,index)" @mouseout="showText(false,index)" />
-          <text x="10" opacity="0" :y="style.margin.top+20" style="font-weight: bold">{{event.date}}</text>
-          <text x="10" opacity="0" :y="style.margin.top+30">{{event.text}}</text>
+          <line x0="0" :y0="style.margin.top" x1="0" :y1="style.height-style.margin.bottom-style.margin.top" stroke="lightgrey" stroke-width="2" fill="lightgrey" @mouseover="showText(true,event,index)" @mouseout="showText(false,{date: '', text: ''},index)" />
+          <!--<text x="10" opacity="0" :y="style.margin.top+20" style="font-weight: bold">{{event.date}}</text>
+          <text x="10" opacity="0" :y="style.margin.top+30">{{event.text}}</text>-->
         </g>
       </g>
       <!--<g class="extremeValues" v-if="dataState">
@@ -26,6 +23,12 @@
           <circle v-for="(circle, index) in extremeLine.circles" :key="'circle-'+index" :cx="circle.x" :cy="circle.y" r="10" fill="none" :stroke="extremeLine.color" stroke-width="1" stroke-dasharray="4 1"/>
         </g>
       </g>-->
+
+      <g clip-path="url(#mask)" :transform="`translate(0,${style.margin.top})`">
+        <g class="lines" v-for="line in lines" v-bind:key="line.identifier" >
+          <path v-if="line.path" :d="line.path" :fill="line.color" stroke="none"/>
+        </g>
+      </g>
       <g class="legend" :transform="`translate(${style.width-style.margin.right-50},${style.height-style.margin.bottom-50})`">
         <g>
           <text text-anchor="end">less confident</text>
@@ -34,12 +37,6 @@
         <g transform="translate(0,10)">
           <text text-anchor="end">more confident</text>
           <line x0="0" x1="20" y0="0" y1="0" transform="translate(2,-3)" stroke="black" stroke-width="5"/>
-        </g>
-
-      </g>
-      <g clip-path="url(#mask)">
-        <g class="lines" v-for="line in lines" v-bind:key="line.identifier" >
-          <path v-if="line.path" :d="line.path" :fill="line.color" stroke="none"/>
         </g>
       </g>
     </svg>
@@ -58,9 +55,14 @@
     <form>
       <div class="form-check">
         <input type="checkbox" class="form-check-input" id="exampleCheck1" v-model="showEvents" @click="showEvents = !showEvents">
-        <label class="form-check-label" for="exampleCheck1">Show Events</label>
+        <label class="form-check-label" for="exampleCheck1">Events:</label>
       </div>
     </form>
+    <div class="currentEvent">
+      <span>{{currentEvent.date}}</span>
+      <p>{{currentEvent.text}}</p>
+    </div>
+
   </div>
 </template>
 
@@ -74,12 +76,13 @@ export default {
   data() {
     return {
       showEvents: true,
+      currentEvent: {},
       xDomain: [],
       style: {
         width: 1000, //TODO: set to window width
         height: 300,
         margin: {
-          top: 25,
+          top: 30,
           right: 25,
           bottom: 0 ,
           left: 40
@@ -94,13 +97,14 @@ export default {
       get: function() {
         let parseTime = d3.timeParse("%d-%m-%Y");
         let events = this.$store.state.events.map(event => {
-
           event.x = this.scales.x(parseTime(event.date)) //translate date to position
           return event
         })
         return events
       }
     },
+
+    activeMetric: function() {return this.$store.getters.getActiveMetric},
 
     //get data from store (this is the computed property "data", not vue's data property)
     data: {
@@ -134,7 +138,7 @@ export default {
           style.height - style.margin.top - style.margin.bottom,
           style.margin.bottom
         ]);
-        const confidence = d3.scaleLinear().range([3,100])
+        const confidence = d3.scaleLinear().range([3,10])
 
         //set range vor all scales on brushable micro chart
         const microX = d3.scaleLinear().range([style.margin.left,style.width - style.margin.left - style.margin.right]);
@@ -169,7 +173,7 @@ export default {
     },
 
 
-    extremeValues: function(){
+    /*extremeValues: function(){
       let parseTime = d3.timeParse("%Y-%m");
       let domain = this.scales.x.domain()
 
@@ -197,7 +201,7 @@ export default {
         }
         return obj
       })
-    },
+    },*/
 
 
     //for each line, compute the actual plot
@@ -293,13 +297,12 @@ export default {
         }
       }
     },
-    showText: function(active,index) {
+    showText: function(active,event,index) {
+      this.currentEvent = event
       if(active) {
-        d3.selectAll(".event-"+index+" text").transition().style("opacity",1)
         d3.select(".event-"+index+" line").transition().attr("stroke-width",8).attr("x",-4)
       } else {
-        d3.selectAll(".event-"+index+" text").transition().style("opacity",0)
-        d3.select(".event-"+index+" line").transition().attr("stroke-width",2).attr("x",0)
+        d3.selectAll(".events line").transition().attr("stroke-width",2).attr("x",0)
       }
 
     }
@@ -336,7 +339,12 @@ path {
   font-size: 6pt;
 }
 
-.events text {
+.currentEvent span {
+  font-size: .8em;
+  font-weight: bold;
+}
+
+.currentEvent text {
   font-size: 10px;
 }
 </style>

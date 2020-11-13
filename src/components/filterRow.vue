@@ -34,7 +34,7 @@
   </div>
 
   <!-- expanded view of line -->
-  <div class="expanded" :class="{hidden: collapsed}" v-for="(col, index) in filterColumns" :key="'list-'+index">
+  <div class="expanded" :class="{hidden: collapsed}" v-for="(col, index) in filterColumns" :ref="col.display" :key="'list-'+index">
     <strong>{{col.display}}</strong>
       <ul class="items">
         <li v-for="element in col.elements" :key="element.key">
@@ -119,7 +119,8 @@ export default {
   methods: {
     //select a filteritem
     select: function(col,item) {
-      //console.log(col,item)
+
+      console.log(col,item)
       //find currently selected item to compare the newly clicked item to
       let currentCol = this.selected.find(x=>x.display == col)
       if(currentCol.selected == item.key) { //if already selected
@@ -127,7 +128,6 @@ export default {
         //this.$emit('clicked', {identifier: this.line.identifier, col: col, query: {filter: item.filter, key: undefined}}) //remove filter from query
       } else { //if new item
         this.$store.dispatch('getData', {identifier: this.line.identifier, col: col, query: item})
-        //this.$emit('clicked', {identifier: this.line.identifier, col: col, query: item}) //add filter to query (via sidebar.vue)
       }
       this.$forceUpdate()
     },

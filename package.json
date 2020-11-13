@@ -19,6 +19,7 @@
     "vue-async-computed": "^3.8.2",
     "vue-axios": "^2.1.5",
     "vue-bootstrap-typeahead": "^0.2.6",
+    "vue-router": "^3.4.8",
     "vuex": "^3.5.1"
   },
   "devDependencies": {

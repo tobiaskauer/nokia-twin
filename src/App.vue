@@ -22,6 +22,7 @@ export default {
   },
 
   beforeCreate: function() {
+    this.$store.commit('setTable',this.$route.query.table) //load metrics and filters
     this.$store.dispatch('getMetricsAndFilters') //load metrics and filters
     this.$store.dispatch('getEvents') //load metrics and filters
   },
