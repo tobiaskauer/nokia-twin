@@ -1,6 +1,6 @@
 <template>
   <div class="metric">
-  <template v-if="metrics.length < 5">
+  <template v-if="metrics.length < 10">
     <ul>
       <li v-for="metric in metrics" :key="metric.key">
         <span v-on:click="select(metric)" :class="{active: metric.key == active}">{{metric.display}}</span>

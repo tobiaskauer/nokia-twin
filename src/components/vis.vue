@@ -78,6 +78,7 @@ export default {
       showEvents: true,
       currentEvent: {},
       xDomain: [],
+      lineThickness: [3,10],
       style: {
         width: 1000, //TODO: set to window width
         height: 300,
@@ -138,7 +139,7 @@ export default {
           style.height - style.margin.top - style.margin.bottom,
           style.margin.bottom
         ]);
-        const confidence = d3.scaleLinear().range([3,10])
+        const confidence = d3.scaleLinear().range(this.lineThickness)
 
         //set range vor all scales on brushable micro chart
         const microX = d3.scaleLinear().range([style.margin.left,style.width - style.margin.left - style.margin.right]);

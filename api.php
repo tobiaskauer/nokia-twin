@@ -1,7 +1,7 @@
 <?php
     header('Content-Type: application/json');
-    #$mysqli = new mysqli('localhost','dquercia_twin','&Ta15WOr1ZX@','dquercia_nokiatwin'); //user: _twin; db: _nokiatwin
-    $mysqli = new mysqli('localhost','root','pass','db'); //user: _twin; db: _nokiatwin
+    $mysqli = new mysqli('localhost','dquercia_twin','&Ta15WOr1ZX@','dquercia_nokiatwin'); //user: _twin; db: _nokiatwin
+    #$mysqli = new mysqli('localhost','root','re4RE$re4','twin'); //user: _twin; db: _nokiatwin
     $post = json_decode(file_get_contents('php://input'), true);
     $type = $mysqli->real_escape_string($post['type']);
     $table = $mysqli->real_escape_string($post['table']);
