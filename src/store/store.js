@@ -87,9 +87,6 @@ export default new Vuex.Store({
           Vue.delete(state.lines.find(x=>x.identifier == payload.identifier).query, selector)
         }
 
-        console.log(state.lines.find(x=>x.identifier == payload.identifier).query)
-
-
 
         /*commit('writeQuery',{
           index: state.lines.findIndex(x=>x.identifier == payload.identifier),
@@ -235,7 +232,6 @@ export default new Vuex.Store({
         {headers: {'Content-Type': 'application/json;charset=UTF-8'}
       })
       .then(response => {
-        console.log(response)
         Vue.set(state,'events',response.data)
       })
       .catch(error => {
