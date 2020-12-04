@@ -1,5 +1,5 @@
 <template>
-  <div class="col-8" ref="vis">
+  <div class="col-8" ref="vis" style="margin-top: 50px;">
     <div class="row errors">
       <div class="col">
         <div v-for="(line, i) in lines" :key="i">
@@ -123,7 +123,7 @@ export default {
       xDomain: [],
       datePicker: [], //empty array to pass dates between datepicker and scales
       brush: null,
-      lineThickness: [3,6],
+      lineThickness: [3,7],
       style: {
         width: 1000, //TODO: set to window width
         height: 300,
@@ -377,7 +377,6 @@ div {
   background-color: #F7F7F7;
 }
 svg.lines {
-  margin-top: 50px;
   background-color: white;
 }
 path {

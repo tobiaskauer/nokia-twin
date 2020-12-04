@@ -21,12 +21,23 @@ export default {
 
   beforeCreate: function() {
     //get granularity for data aggregation from URL (if non set or value is not an option, use monthly)
+    let granularity
     switch(this.$route.query.granularity) {
-      case "day": this.$store.state.granularity = "%Y-%m-%d"; break;
-      case "week": this.$store.state.granularity = "%Y-%V"; break;
-      case "month": this.$store.state.granularity = "%Y-%m"; break;
-      case "year": this.$store.state.granularity = "%Y"; break;
-      default: this.$store.state.granularity = "%Y-%m"; break;
+      case "day": granularity = "%Y-%m-%d"; break;
+      case "week": granularity = "%Y-%V"; break;
+      case "month": granularity = "%Y-%m"; break;
+      case "year": granularity = "%Y"; break;
+      default: granularity = "%Y-%m"; break;
+    }
+
+    this.$store.state.granularity = granularity
+
+    //set granularity in url in case its not set
+    if(!this.$route.query.granularity) {
+      let route = this.$route.query //get current url parameters as object
+      route.granularity = "month" //default
+      let routeString = Object.entries(route).map(e => encodeURIComponent(e[0]) + "=" + encodeURIComponent(e[1])).join("&") //parse a string from that object
+      history.pushState({},null,this.$route.path + 'nokiatwin/#/?' + routeString) //write that to URL (CAUTION: vueX store and URL might be inconsistent)      
     }
 
     this.$store.commit('setTable',this.$route.query.table) //load metrics and filters --> get errors and display them
