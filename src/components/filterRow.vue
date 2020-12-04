@@ -120,21 +120,50 @@ export default {
     //select a filteritem
     select: function(col,item) {
 
-      console.log(col,item)
       //find currently selected item to compare the newly clicked item to
       let currentCol = this.selected.find(x=>x.display == col)
+      let query = {}
       if(currentCol.selected == item.key) { //if already selected
+        //THIS NEEDS TO BE UPDATED AFTER GETTING THE UrL ONE CTIVATING ONE FILTER DONE
+        //commit write query
+        query[item.filter] = null
+        this.$store.commit('writeQuery', {identifier: this.line.identifier, query: query})
         this.$store.dispatch('getData', {identifier: this.line.identifier, col: col, query: {filter: item.filter, key: undefined}})
-        //this.$emit('clicked', {identifier: this.line.identifier, col: col, query: {filter: item.filter, key: undefined}}) //remove filter from query
-      } else { //if new item
-        this.$store.dispatch('getData', {identifier: this.line.identifier, col: col, query: item})
+      } else { //if new ite
+        query[item.filter] = item.key
+        this.$store.commit('writeQuery', {identifier: this.line.identifier, query: query})
+        this.$store.dispatch('getData', {identifier: this.line.identifier})
       }
+
+
+      //change url based on (de)activated filter
+      let route = this.$route.query //get current url parameters as object
+      let activeFilters = route[item.filter] ? route[item.filter].split(",") : []
+      let lineIndex = this.$store.state.lines.findIndex(line => line.identifier == this.line.identifier)
+      let routeString
+
+      if(currentCol.selected == item.key) { //if already selected
+          activeFilters[lineIndex] = null
+      } else { //if new item
+          activeFilters[lineIndex] = item.key
+      }
+
+
+      activeFilters = activeFilters.join(",")
+      route[item.filter] = activeFilters //update what you changed
+      routeString = Object.entries(route).map(e => encodeURIComponent(e[0]) + "=" + encodeURIComponent(e[1])).join("&") //parse a string from that object
+      history.pushState({},null,this.$route.path + 'nokiatwin/#/?' + routeString) //write that to URL (CAUTION: vueX store and URL might be inconsistent)
+
       this.$forceUpdate()
     },
 
     //remove line when control-close is clicked
     removeLine: function(identifier) {
       this.$store.commit('removeLine',identifier)
+      let route = this.$route.query //get current url parameters as object
+      route.lines = this.$store.state.lines.length
+      let routeString = Object.entries(route).map(e => encodeURIComponent(e[0]) + "=" + encodeURIComponent(e[1])).join("&") //parse a string from that object
+      history.pushState({},null,this.$route.path + 'nokiatwin/#/?' + routeString) //write that to URL (CAUTION: vueX store and URL might be inconsistent)
     },
 
     //toggle collapse state when control-collapse is clicked

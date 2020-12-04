@@ -1,7 +1,7 @@
 <template>
   <div class="col-4 sidebar hidden-md-down">
     <h1>Twin DB</h1>
-    <metrics ref="metrics" />
+    <metrics v-if="selectedMetric" ref="metrics" :selected="selectedMetric"/>
     <ul>
       <!-- display filterRow for every lines that is displayed -->
       <filterRow
@@ -22,34 +22,48 @@ import filterRow from './filterRow.vue'
 import metrics from './metrics.vue'
 
 export default {
-  props: {
-    company: String
+  data() {
+    return {
+      selectedMetric: undefined,
+      lines: undefined
+    }
   },
+
   computed: {
-    //get lines (incl. color, identifier, filters, and selections) from store
+    /*//get lines (incl. color, identifier, filters, and selections) from store
     lines: {
-      cache: false,
       get: function(){
         return this.$store.state.lines
       }
+    },*/
+
+    metrics: function() {
+      return this.$store.state.metrics
     },
-    hasMetrics: {
-      cache: false,
-      get: function() {
-        return this.$store.state.metrics.length > 0 ? true : false
-      }
+
+    filterColumns: function() {
+      return  this.$store.state.filterColumns
     }
+
+
   },
 
   //if there are no lines on store when page is mounted, add one to always have one line available
   watch: {
-    hasMetrics: function(newBool) {
-      if(newBool) {
-        this.initializeFromURL(this.$route.query)
+    metrics: function(newMetrics) {
+      if(newMetrics.length > 0) {
+        this.setMetric()
       }
     },
-    //set filters from URL
-    /*lines: function(newLines){
+
+    filterColumns: function(newFilterColumns){
+      if(newFilterColumns.length > 0) {
+        this.setLines();
+      }
+    }
+
+    /*//set filters from URL
+    lines: function(newLines){
       if(newLines) {
         //console.log(this.$refs['filterRow-'+newLines[0].identifier])
         this.setFiltersFromURL(this.$route.query)
@@ -62,7 +76,44 @@ export default {
   },
 
   methods: {
-    initializeFromURL: function(param) {
+    setMetric: function() {
+
+      //check if URL has a metric (and whether that metric is actually in the current table)
+      if(this.$route.query.metric && this.metrics.map(e=>e.key).indexOf(this.$route.query.metric) !== -1) {
+        //if so, pass that metric to the component as property
+        this.selectedMetric = this.$route.query.metric
+
+      } else {
+        //if not passed or not found, just take the first element
+        this.selectedMetric = this.metrics[0].key
+      }
+      this.$store.commit('setActiveMetric', this.metrics.find(metric => metric.key == this.selectedMetric)) //make active (so that we now the scale and can display as label on yaxis)
+    },
+
+    setLines: function() {
+
+      //for each line we need, set some queries
+      let linesCount = (this.$route.query.lines) ? this.$route.query.lines : 1
+      for(let i=0;i<linesCount;i++) {
+
+
+        //search for filters in the url that match the ones we have in the database
+        let query = {metric: this.selectedMetric}
+        this.$store.state.filterColumns.forEach(filterColumn => {
+          filterColumn.db_columns.forEach(column => {
+            if(this.$route.query[column]) {
+              if(this.$route.query[column].split(",")[i]) { //do not consider empty values
+                query[column] = this.$route.query[column].split(",")[i]
+              }
+            }
+          })
+        })
+        this.$store.dispatch('addLine',query)
+      }
+      this.lines = this.$store.getters.getLines;
+    },
+
+    /*initializeFromURL: function(param) {
       if(param.lines) {
         while (param.lines > 0){
           this.$store.dispatch('addLine')
@@ -84,10 +135,10 @@ export default {
       }
       //set the metric
       this.$refs.metrics.select(metric)
-    },
+    },*/
 
     //please dont hate me, but this gets triggered three times as oten as necessary....
-    setFiltersFromURL: function(param) {
+    /*setFiltersFromURL: function(param) {
 
       //find filters
       let filters = []
@@ -117,21 +168,22 @@ export default {
 
 
 
-    },
+    },*/
     //add new lines
     addLine: function() {
-      let previousQuery = this.lines[this.lines.length-1] == undefined ? {} : this.lines[this.lines.length-1].query
-      this.$store.dispatch('addLine',previousQuery)
+      //let previousQuery = this.lines[this.lines.length-1] == undefined ? {} : this.lines[this.lines.length-1].query
+      //duplicating the previous query to add it to the next technically works, but the two instances seem dependent on another (which is not expected behavior)
+      this.$store.dispatch('addLine')
+
+      let route = this.$route.query //get current url parameters as object
+      route.lines = this.lines.length
+      let routeString = Object.entries(route).map(e => encodeURIComponent(e[0]) + "=" + encodeURIComponent(e[1])).join("&") //parse a string from that object
+      history.pushState({},null,this.$route.path + 'nokiatwin/#/?' + routeString) //write that to URL (CAUTION: vueX store and URL might be inconsistent)
     },
   },
 
   components: {
     filterRow, metrics
-  },
-
-  data() {
-    return {
-    }
   },
 
   created() {

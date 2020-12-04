@@ -14,6 +14,7 @@ export default new Vuex.Store({
     table: "",
     lines: [], //empty array, filled by addLine() and removeLine(), triggered via sidebar.vue
     metrics:[], //metrics to display (metric_ columns in db)
+    granularity: "%Y-%m",
     activeMetric: "",
     filterColumns: [], //filters to apply (filter_ columns in db)
     colors: [
@@ -53,7 +54,6 @@ export default new Vuex.Store({
     getActiveMetric: (state) => state.activeMetric
   },
 
-
   mutations: {
     setTable(state,payload) {
       if(payload) {
@@ -75,7 +75,46 @@ export default new Vuex.Store({
 
     //write query to lines
     writeQuery(state, payload) {
-      Vue.set(state.lines[payload.index].query, payload.filter, payload.key)
+      if(payload.identifier) { //if payload just applies to a single line
+
+        let query = Object.entries(payload.query)
+        let selector = query[0][0]
+        let key = query[0][1]
+
+        if(key != null)  {
+          Vue.set(state.lines.find(x=>x.identifier == payload.identifier).query, selector, key)
+        } else {
+          Vue.delete(state.lines.find(x=>x.identifier == payload.identifier).query, selector)
+        }
+
+        console.log(state.lines.find(x=>x.identifier == payload.identifier).query)
+
+
+
+        /*commit('writeQuery',{
+          index: state.lines.findIndex(x=>x.identifier == payload.identifier),
+          filter: payload.query.filter,
+          key: payload.query.key
+        })
+        dispatch('callAPI',payload.identifier)*/
+      } else { //if it affects all lines (e.g. when a metric is changed)
+
+        let query = Object.entries(payload.query)
+        let selector = query[0][0]
+        let key = query[0][1]
+
+        state.lines.forEach((line, i) => {
+
+          /*commit('writeQuery',{
+            index: i,
+            filter: 'metric',
+            key: payload.query.key
+          })
+          dispatch('callAPI',line.identifier)*/
+          Vue.set(state.lines[i].query, selector, key)
+          //dispatch('debugAPI')*/
+        })
+      }
     },
 
     //write A PI return to lines (gotten from callAPI())
@@ -94,16 +133,11 @@ export default new Vuex.Store({
 
   actions: {
     //initialize a new line (incl. filters in sidebar and actual line in graph), triggered from sidebar
-    addLine(
-      {state, dispatch},
-      //query //query is provided as payload in sidebar.vue
-    ) {
-      let line = {}
-      //TODO: hand over previous query to newly created line
-      line.query = {}
-
-      //unique identifier to update query or delete line
-      line.identifier = uniqid.time()
+    addLine({state, dispatch},payload) {
+      //console.log(payload)
+      let line = {} //create empty object
+      line.query = payload ? payload : {metric: state.lines[0].query.metric} //if payload is passed, use it, otherwise use the metric of previous lines
+      line.identifier = uniqid.time()       //unique identifier to update query or delete line
 
       //assign an unused color and mark it used
       let colorIndex = state.colors.findIndex(element  => !element.used)
@@ -111,34 +145,18 @@ export default new Vuex.Store({
       Vue.set(state.colors[colorIndex],'used',line.identifier)
       Vue.set(state.lines, state.lines.length, line) //push new line at end of lines array
 
-      dispatch('getData', {
-        identifier: false,
-        filter: "metric",
-        query: {key: state.metrics[0].key} //TODO replace with first metric (as soon as its initialized)
-      })
+      dispatch('getData', {identifier: line.identifier}) //get data and let reactivtity take over
     },
 
 
     //update queries and get data for them
-    getData({dispatch, commit, state}, payload) {
-      //console.log("getData() called", payload)
+    getData({dispatch, state}, payload) {
 
       if(payload.identifier) { //if payload just applies to a single line
-        commit('writeQuery',{
-          index: state.lines.findIndex(x=>x.identifier == payload.identifier),
-          filter: payload.query.filter,
-          key: payload.query.key
-        })
         dispatch('callAPI',payload.identifier)
       } else { //if it affects all lines (e.g. when a metric is changed)
-        state.lines.forEach((line, i) => {
-          commit('writeQuery',{
-            index: i,
-            filter: 'metric',
-            key: payload.query.key
-          })
+        state.lines.forEach(line => {
           dispatch('callAPI',line.identifier)
-          //dispatch('debugAPI')
         })
       }
     },
@@ -147,14 +165,15 @@ export default new Vuex.Store({
     callAPI( {commit,state}, identifier) {
       //get query for line based on its identifier
       let query = state.lines.find(x=>x.identifier == identifier).query
+
       query.type = 'result' //set query end (quasi endpoint) for api.php
       query.table = state.table
+      query.granularity = state.granularity
       //axios.post( "https://social-dynamics.net/nokiatwin/api.php",query,
       axios.post( server,query, //for development, this is overwritten in vue.config.js
         {headers: {'Content-Type': 'application/json;charset=UTF-8'}
       })
       .then(response => {
-
         commit('writeValues',{
           index: state.lines.findIndex(x=>x.identifier == identifier),
           values: response.data
@@ -192,6 +211,7 @@ export default new Vuex.Store({
         {headers: {'Content-Type': 'application/json;charset=UTF-8'}
       })
       .then(response => {
+
         //filter response by metric_ and write it to store
         let metrics = response.data.filter(x=>x.key.startsWith('metric_')).map(item => {
           //if no display name given, use db column
@@ -215,6 +235,7 @@ export default new Vuex.Store({
         {headers: {'Content-Type': 'application/json;charset=UTF-8'}
       })
       .then(response => {
+        console.log(response)
         Vue.set(state,'events',response.data)
       })
       .catch(error => {

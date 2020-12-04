@@ -2,8 +2,6 @@
   <div class="container-fluid h-100">
     <div class="row justify-content-center h-100">
       <sidebar />
-
-      <!--<results />-->
       <vis />
     </div>
   </div>
@@ -22,7 +20,16 @@ export default {
   },
 
   beforeCreate: function() {
-    this.$store.commit('setTable',this.$route.query.table) //load metrics and filters
+    //get granularity for data aggregation from URL (if non set or value is not an option, use monthly)
+    switch(this.$route.query.granularity) {
+      case "day": this.$store.state.granularity = "%Y-%m-%d"; break;
+      case "week": this.$store.state.granularity = "%Y-%V"; break;
+      case "month": this.$store.state.granularity = "%Y-%m"; break;
+      case "year": this.$store.state.granularity = "%Y"; break;
+      default: this.$store.state.granularity = "%Y-%m"; break;
+    }
+
+    this.$store.commit('setTable',this.$route.query.table) //load metrics and filters --> get errors and display them
     this.$store.dispatch('getMetricsAndFilters') //load metrics and filters
     this.$store.dispatch('getEvents') //load metrics and filters
   },

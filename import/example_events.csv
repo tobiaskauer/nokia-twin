@@ -1,7 +1,7 @@
-date,text
+date,event
 January 2017,Nokia Software acquires Comptel
 December 2016,Nokia ION acquires Deepfield
-June 2016,Nokia acquires Withings
+June 2016,Nokia <strong>acquire</strong> Withings
 April 2016,Nokia acquires Nakina Systems
 April 2015,Nokia Corporation acquires Alcatel - Lucent
 August 2014,Nokia Service acquires SAC Wireless

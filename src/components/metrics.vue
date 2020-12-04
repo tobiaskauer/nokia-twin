@@ -20,37 +20,25 @@
 //import * as d3 from 'd3'
 
 export default {
-  props: {
-  },
-
   data() {
     return {
-      selected: undefined
+      active: null
     }
   },
+
+  props: {
+    selected: String
+  },
+
 
   computed: {
-    metrics() {
-      return this.$store.state.metrics;
-    },
-    active: {
-      get: function() {
-        return this.selected
-      },
-      set: function() {
-        return this.selected
-      }
-
-    }
-  },
-
-  watch: {
     metrics: function() {
-      this.active = this.metrics[0].key
+      return this.$store.state.metrics;
     }
   },
 
   created () {
+    this.active = this.selected
   },
 
   mounted () {
@@ -59,20 +47,26 @@ export default {
   methods: {
     //emit selected element to sidebar, which will update the query
     select: function(item) {
-      if(item.key != this.selected){
-        this.$store.commit('setActiveMetric', item)
-        this.selected = item.key
-        this.$store.dispatch('getData', {identifier: false, filter: 'metric', query: item})
+      if(item.key != this.active){
+        this.$store.commit('setActiveMetric', item) //set query
+        this.active = item.key //make element active
+
+        let route = this.$route.query //get current url parameters as object
+        route.metric = item.key //update what you changed
+        let routeString = Object.entries(route).map(e => encodeURIComponent(e[0]) + "=" + encodeURIComponent(e[1])).join("&") //parse a string from that object
+        history.pushState({},null,this.$route.path + 'nokiatwin/#/?' + routeString) //write that to URL (CAUTION: vueX store and URL might be inconsistent)
+        this.$store.commit("writeQuery", {identifier: false, query: {metric: item.key}})
+        this.$store.dispatch('getData', {identifier: false})
+
       }
     },
 
+    //exta loop in case were not using a lust but the select field (which passes too much shit)
     filterBullshitFromSelect: function(event) {
       let key = event.target.value
       let item = this.metrics.find(metric => metric.key == key)
       this.select(item)
     }
-
-
   }
 }
 </script>

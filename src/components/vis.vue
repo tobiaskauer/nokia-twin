@@ -1,84 +1,129 @@
 <template>
   <div class="col-8" ref="vis">
-    <svg :width="style.width" :height="style.height+style.margin.top + style.margin.bottom" v-if="dataState" class="lines">
-      <defs>
-        <clipPath id="mask">
-          <rect :x="style.margin.left" y="0" :width="style.width" :height="style.height-style.margin.top-style.margin.bottom" />
-        </clipPath>
-      </defs>
-      <g class="axes" :transform="`translate(0,${style.margin.top})`">
-        <text font-size="6pt" y="-10" :x="style.margin.left+10" text-anchor="middle">{{activeMetric.display}}</text>
-        <g v-axis:x="scales" class="xAxes" :transform="`translate(0,${style.height-style.margin.top-style.margin.bottom})`"></g>
-        <g v-axis:y="scales" class="yAxes" :transform="`translate(${style.margin.left},0)`"></g>
-      </g>
-      <g class="events" v-if="showEvents" clip-path="url(#mask)" :transform="`translate(0,${style.margin.top})`"  >
-        <g v-for="(event, index) in events" :class="'event-'+index" :key="`event-${index}`" :transform="`translate(${event.x},0)`">
-          <line x0="0" :y0="style.margin.top" x1="0" :y1="style.height-style.margin.bottom-style.margin.top" stroke="lightgrey" stroke-width="2" fill="lightgrey" @mouseover="showText(true,event,index)" @mouseout="showText(false,{date: '', text: ''},index)" />
-          <!--<text x="10" opacity="0" :y="style.margin.top+20" style="font-weight: bold">{{event.date}}</text>
-          <text x="10" opacity="0" :y="style.margin.top+30">{{event.text}}</text>-->
-        </g>
-      </g>
-      <!--<g class="extremeValues" v-if="dataState">
-        <g v-for="(extremeLine, index) in extremeValues" v-bind:key="'extreme-'+index">
-          <circle v-for="(circle, index) in extremeLine.circles" :key="'circle-'+index" :cx="circle.x" :cy="circle.y" r="10" fill="none" :stroke="extremeLine.color" stroke-width="1" stroke-dasharray="4 1"/>
-        </g>
-      </g>-->
-
-      <g clip-path="url(#mask)" :transform="`translate(0,${style.margin.top})`">
-        <g class="lines" v-for="line in lines" v-bind:key="line.identifier" >
-          <path v-if="line.path" :d="line.path" :fill="line.color" stroke="none"/>
-        </g>
-      </g>
-      <g class="legend" :transform="`translate(${style.width-style.margin.right-50},${style.height-style.margin.bottom-50})`">
-        <g>
-          <text text-anchor="end">less confident</text>
-          <line x0="0" x1="20" y0="0" y1="0" transform="translate(2,-3)" stroke="black" stroke-width="2"/>
-        </g>
-        <g transform="translate(0,10)">
-          <text text-anchor="end">more confident</text>
-          <line x0="0" x1="20" y0="0" y1="0" transform="translate(2,-3)" stroke="black" stroke-width="5"/>
-        </g>
-      </g>
-    </svg>
-
-    <!--brush for x-axis transformation -->
-    <svg :width="style.width" height="50" style="background-color: lightgrey">
-      <g v-if="dataState">
-        <g class="lines" v-for="line in lines" v-bind:key="line.identifier" >
-          <path v-if="line.micro" :d="line.micro" :stroke="line.color" stroke-opacity="0.5" fill="none"/>
-        </g>
-      </g>
-      <g class="brush" />
-    </svg>
-
-
-    <form>
-      <div class="form-check">
-        <input type="checkbox" class="form-check-input" id="exampleCheck1" v-model="showEvents" @click="showEvents = !showEvents">
-        <label class="form-check-label" for="exampleCheck1">Events:</label>
+    <div class="row errors">
+      <div class="col">
+        <div v-for="(line, i) in lines" :key="i">
+          <div v-if="dataState && line.values.length < 1" class="alert alert-danger" role="alert" style="margin-top:10px;">
+            Line {{(i+1)}} has no data. Maybe too much filters are active.
+          </div>
+        </div>
+        <div v-if="!$route.query.table" class="alert alert-danger" role="alert" style="margin-top:10px;">
+          No table defined
+        </div>
       </div>
-    </form>
-    <div class="currentEvent">
-      <span>{{currentEvent.date}}</span>
-      <p>{{currentEvent.text}}</p>
     </div>
 
+    <div class="row">
+      <div class="col">
+        <svg id="chart" :width="style.width" :height="style.height+style.margin.top + style.margin.bottom" v-if="dataState" class="lines">
+
+          <!--SVG mask to hide overflow -->
+          <defs>
+            <clipPath id="mask">
+              <rect :x="style.margin.left" y="0" :width="style.width" :height="style.height-style.margin.top-style.margin.bottom" />
+            </clipPath>
+          </defs>
+
+          <!-- axes -->
+          <g class="axes" :transform="`translate(0,${style.margin.top})`">
+            <text font-size="6pt" y="-10" :x="style.margin.left+10" text-anchor="middle">{{activeMetric.display}}</text>
+            <g v-axis:x="scales" class="xAxes" :transform="`translate(0,${style.height-style.margin.top-style.margin.bottom})`"></g>
+            <g v-axis:y="scales" class="yAxes" :transform="`translate(${style.margin.left},0)`"></g>
+          </g>
+
+          <!--event overlay -->
+          <g class="events" v-if="showEvents" clip-path="url(#mask)" :transform="`translate(0,${style.margin.top})`"  >
+            <g v-for="(event, index) in events" :class="'event-'+index" :key="`event-${index}`" :transform="`translate(${event.x},0)`">
+              <line x0="0" :y0="style.margin.top" x1="0" :y1="style.height-style.margin.bottom-style.margin.top" stroke="lightgrey" stroke-width="2" fill="lightgrey" @mouseover="showText(true,event,index)" @mouseout="showText(false,{date: '', text: ''},index)" />
+            </g>
+          </g>
+
+          <!--lines -->
+          <g clip-path="url(#mask)" :transform="`translate(0,${style.margin.top})`">
+            <g class="lines" v-for="line in lines" v-bind:key="line.identifier" >
+              <path v-if="line.path" :d="line.path" :fill="line.color" stroke="none"/>
+            </g>
+          </g>
+
+          <!-- legend in bottom right corner -->
+          <g class="legend" :transform="`translate(${style.width-style.margin.right-50},${style.height-style.margin.bottom-50})`">
+            <g>
+              <text text-anchor="end">less confident</text>
+              <line x0="0" x1="20" y0="0" y1="0" transform="translate(2,-3)" stroke="black" stroke-width="2"/>
+            </g>
+            <g transform="translate(0,10)">
+              <text text-anchor="end">more confident</text>
+              <line x0="0" x1="20" y0="0" y1="0" transform="translate(2,-3)" stroke="black" stroke-width="5"/>
+            </g>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <!--brush for x-axis transformation -->
+    <div class="row brush">
+      <div class="col">
+        <svg :width="style.width" height="50" style="background-color: lightgrey">
+          <g v-if="dataState">
+            <g class="lines" v-for="line in lines" v-bind:key="line.identifier" >
+              <path v-if="line.micro" :d="line.micro" :stroke="line.color" stroke-opacity="0.5" fill="none"/>
+            </g>
+          </g>
+          <g class="brush" />
+        </svg>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top: 20px;">
+      <div class="events col-8">
+        <form>
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="exampleCheck1" v-model="showEvents" @click="showEvents = !showEvents">
+            <label class="form-check-label" for="exampleCheck1">Events:</label>
+          </div>
+        </form>
+        <div class="currentEvent">
+          <span>{{currentEvent.date}}</span>
+          <p v-html="currentEvent.event"></p>
+        </div>
+      </div>
+      <div class="col-4 settings" style="border-left: 1px dotted grey; padding-left: 10px;">
+        <span class="pickDescription">Start: </span><VueDatePicker @onChange="pickDate(0)" v-model="datePicker[0]" />
+        <span class="pickDescription">End: </span><VueDatePicker @onChange="pickDate(1)" v-model="datePicker[1]" />
+        <!--Granularity:
+        <ui>
+          <li @onClick="changeGranularity('day')">Day</li>
+          <li @onClick="changeGranularity('week')">Week</li>
+          <li @onClick="changeGranularity('month')">Month</li>
+          <li @onClick="changeGranularity('year')">Year</li>
+        </ui>-->
+        <button type="button" class="btn btn-outline-primary btn-sm" @click="savePNG">Download PNG</button>
+
+      </div>
+
+    </div>
   </div>
 </template>
 
 <script>
 import * as d3 from 'd3'
-
-//import { regressionLinear } from 'd3-regression';
+import { VueDatePicker } from '@mathieustan/vue-datepicker';
+import '@mathieustan/vue-datepicker/dist/vue-datepicker.min.css';
+import * as png from 'save-svg-as-png';
 
 
 export default {
+  components : {
+    VueDatePicker,
+  },
   data() {
     return {
       showEvents: true,
       currentEvent: {},
       xDomain: [],
-      lineThickness: [3,10],
+      datePicker: [], //empty array to pass dates between datepicker and scales
+      brush: null,
+      lineThickness: [3,6],
       style: {
         width: 1000, //TODO: set to window width
         height: 300,
@@ -105,6 +150,7 @@ export default {
       }
     },
 
+
     activeMetric: function() {return this.$store.getters.getActiveMetric},
 
     //get data from store (this is the computed property "data", not vue's data property)
@@ -130,7 +176,7 @@ export default {
     scales: {
       cache: true,
       get() {
-        let parseTime = d3.timeParse("%Y-%m");
+        let parseTime = d3.timeParse(this.$store.state.granularity);
         let style = this.style
 
         //set range vor all scales on main chart
@@ -161,11 +207,16 @@ export default {
           //if this is the first time, get a the xDomain from data, otherwise it has been set by the brush
           let domain = (this.xDomain.length > 0) ? this.xDomain : d3.extent(arr, d => parseTime(d.d))
 
+
+          let yDomain = d3.extent(arr, d => +d.r)
+          if(this.activeMetric.metric_low_end) yDomain[0] = this.activeMetric.metric_low_end
+          if(this.activeMetric.metric_high_end) yDomain[1] = this.activeMetric.metric_high_end
+
           //set domain of all sccales
           x.domain(domain);
           microX.domain(d3.extent(arr, d => parseTime(d.d))); //definitely set this to the maximum data domain so we can push it to the limit
-          y.domain(d3.extent(arr, d => +d.r)).nice();
-          microY.domain(d3.extent(arr, d => +d.r));
+          y.domain(yDomain).nice();
+          microY.domain(yDomain);
           confidence.domain(d3.extent(arr, d => +d.c))
         }
 
@@ -173,43 +224,11 @@ export default {
       }
     },
 
-
-    /*extremeValues: function(){
-      let parseTime = d3.timeParse("%Y-%m");
-      let domain = this.scales.x.domain()
-
-      return this.data.map(line => { //create array for all lines. look in all lines...
-
-        //look for values that are within the visible boundaries of the x-axis
-        let visible = line.values.filter(value => {
-          let date = parseTime(value.d)
-          return (date > domain[0] && date < domain[1]) ? true : false;
-        })
-
-        //form those, get two peaks and two valley values
-        let sorted = visible.sort((a,b) => a.r - b.r)
-        let extreme = sorted.slice(0,2).concat(sorted.slice(sorted.length-2,sorted.length))
-
-        let circles = extreme.map(value => {
-          return {
-            x: this.scales.x(parseTime(value.d)),
-            y: this.scales.y(value.r)
-          }
-        })
-        let obj = {
-          color: line.color,
-          circles: circles
-        }
-        return obj
-      })
-    },*/
-
-
     //for each line, compute the actual plot
     lines: {
       cache: false,
       get: function() {
-        let parseTime = d3.timeParse("%Y-%m");
+        let parseTime = d3.timeParse(this.$store.state.granularity);
 
         //generator for area for main visualization
          const path = d3.area()
@@ -218,10 +237,6 @@ export default {
          //compute two y-values based on confidence() --> number of reviews that produce the average value
          .y0(d => this.scales.y(d.r)-this.scales.confidence(d.c))
          .y1(d => this.scales.y(d.r)+this.scales.confidence(d.c));
-
-         /*const path = d3.line()
-         .x(d => this.scales.x(parseTime(d.d)))
-         .y(d => this.scales.y(d.r));*/
 
          //generator line for brushable micro visualzation
          const micro = d3.line()
@@ -255,7 +270,11 @@ export default {
   watch: {
     dataState: function(newState) {
       //TODO: Brush is not initialized when the size is initially loaded. No idea why.
-      if(newState) this.brush() //initialize brush as soon as you have data
+      if(newState) this.initBrush() //initialize brush as soon as you have data
+    },
+
+    scales: function() {
+      this.datePicker = this.scales.x.domain()
     }
   },
 
@@ -269,17 +288,58 @@ export default {
   },
 
   methods: {
+    pickDate: function(i) {
+      let parseTime = d3.timeParse("%Y-%m-%d"); //using different timeformats, redo when this is ever refactored
+      this.datePicker[i] = parseTime(this.datePicker[i]) //make sure dates from the picker are Dates and not strings (why the hell does this give ma strings anyway)
+
+      this.$set(this.xDomain,i,this.datePicker[i]) //set x axis for big vis
+
+      d3.select("g.brush")
+        .call(this.brush)
+        .call(this.brush.move, this.datePicker.map(date => this.scales.microX(date)))
+    },
+
+    writeDatestoURL: function(dates) {
+      let formatTime = d3.timeFormat("%Y-%m-%d");
+      let route = this.$route.query //get current url parameters as object
+
+      route.period = dates.map(date => formatTime(date)).join(",")
+
+      let routeString = Object.entries(route).map(e => encodeURIComponent(e[0]) + "=" + encodeURIComponent(e[1])).join("&") //parse a string from that object
+      history.pushState({},null,this.$route.path + 'nokiatwin/#/?' + routeString) //write that to URL (CAUTION: vueX store and URL might be inconsistent)
+
+    },
+
+    savePNG: function() {
+      console.log(document.getElementById('chart'))
+      png.saveSvgAsPng(document.getElementById('chart'), 'chart.png')
+    },
+
+    /*changeGranularity: function(granularity) {
+
+    }*/
+
+
     //initialize brush (dragable selector for x-axis) and add it to DOM
-    brush: function() {
-      const brush = d3.brushX()
+    initBrush: function() {
+      this.brush = d3.brushX()
         .extent(this.scales.microX.range().map((e,i) => [e,i*50])) //brush width is range of scale, height is fixed at 50
         .on("end", this.updateX)
         //.on("brush end", this.updateX) //update continously while moving (this may result in crap performance)
 
+        //if url has a timeperiod, use it
+        let parseTime = d3.timeParse("%Y-%m-%d")
+        let brushPreset = this.$route.query.period
+          ? this.$route.query.period.split(",") //split string into two seperate dates
+              .map(date => this.scales.microX( //scale them according to the maximum scale defined in the brush
+                parseTime(date) //parse string to date
+              ))
+          : this.scales.x.range() //if period is not set, just use the max range
       d3.select("g.brush")
-        .call(brush)
-        .call(brush.move, this.scales.x.range())
+        .call(this.brush)
+        .call(this.brush.move, brushPreset)
     },
+
     //scale x-axis of visualization to fit boundaries of brush
     updateX: function() {
       let domain = d3.event.selection.map(value => this.scales.microX.invert(value)) //get new domain by getting edges of overlay and translate them to dates
@@ -288,13 +348,14 @@ export default {
       })
 
       d3.select(".xAxes").transition().call(d3.axisBottom(this.scales.x)) //update Axis
+      this.writeDatestoURL(this.scales.x.domain())
     },
 
     getWidth: function() {
       if(this.$refs.vis) {
         this.style.width = this.$refs.vis.clientWidth
         if(this.dataState) {
-          this.brush()
+          this.initBrush()
         }
       }
     },
@@ -308,19 +369,6 @@ export default {
 
     }
   }
-
-
-
-  /*props: {
-  },
-
-
-
-  created () {
-  },
-
-  methods: {
-  },*/
 }
 </script>
 
@@ -340,9 +388,17 @@ path {
   font-size: 6pt;
 }
 
+
+
 .currentEvent span {
   font-size: .8em;
   font-weight: bold;
+}
+
+.pickDescription {
+  float: left;
+  padding: 3px 0;
+  width: 50px;
 }
 
 .currentEvent text {

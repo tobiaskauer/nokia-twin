@@ -1,12 +1,12 @@
-key,display
-filter_company,Company
-filter_employee_title,Role
-filter_city,Location
-filter_country,Location
-metric_rating_overall,Overall Rating
-metric_rating_balance,Work-Life-Balance
-metric_rating_culture,Culture & Values
-metric_rating_career,Career Opportunities
-metric_rating_comp,Compensation & Benefits
-metric_rating_mgmt,Senior Leadership
-metric_review_title_fun,Title Fun
+key,display,metric_low_end,metric_high_end
+filter_company,Company,NULL,NULL
+filter_employee_title,Role,NULL,NULL
+filter_city,Location,NULL,NULL
+filter_country,Location,NULL,NULL
+metric_rating_overall,Overall Rating,,
+metric_rating_balance,Work-Life-Balance,1,2
+metric_rating_culture,,,
+metric_rating_career,Career Opportunities,,
+metric_rating_comp,Compensation & Benefits,,
+metric_rating_mgmt,Senior Leadership,,
+metric_review_title_fun,Title Fun,,
