@@ -84,7 +84,7 @@
         </form>
         <div class="currentEvent">
           <span>{{currentEvent.date}}</span>
-          <p v-html="currentEvent.event"></p>
+          <p v-html="currentEvent.text"></p>
         </div>
       </div>
       <div class="col-4 settings" style="border-left: 1px dotted grey; padding-left: 10px;">
