@@ -41,7 +41,7 @@
           <!--lines -->
           <g clip-path="url(#mask)" :transform="`translate(0,${style.margin.top})`">
             <g class="lines" v-for="line in lines" v-bind:key="line.identifier" >
-              <path v-if="line.path" :d="line.path" :fill="line.color" stroke="none"/>
+              <path v-if="line.path" :d="line.path" :fill="line.color" opacity=".8" stroke="none"/>
             </g>
           </g>
 
