@@ -149,7 +149,6 @@ export default new Vuex.Store({
 
     //update queries and get data for them
     getData({dispatch, state}, payload) {
-
       if(payload.identifier) { //if payload just applies to a single line
         dispatch('callAPI',payload.identifier)
       } else { //if it affects all lines (e.g. when a metric is changed)
@@ -172,6 +171,8 @@ export default new Vuex.Store({
         {headers: {'Content-Type': 'application/json;charset=UTF-8'}
       })
       .then(response => {
+        console.log(query)
+        console.log(response)
         commit('writeValues',{
           index: state.lines.findIndex(x=>x.identifier == identifier),
           values: response.data
