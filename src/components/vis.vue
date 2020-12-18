@@ -55,6 +55,12 @@
               <text text-anchor="end">more confident</text>
               <line x0="0" x1="20" y0="0" y1="0" transform="translate(2,-3)" stroke="black" stroke-width="5"/>
             </g>
+            <g transform="translate(0,25)">
+              <text v-for="(line, i) in lines" :y="i*10" :fill="line.color" :key="i" text-anchor="end">{{line.legend}}
+              <!--  <tspan v-for="(text, j) in lines.query.filter(line=>{console.log("foo")})">foo, </tspan>
+                <tspan>bar </tspan>-->
+              </text>
+            </g>
           </g>
         </svg>
       </div>
@@ -155,10 +161,17 @@ export default {
 
     //get data from store (this is the computed property "data", not vue's data property)
     data: {
-      cache: false,
+      cache: true,
       get: function() {
         return this.$store.getters.getLines.map(line => {
           line.touched = 0 //add counter for reactivity when using brush function
+
+          //create string of active filters for legend display
+          let legend = Object.keys(line.query)
+            .filter(key => key.startsWith("filter"))
+            .map(key => line.query[key])
+            .join(", ")
+          line.legend = (legend != "") ? legend : "No active filters"
           return line
         })
       }
@@ -243,6 +256,7 @@ export default {
          .curve(d3.curveBasis)
          .x(d => this.scales.microX(parseTime(d.d)))
          .y(d => this.scales.microY(d.r));
+
 
          return this.data.map(line => {
            if(line.values) {
