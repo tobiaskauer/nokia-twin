@@ -34,7 +34,7 @@
           <!--event overlay -->
           <g class="events" v-if="showEvents" clip-path="url(#mask)" :transform="`translate(0,${style.margin.top})`"  >
             <g v-for="(event, index) in events" :class="'event-'+index" :key="`event-${index}`" :transform="`translate(${event.x},0)`">
-              <line x0="0" :y0="style.margin.top" x1="0" :y1="style.height-style.margin.bottom-style.margin.top" stroke="lightgrey" stroke-width="2" fill="lightgrey" @mouseover="showText(true,event,index)" @mouseout="showText(false,{date: '', text: ''},index)" />
+              <line v-if="event.filters.filter(e => activeFilters.includes(e)).length > 0" x0="0" :y0="style.margin.top" x1="0" :y1="style.height-style.margin.bottom-style.margin.top" stroke="lightgrey" stroke-width="2" fill="lightgrey" @mouseover="showText(true,event,index)" @mouseout="showText(false,{date: '', text: ''},index)" />
             </g>
           </g>
 
@@ -75,7 +75,10 @@
               <path v-if="line.micro" :d="line.micro" :stroke="line.color" stroke-opacity="0.5" fill="none"/>
             </g>
           </g>
-          <g class="brush" />
+          <g class="brush">
+            <g class="leftHandle"><g transform="translate(-5,0)"><path fill="grey"  transform="scale(0.015)" d="M990,500c0-13.6-5.9-25.7-15.2-34.1l0,0L821.7,328l0,0c-8.1-7.3-18.9-11.8-30.7-11.8c-25.4,0-45.9,20.6-45.9,45.9c0,13.6,5.9,25.7,15.2,34.1l0,0l64.1,57.7H175.7l64.1-57.7l0,0c9.3-8.4,15.2-20.6,15.2-34.1c0-25.4-20.6-45.9-45.9-45.9c-11.8,0-22.6,4.5-30.7,11.8l0,0L25.2,465.9l0,0C15.9,474.3,10,486.4,10,500s5.9,25.7,15.2,34.1l0,0L178.3,672l0,0c8.1,7.3,18.9,11.8,30.7,11.8c25.4,0,45.9-20.6,45.9-45.9c0-13.6-5.9-25.7-15.2-34.1l0,0l-64.1-57.7h648.7l-64.1,57.7l0,0c-9.3,8.4-15.2,20.6-15.2,34.1c0,25.4,20.6,45.9,45.9,45.9c11.8,0,22.6-4.5,30.7-11.8l0,0l153.1-137.8l0,0C984.1,525.8,990,513.6,990,500z" /></g></g>
+            <g class="rightHandle"><g transform="translate(-5,0)"><path fill="grey"  transform="scale(0.015)" d="M990,500c0-13.6-5.9-25.7-15.2-34.1l0,0L821.7,328l0,0c-8.1-7.3-18.9-11.8-30.7-11.8c-25.4,0-45.9,20.6-45.9,45.9c0,13.6,5.9,25.7,15.2,34.1l0,0l64.1,57.7H175.7l64.1-57.7l0,0c9.3-8.4,15.2-20.6,15.2-34.1c0-25.4-20.6-45.9-45.9-45.9c-11.8,0-22.6,4.5-30.7,11.8l0,0L25.2,465.9l0,0C15.9,474.3,10,486.4,10,500s5.9,25.7,15.2,34.1l0,0L178.3,672l0,0c8.1,7.3,18.9,11.8,30.7,11.8c25.4,0,45.9-20.6,45.9-45.9c0-13.6-5.9-25.7-15.2-34.1l0,0l-64.1-57.7h648.7l-64.1,57.7l0,0c-9.3,8.4-15.2,20.6-15.2,34.1c0,25.4,20.6,45.9,45.9,45.9c11.8,0,22.6-4.5,30.7-11.8l0,0l153.1-137.8l0,0C984.1,525.8,990,513.6,990,500z" /></g></g>
+          </g>
         </svg>
       </div>
     </div>
@@ -89,8 +92,9 @@
           </div>
         </form>
         <div class="currentEvent">
-          <span>{{currentEvent.date}}</span>
-          <p v-html="currentEvent.text"></p>
+          <span class="date">{{currentEvent.date}}</span>
+          <p v-for="(e,i) in currentEvent.content" :key="i"><span v-if="activeFilters.includes(e.filter)" v-html="e.text"></span></p>
+          <!--<p v-html="currentEvent.text"></p>-->
         </div>
       </div>
       <div class="col-4 settings" style="border-left: 1px dotted grey; padding-left: 10px;">
@@ -148,9 +152,31 @@ export default {
       cache: true,
       get: function() {
         let parseTime = d3.timeParse("%d-%m-%Y");
-        let events = this.$store.state.events.map(event => {
+        /*let events = this.$store.state.events.map(event => {
           event.x = this.scales.x(parseTime(event.date)) //translate date to position
           return event
+        })*/
+
+        let events = []
+        this.$store.state.events.forEach(event => {
+          let index = events.findIndex(element => element.date == event.date)
+          if(index === -1) {
+            events.push({
+              date: event.date,
+              x: this.scales.x(parseTime(event.date)),
+              filters: [event.filter], //redundant, but easier to use in template
+              content: [{
+                  filter: event.filter,
+                  text: event.text
+              }]
+            })
+          } else {
+            events[index].content.push({
+                filter: event.filter,
+                text: event.text
+            })
+            events[index].filters.push(event.filter)
+          }
         })
         return events
       }
@@ -171,10 +197,18 @@ export default {
             .filter(key => key.startsWith("filter"))
             .map(key => line.query[key])
             .join(", ")
-          line.legend = (legend != "") ? legend : "No active filters"
+          line.legend = (legend != "") ? legend : "All data showing, no filters selected"
           return line
         })
       }
+    },
+
+    activeFilters: function() { //array of all active filters to determine what event-lines to display
+        let foo = this.lines.map(line => {
+          if (line.legend != "All data showing, no filters selected") return line.legend
+        })
+        console.log(foo)
+        return foo
     },
 
     //check if every line we received also has data values before we render
@@ -325,7 +359,7 @@ export default {
     },
 
     savePNG: function() {
-      console.log(document.getElementById('chart'))
+
       png.saveSvgAsPng(document.getElementById('chart'), 'chart.png')
     },
 
@@ -363,6 +397,9 @@ export default {
 
       d3.select(".xAxes").transition().call(d3.axisBottom(this.scales.x)) //update Axis
       this.writeDatestoURL(this.scales.x.domain())
+
+      d3.select("g.brush .leftHandle").attr("transform","translate("+d3.select(".handle--w").attr("x")  +",20)")//.attr("cx",)
+      d3.select("g.brush .rightHandle").attr("transform","translate("+d3.select(".handle--e").attr("x")  +",20)")//.attr("cx",)
     },
 
     getWidth: function() {
@@ -403,7 +440,7 @@ path {
 
 
 
-.currentEvent span {
+.currentEvent span.date {
   font-size: .8em;
   font-weight: bold;
 }

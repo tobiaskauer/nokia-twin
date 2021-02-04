@@ -1,7 +1,11 @@
 <template>
   <div class="col-4 sidebar hidden-md-down">
-    <h1>Twin DB</h1>
+    <h1>Open Inc</h1>
     <metrics v-if="selectedMetric" ref="metrics" :selected="selectedMetric"/>
+    <div class="addLine">
+      <button v-on:click="addLine">Add Line</button>
+    </div>
+    <p style="padding: 0px 30px">Select filter to change visualization:</p>
     <ul>
       <!-- display filterRow for every lines that is displayed -->
       <filterRow
@@ -11,9 +15,7 @@
         :line="line"
       />
     </ul>
-    <div class="addLine">
-      <button v-on:click="addLine">Add Line</button>
-    </div>
+
   </div>
 </template>
 

@@ -24,9 +24,11 @@ The script requires three input csv files, an example sample of them can be prev
 - If two filter properties have different keys (e.g. ``filter_country`` and ``filter_city``), but the same display name (e.g. "Location"), they will be merged.
 - ``metric_low_end``, ``metric_high_end`` (numeric): Domain of the y-axis when displaying this metric (only applies to ``metric_*`` rows; NULL for ``filter_*`` rows)
 
-**_events.csv**: data for events that are shown within the chart, requires the following columns:
+**_events.csv**: data for events that are shown as lines within the chart and text below it. Events with identical dates will be combined in one line.  requires the following columns:
 - ``date``: any parseable date format (e.g., ``23-11-1988``)
+- ``filter`` (String): corresponds to ``filter_*``, limits the display of this event to ONE active filter (e. g. ``filter_company``, no multiple selection possible)
 - ``text`` (String): Event text, <html> formatting is possible.
+
 
 
 

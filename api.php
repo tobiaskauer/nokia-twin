@@ -90,7 +90,7 @@
       $query = "select * from ".$table."_display";
      break;
       case 'events':
-      $query = 'SELECT DATE_FORMAT(date, "%d-%m-%Y") as date, text from '.$table.'_events';
+      $query = 'SELECT DATE_FORMAT(date, "%d-%m-%Y") as date, filter, text from '.$table.'_events';
      break;
     }
 

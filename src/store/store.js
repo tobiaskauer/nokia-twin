@@ -171,8 +171,6 @@ export default new Vuex.Store({
         {headers: {'Content-Type': 'application/json;charset=UTF-8'}
       })
       .then(response => {
-        console.log(query)
-        console.log(response)
         commit('writeValues',{
           index: state.lines.findIndex(x=>x.identifier == identifier),
           values: response.data
