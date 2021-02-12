@@ -28,7 +28,7 @@ export default {
     return {
       selectedMetric: undefined,
       lines: undefined,
-      title: 'Hello Sanja'
+      title: 'Open Inc'
     }
   },
 
