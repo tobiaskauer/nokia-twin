@@ -1,6 +1,6 @@
 <template>
   <div class="col-4 sidebar hidden-md-down">
-    <h1>Open Inc</h1>
+    <h1>{{title}}</h1>
     <metrics v-if="selectedMetric" ref="metrics" :selected="selectedMetric"/>
     <div class="addLine">
       <button v-on:click="addLine">Add Line</button>
@@ -27,7 +27,8 @@ export default {
   data() {
     return {
       selectedMetric: undefined,
-      lines: undefined
+      lines: undefined,
+      title: 'Hello Sanja'
     }
   },
 
