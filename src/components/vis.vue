@@ -1,20 +1,17 @@
 <template>
-  <div class="col-8" ref="vis" style="margin-top: 50px;">
-    <div class="row errors">
-      <div class="col">
-        <div v-for="(line, i) in lines" :key="i">
-          <div v-if="dataState && line.values.length < 1" class="alert alert-danger" role="alert" style="margin-top:10px;">
-            Line {{(i+1)}} has no data. Maybe too much filters are active.
-          </div>
+  <div class="visWrapper" ref="vis" style="margin-top: 50px;">
+    <div class="errors">
+      <div v-for="(line, i) in lines" :key="i">
+        <div v-if="dataState && line.values.length < 1" class="alert alert-danger" role="alert" style="margin-top:10px;">
+          Line {{(i+1)}} has no data. Maybe too much filters are active.
         </div>
-        <div v-if="!$route.query.table" class="alert alert-danger" role="alert" style="margin-top:10px;">
-          No table defined
-        </div>
+      </div>
+      <div v-if="!$route.query.table" class="alert alert-danger" role="alert" style="margin-top:10px;">
+        No table defined
       </div>
     </div>
 
-    <div class="row">
-      <div class="col">
+    <div>
         <svg id="chart" :width="style.width" :height="style.height+style.margin.top + style.margin.bottom" v-if="dataState" class="lines">
 
           <!--SVG mask to hide overflow -->
@@ -63,12 +60,10 @@
             </g>
           </g>
         </svg>
-      </div>
     </div>
 
     <!--brush for x-axis transformation -->
-    <div class="row brush">
-      <div class="col">
+    <div class="brush">
         <svg :width="style.width" height="50" style="background-color: lightgrey">
           <g v-if="dataState">
             <g class="lines" v-for="line in lines" v-bind:key="line.identifier" >
@@ -80,11 +75,10 @@
             <g class="rightHandle"><g transform="translate(-5,0)"><path fill="grey"  transform="scale(0.015)" d="M990,500c0-13.6-5.9-25.7-15.2-34.1l0,0L821.7,328l0,0c-8.1-7.3-18.9-11.8-30.7-11.8c-25.4,0-45.9,20.6-45.9,45.9c0,13.6,5.9,25.7,15.2,34.1l0,0l64.1,57.7H175.7l64.1-57.7l0,0c9.3-8.4,15.2-20.6,15.2-34.1c0-25.4-20.6-45.9-45.9-45.9c-11.8,0-22.6,4.5-30.7,11.8l0,0L25.2,465.9l0,0C15.9,474.3,10,486.4,10,500s5.9,25.7,15.2,34.1l0,0L178.3,672l0,0c8.1,7.3,18.9,11.8,30.7,11.8c25.4,0,45.9-20.6,45.9-45.9c0-13.6-5.9-25.7-15.2-34.1l0,0l-64.1-57.7h648.7l-64.1,57.7l0,0c-9.3,8.4-15.2,20.6-15.2,34.1c0,25.4,20.6,45.9,45.9,45.9c11.8,0,22.6-4.5,30.7-11.8l0,0l153.1-137.8l0,0C984.1,525.8,990,513.6,990,500z" /></g></g>
           </g>
         </svg>
-      </div>
     </div>
 
-    <div class="row" style="margin-top: 20px;">
-      <div class="events col-8">
+    <div class="d-flex" style="margin-top: 20px;">
+      <div class="events p-8">
         <form>
           <div class="form-check">
             <input type="checkbox" class="form-check-input" id="exampleCheck1" v-model="showEvents" @click="showEvents = !showEvents">
@@ -97,7 +91,7 @@
           <!--<p v-html="currentEvent.text"></p>-->
         </div>
       </div>
-      <div class="col-4 settings" style="border-left: 1px dotted grey; padding-left: 10px;">
+      <div class="p-4 settings" style="border-left: 1px dotted grey; padding-left: 10px;">
         <span class="pickDescription">Start: </span><VueDatePicker @onChange="pickDate(0)" v-model="datePicker[0]" />
         <span class="pickDescription">End: </span><VueDatePicker @onChange="pickDate(1)" v-model="datePicker[1]" />
         <!--Granularity:
@@ -108,9 +102,7 @@
           <li @onClick="changeGranularity('year')">Year</li>
         </ui>-->
         <button type="button" class="btn btn-outline-primary btn-sm" @click="savePNG">Download PNG</button>
-
       </div>
-
     </div>
   </div>
 </template>
@@ -207,7 +199,6 @@ export default {
         let foo = this.lines.map(line => {
           if (line.legend != "All data showing, no filters selected") return line.legend
         })
-        console.log(foo)
         return foo
     },
 
@@ -424,9 +415,7 @@ export default {
 </script>
 
 <style scoped>
-div {
-  background-color: #F7F7F7;
-}
+
 svg.lines {
   background-color: white;
 }
@@ -438,7 +427,9 @@ path {
   font-size: 6pt;
 }
 
-
+.visWrapper {
+  margin: 0 10px;
+}
 
 .currentEvent span.date {
   font-size: .8em;

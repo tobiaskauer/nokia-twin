@@ -1,6 +1,6 @@
 <template>
-  <div class="container-fluid h-100">
-    <div class="row justify-content-center h-100">
+  <div class="container-fluid d-flex">
+    <div class="d-flex">
       <sidebar />
       <vis />
     </div>
@@ -10,7 +10,6 @@
 <script>
 import sidebar from './components/sidebar.vue'
 import vis from './components/vis.vue'
-//import { bus } from './main'
 
 export default {
   name: 'App',
@@ -64,11 +63,14 @@ export default {
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Karla:wght@400;700&display=swap');
 
+.container-fluid {
+  padding: 0 !important;
+}
+
 html, body {
   font-family: 'Karla', sans-serif;
   height: 100%;
 }
-
 
 #app {
   font-family: 'Karla', sans-serif;

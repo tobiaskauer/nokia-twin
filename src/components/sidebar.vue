@@ -1,21 +1,22 @@
 <template>
-  <div class="col-4 sidebar hidden-md-down">
+  <div class="sidebar flex-fill">
     <h1>{{title}}</h1>
     <metrics v-if="selectedMetric" ref="metrics" :selected="selectedMetric"/>
-    <div class="addLine">
-      <button v-on:click="addLine">Add Line</button>
+    <div class="flex-fill" style="overflow: scroll">
+      <div class="addLine">
+        <button v-on:click="addLine">Add Line</button>
+      </div>
+      <p style="padding: 0px 30px">Select filter to change visualization:</p>
+      <ul>
+        <!-- display filterRow for every lines that is displayed -->
+        <filterRow
+          v-for="(line, index) in lines"
+          :ref="'filterRow-'+line.identifier"
+          :key="index"
+          :line="line"
+        />
+      </ul>
     </div>
-    <p style="padding: 0px 30px">Select filter to change visualization:</p>
-    <ul>
-      <!-- display filterRow for every lines that is displayed -->
-      <filterRow
-        v-for="(line, index) in lines"
-        :ref="'filterRow-'+line.identifier"
-        :key="index"
-        :line="line"
-      />
-    </ul>
-
   </div>
 </template>
 
@@ -204,7 +205,7 @@ h1 {
   color: white;
   min-width: 300px;
   padding: 0px !important;
-  min-height: 100%;
+  //min-height: 100%;
 }
 
 ul {

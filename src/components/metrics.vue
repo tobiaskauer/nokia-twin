@@ -74,13 +74,14 @@ export default {
 <style scoped>
 .metric {
   background-image: linear-gradient(135deg, #20C5A0 0%, #BD10E0 47%, #F5A623 100%);
-  padding: 30px;
+  padding: 20px;
 }
 
 ul {
   list-style: none;
   font-size: 12px;
   padding: 0px;
+  margin: 0;
 }
 ul li {
   width: inline-block;
