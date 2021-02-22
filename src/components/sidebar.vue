@@ -1,6 +1,7 @@
 <template>
   <div class="sidebar flex-fill">
     <h1>{{title}}</h1>
+    Description text with link to website and also link to methodoly
     <metrics v-if="selectedMetric" ref="metrics" :selected="selectedMetric"/>
     <div class="flex-fill" style="overflow: scroll">
       <div class="addLine">

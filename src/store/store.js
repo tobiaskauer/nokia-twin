@@ -17,6 +17,7 @@ export default new Vuex.Store({
     metrics:[], //metrics to display (metric_ columns in db)
     granularity: "%Y-%m",
     activeMetric: "",
+    text:"",
     filterColumns: [], //filters to apply (filter_ columns in db)
     colors: [
       {hex: "#20C5A0", used: false},
@@ -181,7 +182,7 @@ export default new Vuex.Store({
       });
     },
 
-    debugAPI() {
+    /*debugAPI() {
       let query = {
         type: 'debug',
         metric: 'metric_rating_overall',
@@ -198,7 +199,7 @@ export default new Vuex.Store({
       .catch(error => {
         console.log(error)
       });
-    },
+    },*/
 
 
     //get Metrics and Filters once to write them to storage
@@ -220,6 +221,15 @@ export default new Vuex.Store({
 
         //filter by filter_ and hand to getFilters() (which can get values for each filter)
         dispatch('getFilters', response.data.filter(x=>x.key.startsWith('filter_')))
+
+        let text = {}
+        response.data.filter(x=>x.key.startsWith('text_')).forEach(e => {
+          text[e.key.split('text_')[1]] = e.display
+        })
+
+        Vue.set(state,'text',text)
+
+
       })
       .catch(error => {
         console.log(error)

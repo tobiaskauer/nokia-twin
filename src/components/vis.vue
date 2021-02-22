@@ -103,6 +103,9 @@
         </ui>-->
         <button type="button" class="btn btn-outline-primary btn-sm" @click="savePNG">Download PNG</button>
       </div>
+      <div>
+        <p v-html="description" /> <!-- {{description}} --> <!-- raw text -->
+      </div>
     </div>
   </div>
 </template>
@@ -293,6 +296,11 @@ export default {
          })
       }
     },
+
+    description: function() {
+      if(!this.$store.state.text.description) return null
+      return this.$store.state.text.description
+    }
   },
 
 

@@ -10,3 +10,6 @@ metric_rating_career,Career Opportunities,3,5
 metric_rating_comp,Compensation & Benefits,,
 metric_rating_mgmt,Senior Leadership,,
 metric_review_title_fun,Title Fun,,
+text_intro,"<strong><a href=""localhost"">Link to Homepage</a></strong>",,
+text_description,"<p>helloooo</p> <a href=""http://google.com"">click me</a>",,
+text_whatever,Hello Sanja,,
