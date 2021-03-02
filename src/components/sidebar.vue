@@ -1,7 +1,7 @@
 <template>
   <div class="sidebar flex-fill">
     <h1>{{title}}</h1>
-    Description text with link to website and also link to methodoly
+    <p class="intro" v-if="intro" v-html="intro" />
     <metrics v-if="selectedMetric" ref="metrics" :selected="selectedMetric"/>
     <div class="flex-fill" style="overflow: scroll">
       <div class="addLine">
@@ -30,27 +30,27 @@ export default {
     return {
       selectedMetric: undefined,
       lines: undefined,
-      title: 'Open Inc'
     }
   },
 
   computed: {
-    /*//get lines (incl. color, identifier, filters, and selections) from store
-    lines: {
-      get: function(){
-        return this.$store.state.lines
-      }
-    },*/
-
     metrics: function() {
       return this.$store.state.metrics
     },
 
     filterColumns: function() {
       return  this.$store.state.filterColumns
+    },
+
+    intro: function() {
+      if(!this.$store.state.text.intro) return null
+      return this.$store.state.text.intro
+    },
+
+    title: function() {
+      if(!this.$store.state.text.title) return "Open Inc"
+      return this.$store.state.text.title
     }
-
-
   },
 
   //if there are no lines on store when page is mounted, add one to always have one line available
@@ -66,14 +66,6 @@ export default {
         this.setLines();
       }
     }
-
-    /*//set filters from URL
-    lines: function(newLines){
-      if(newLines) {
-        //console.log(this.$refs['filterRow-'+newLines[0].identifier])
-        this.setFiltersFromURL(this.$route.query)
-      }
-    }*/
   },
 
   mounted() {
@@ -118,66 +110,8 @@ export default {
       this.lines = this.$store.getters.getLines;
     },
 
-    /*initializeFromURL: function(param) {
-      if(param.lines) {
-        while (param.lines > 0){
-          this.$store.dispatch('addLine')
-          param.lines--
-        }
-      } else {
-        this.$store.dispatch('addLine')
-      }
-
-
-      let metric
-      // if a metric is set in url parameters
-      if(param.metric) {
-        //look for this metric in current metric storage, if you find sth set it, otherwise set the first one
-        metric = this.$store.state.metrics.find(item => item.key ==  param.metric) ? this.$store.state.metrics.find(item => item.key ==  param.metric) : metric = this.$store.state.metrics[0]
-      } else {
-        //if none is passed, just take the first one
-        metric = this.$store.state.metrics[0]
-      }
-      //set the metric
-      this.$refs.metrics.select(metric)
-    },*/
-
-    //please dont hate me, but this gets triggered three times as oten as necessary....
-    /*setFiltersFromURL: function(param) {
-
-      //find filters
-      let filters = []
-      this.$store.state.filterColumns.forEach(filterColumn => {
-        //console.log(filterColumn) //this is the display name of the columns (e.g. "Location")
-        filterColumn.db_columns.forEach(column => {
-          if(param[column]) {
-            //you can have as many values for a given parameter as you have lines (eg. filtering three lines by three different companes. i corresponds to the line count)
-            param[column].split(",").forEach((value,lineCount) => {
-              filters[lineCount] = {display: filterColumn.display, element: {filter: column, key: value}}
-            })
-          }
-        })
-      })
-
-
-
-      //iterate over existing lines (in sidebar) and apply filters from URL
-      this.$store.getters.getLines.forEach((line,lineCount) => {
-        if(this.$refs['filterRow-'+line.identifier]) {
-
-          let filter = filters[lineCount]
-          console.log(filter)
-          this.$refs['filterRow-'+line.identifier][0].select(filter.display,filter.element,"initialize")
-        }
-      })
-
-
-
-    },*/
     //add new lines
     addLine: function() {
-      //let previousQuery = this.lines[this.lines.length-1] == undefined ? {} : this.lines[this.lines.length-1].query
-      //duplicating the previous query to add it to the next technically works, but the two instances seem dependent on another (which is not expected behavior)
       this.$store.dispatch('addLine')
 
       let route = this.$route.query //get current url parameters as object
@@ -204,7 +138,7 @@ h1 {
 .sidebar {
   background-color: #39393B;
   color: white;
-  min-width: 300px;
+  min-width: 350px;
   padding: 0px !important;
   //min-height: 100%;
 }
@@ -212,6 +146,17 @@ h1 {
 ul {
   margin: 0;
   padding: 0
+}
+
+p.intro {
+  margin: 10px 30px;
+  font-size: .8em;
+  text-align: center;
+}
+
+p.intro a {
+  color: white !important;
+  text-decoration: underline;
 }
 
 .addLine {

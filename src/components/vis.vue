@@ -31,7 +31,7 @@
           <!--event overlay -->
           <g class="events" v-if="showEvents" clip-path="url(#mask)" :transform="`translate(0,${style.margin.top})`"  >
             <g v-for="(event, index) in events" :class="'event-'+index" :key="`event-${index}`" :transform="`translate(${event.x},0)`">
-              <line v-if="event.filters.filter(e => activeFilters.includes(e)).length > 0" x0="0" :y0="style.margin.top" x1="0" :y1="style.height-style.margin.bottom-style.margin.top" stroke="lightgrey" stroke-width="2" fill="lightgrey" @mouseover="showText(true,event,index)" @mouseout="showText(false,{date: '', text: ''},index)" />
+              <line v-if="!event.filters[0] || event.filters.filter(e => activeFilters.join(' ').includes(e)).length > 0" x0="0" :y0="style.margin.top" x1="0" :y1="style.height-style.margin.bottom-style.margin.top" stroke="lightgrey" stroke-width="2" fill="lightgrey" @mouseover="showText(true,event,index)" @mouseout="showText(false,{date: '', text: ''},index)" /> <!-- I just wanted to say im sorry for this line.... -->
             </g>
           </g>
 
@@ -54,8 +54,7 @@
             </g>
             <g transform="translate(0,25)">
               <text v-for="(line, i) in lines" :y="i*10" :fill="line.color" :key="i" text-anchor="end">{{line.legend}}
-              <!--  <tspan v-for="(text, j) in lines.query.filter(line=>{console.log("foo")})">foo, </tspan>
-                <tspan>bar </tspan>-->
+
               </text>
             </g>
           </g>
@@ -77,8 +76,9 @@
         </svg>
     </div>
 
-    <div class="d-flex" style="margin-top: 20px;">
-      <div class="events p-8">
+    <!-- Everything below the vis -->
+    <div class="d-flex flex-row" style="margin-top: 20px;">
+      <div class="events flex-fill">
         <form>
           <div class="form-check">
             <input type="checkbox" class="form-check-input" id="exampleCheck1" v-model="showEvents" @click="showEvents = !showEvents">
@@ -87,7 +87,7 @@
         </form>
         <div class="currentEvent">
           <span class="date">{{currentEvent.date}}</span>
-          <p v-for="(e,i) in currentEvent.content" :key="i"><span v-if="activeFilters.includes(e.filter)" v-html="e.text"></span></p>
+            <p v-for="(event,i) in currentEvent.content" :key="i"><span v-if="!event.filters || event.filters.filter(e => activeFilters.join(' ').includes(e)).length > 0" v-html="event.text"></span></p>
           <!--<p v-html="currentEvent.text"></p>-->
         </div>
       </div>
@@ -103,9 +103,9 @@
         </ui>-->
         <button type="button" class="btn btn-outline-primary btn-sm" @click="savePNG">Download PNG</button>
       </div>
-      <div>
-        <p v-html="description" /> <!-- {{description}} --> <!-- raw text -->
-      </div>
+    </div>
+    <div class="d-flex" v-if="description">
+      <p v-html="description" /> <!-- {{description}} --> <!-- raw text -->
     </div>
   </div>
 </template>
@@ -147,14 +147,9 @@ export default {
       cache: true,
       get: function() {
         let parseTime = d3.timeParse("%d-%m-%Y");
-        /*let events = this.$store.state.events.map(event => {
-          event.x = this.scales.x(parseTime(event.date)) //translate date to position
-          return event
-        })*/
-
-        let events = []
-        this.$store.state.events.forEach(event => {
-          let index = events.findIndex(element => element.date == event.date)
+        let events = [] //initialize empty container for all days (and multiple events per day)
+        this.$store.state.events.forEach(event => { //get events from store (vueX)
+          let index = events.findIndex(element => element.date == event.date) //check if date already exists in array
           if(index === -1) {
             events.push({
               date: event.date,
@@ -173,6 +168,7 @@ export default {
             events[index].filters.push(event.filter)
           }
         })
+
         return events
       }
     },
@@ -199,10 +195,12 @@ export default {
     },
 
     activeFilters: function() { //array of all active filters to determine what event-lines to display
-        let foo = this.lines.map(line => {
-          if (line.legend != "All data showing, no filters selected") return line.legend
-        })
-        return foo
+        let filters = this.lines.map(line => {
+          if (line.legend != "All data showing, no filters selected") {
+            return line.legend.split(", ")
+          }
+        }).filter(string => string) //filter undefined
+        return filters
     },
 
     //check if every line we received also has data values before we render
@@ -358,14 +356,8 @@ export default {
     },
 
     savePNG: function() {
-
       png.saveSvgAsPng(document.getElementById('chart'), 'chart.png')
     },
-
-    /*changeGranularity: function(granularity) {
-
-    }*/
-
 
     //initialize brush (dragable selector for x-axis) and add it to DOM
     initBrush: function() {
