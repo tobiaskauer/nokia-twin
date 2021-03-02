@@ -23,7 +23,7 @@ The script requires three input csv files, an example sample of them can be prev
 - ``display`` (String): sets the display name of these metrics, e.g. ``Overall Score``.
 - If two filter properties have different keys (e.g. ``filter_country`` and ``filter_city``), but the same display name (e.g. "Location"), they will be merged.
 - ``metric_low_end``, ``metric_high_end`` (numeric): Domain of the y-axis when displaying this metric (only applies to ``metric_*`` rows; NULL for ``filter_*`` rows)
-- ``text_title`` (String): <h1> of the website, defaults to "Open Inc" if not set
+- ``text_title`` (String): h1 of the website, defaults to "Open Inc" if not set
 - ``text_intro`` (String, HTML): <p> below the title, will not be displays if not set
 - ``text_description`` (String, HTML): Paragraph below event, will not be displays if not set
 
