@@ -1,0 +1,17 @@
+key,display,metric_low_end,metric_high_end
+filter_company,Company,NULL,NULL
+filter_employee_title,Role,NULL,NULL
+filter_city,Location,NULL,NULL
+filter_country,Location,NULL,NULL
+metric_rating_overall,Overall Rating,,
+metric_rating_balance,Work-Life-Balance,1,2
+metric_rating_culture,,,
+metric_rating_career,Career Opportunities,3,5
+metric_rating_comp,Compensation & Benefits,,
+metric_rating_mgmt,Senior Leadership,,
+metric_review_title_fun,Title Fun,,
+text_title,Open Inc,,
+text_intro,"Take me to the <a href=""https://social-dynamics.net/"">project page</a>",,
+text_description,"</br>
+<h1>Introduction</h1>
+Specialized online platforms are increasingly used to discuss and rate the workplace experiences. In this project, we mined reviews from one such a platform for the S&P 500 companies in the U.S. The visualization displays different patterns in reviews across companies, employee role types, and time. ",,

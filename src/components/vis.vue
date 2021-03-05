@@ -87,8 +87,9 @@
         </form>
         <div class="currentEvent">
           <span class="date">{{currentEvent.date}}</span>
-            <p v-for="(event,i) in currentEvent.content" :key="i"><span v-if="!event.filters || event.filters.filter(e => activeFilters.join(' ').includes(e)).length > 0" v-html="event.text"></span></p>
-          <!--<p v-html="currentEvent.text"></p>-->
+            <p v-for="(event,i) in currentEvent.content" :key="i">
+              <!-- fix by sanja7s -->
+              <span v-if="!event.filter || activeFilters.join(' ').includes(event.filter)" v-html="event.text"></span></p>
         </div>
       </div>
       <div class="p-4 settings" style="border-left: 1px dotted grey; padding-left: 10px;">
@@ -168,7 +169,7 @@ export default {
             events[index].filters.push(event.filter)
           }
         })
-
+        // console.log(events);
         return events
       }
     },
@@ -200,6 +201,7 @@ export default {
             return line.legend.split(", ")
           }
         }).filter(string => string) //filter undefined
+        // console.log(filters);
         return filters
     },
 
