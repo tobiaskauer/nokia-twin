@@ -1,0 +1,14 @@
+﻿key,display,metric_low_end,metric_high_end
+filter_company,Company,NULL,NULL
+filter_employee_title,Role,NULL,NULL
+metric_stress,posts w/ stress (permil),NULL,NULL
+metric_mental_health,posts w/ mental health (permil),NULL,NULL
+metric_cli_basic,posts w/ flu (permil),NULL,NULL
+metric_ptsd,posts w/ PTSD (permil),NULL,NULL
+text_title,Open Inc,,
+text_intro,"Take me to the <a href=""https://social-dynamics.net/MedDL"">project page.</a>",,
+text_description,"</br></br></br></br>
+<h2>Introduction</h2>
+Specialized online platforms are increasingly used to discuss and rate the workplace experiences. In this project, we mined reviews from one such a platform for the S&P 500 companies in the U.S. The visualization displays different patterns in reviews across companies, employee role types, and time.
+<h3>Methodology</h3></br>
+The project uses <a href=""https://social-dynamics.net/MedDL/"">MedDL</a>, a previously published method that reliably extracts health mentions from free-from text. MedDL is based on state-of-the-art Recurrent Neural Networks (RNNs) and contextual embeddings (RoBERTa), and it was trained on MedRed, a specialized dataset of labelled Reddit posts. The method analysed 440K company reviews posted during the past 7 years and extracted various mentions of workplace stress, anxiety, and flu. The visualization presents the fraction (in permilles) of total posts mentioning each of these three categories across different breakdowns, i.e., companies, time, and employee roles.",,

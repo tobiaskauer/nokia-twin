@@ -3,7 +3,7 @@
     <div class="errors">
       <div v-for="(line, i) in lines" :key="i">
         <div v-if="dataState && line.values.length < 1" class="alert alert-danger" role="alert" style="margin-top:10px;">
-          Line {{(i+1)}} has no data. Maybe too much filters are active.
+          Line {{(i+1)}} has no data. Maybe too many filters are active.
         </div>
       </div>
       <div v-if="!$route.query.table" class="alert alert-danger" role="alert" style="margin-top:10px;">
