@@ -7,7 +7,7 @@ Vue.use(Vuex)
 
 //let server = "http://localhost:8080/nokiatwin/api.php" //development
 //let server = "https://social-dynamics.net/nokiatwin/api.php" // production
-let server = "/nokiatwin/api.php" // this should work for both
+let server = "/openinc/api.php" // this should work for both
 
 export default new Vuex.Store({
   state: {

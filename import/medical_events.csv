@@ -1,4 +1,26 @@
 date,filter,text
+1 January 2009,nokia,Nokia Stocks -53% compared to previous year
+1 January 2010,nokia,Nokia Stocks -21% compared to previous year
+1 January 2011,nokia,Nokia Stocks -10% compared to previous year
+1 January 2012,nokia,Nokia Stocks -54% compared to previous year
+November 2012,,Obama is reelected
+1 January 2013,nokia,Nokia Stocks -22% compared to previous year
+1 January 2014,nokia,Nokia Stocks +10% compared to previous year
+1 January 2015,nokia,Nokia Stocks -10% compared to previous year
+1 January 2016,nokia,Nokia Stocks -1% compared to previous year
+1 January 2017,nokia,Nokia Stocks -31% compared to previous year
+6 June 2017,nokia,Nokia is attempting to reduce approximately $1 billion in operating costs by 2018 by cutting thousands of jobs in Europe
+1 January 2018,nokia,Nokia Stocks -12% compared to previous year
+12 Feb 2018,nokia,Hundreds of IT jobs are at risk in Finland as Nokia announces plans for more cuts thousands of jobs amid 5G transformation
+1 January 2019,nokia,Nokia Stocks +25% compared to previous year
+16 January 2019,nokia,Nokia Corporation aim to achieve €700 million in cost savings till 2020 that will include layoffs of up to 1330 people in Europe.
+1 January 2020,nokia,Nokia Stocks -28% compared to previous year
+10 June 2010,apple,Apple announced the iPhone 4.
+24 August 2011,apple,Steve Jobs has resigned as Chief Executive Officer
+15 September 2012,apple,Apple announced the iPhone 5.
+5 October 2011,apple,Steve Jobs died following a long battle with pancreatic cancer. 
+9 March 2015,apple,"The Apple Watch, the company's first smartwatch, was introduced. "
+27 October 2016,apple,A new generation of MacBook Pro was announced.
 31 December 2009,generaldynamics,generaldynamics's yearly stock price <b>decreased</b> by 25.96%
 31 December 2010,generaldynamics,generaldynamics's yearly stock price <b>increased</b> by 21.60%
 31 December 2011,generaldynamics,generaldynamics's yearly stock price <b>increased</b> by 4.56%
@@ -2139,6 +2161,47 @@ date,filter,text
 31 December 2019,kraftheinz,kraftheinz's yearly stock price <b>decreased</b> by 43.24%
 31 December 2020,kraftheinz,kraftheinz's yearly stock price <b>decreased</b> by 0.20%
 31 December 2021,kraftheinz,kraftheinz's yearly stock price <b>increased</b> by 11.87%
+31 December 1981,walgreens,walgreens's yearly stock price <b>increased</b> by 39.52%
+31 December 1982,walgreens,walgreens's yearly stock price <b>increased</b> by 41.62%
+31 December 1983,walgreens,walgreens's yearly stock price <b>increased</b> by 92.74%
+31 December 1984,walgreens,walgreens's yearly stock price <b>increased</b> by 12.44%
+31 December 1985,walgreens,walgreens's yearly stock price <b>increased</b> by 40.26%
+31 December 1986,walgreens,walgreens's yearly stock price <b>increased</b> by 29.31%
+31 December 1987,walgreens,walgreens's yearly stock price <b>increased</b> by 12.50%
+31 December 1988,walgreens,walgreens's yearly stock price <b>decreased</b> by 11.97%
+31 December 1989,walgreens,walgreens's yearly stock price <b>increased</b> by 33.36%
+31 December 1990,walgreens,walgreens's yearly stock price <b>increased</b> by 12.43%
+31 December 1991,walgreens,walgreens's yearly stock price <b>increased</b> by 43.46%
+31 December 1992,walgreens,walgreens's yearly stock price <b>increased</b> by 16.92%
+31 December 1993,walgreens,walgreens's yearly stock price <b>increased</b> by 8.50%
+31 December 1994,walgreens,walgreens's yearly stock price <b>increased</b> by 1.48%
+31 December 1995,walgreens,walgreens's yearly stock price <b>increased</b> by 30.64%
+31 December 1996,walgreens,walgreens's yearly stock price <b>increased</b> by 38.39%
+31 December 1997,walgreens,walgreens's yearly stock price <b>increased</b> by 48.51%
+31 December 1998,walgreens,walgreens's yearly stock price <b>increased</b> by 65.86%
+31 December 1999,walgreens,walgreens's yearly stock price <b>increased</b> by 31.07%
+31 December 2000,walgreens,walgreens's yearly stock price <b>increased</b> by 20.05%
+31 December 2001,walgreens,walgreens's yearly stock price <b>increased</b> by 14.57%
+31 December 2002,walgreens,walgreens's yearly stock price <b>decreased</b> by 4.70%
+31 December 2003,walgreens,walgreens's yearly stock price <b>decreased</b> by 9.87%
+31 December 2004,walgreens,walgreens's yearly stock price <b>increased</b> by 13.09%
+31 December 2005,walgreens,walgreens's yearly stock price <b>increased</b> by 26.16%
+31 December 2006,walgreens,walgreens's yearly stock price <b>decreased</b> by 0.47%
+31 December 2007,walgreens,walgreens's yearly stock price <b>decreased</b> by 1.46%
+31 December 2008,walgreens,walgreens's yearly stock price <b>decreased</b> by 24.44%
+31 December 2009,walgreens,walgreens's yearly stock price <b>decreased</b> by 1.25%
+31 December 2010,walgreens,walgreens's yearly stock price <b>increased</b> by 6.84%
+31 December 2011,walgreens,walgreens's yearly stock price <b>increased</b> by 18.84%
+31 December 2012,walgreens,walgreens's yearly stock price <b>decreased</b> by 10.07%
+31 December 2013,walgreens,walgreens's yearly stock price <b>increased</b> by 50.67%
+31 December 2014,walgreens,walgreens's yearly stock price <b>increased</b> by 36.14%
+31 December 2015,walgreens,walgreens's yearly stock price <b>increased</b> by 31.11%
+31 December 2016,walgreens,walgreens's yearly stock price <b>decreased</b> by 3.19%
+31 December 2017,walgreens,walgreens's yearly stock price <b>decreased</b> by 0.74%
+31 December 2018,walgreens,walgreens's yearly stock price <b>decreased</b> by 9.16%
+31 December 2019,walgreens,walgreens's yearly stock price <b>decreased</b> by 15.22%
+31 December 2020,walgreens,walgreens's yearly stock price <b>decreased</b> by 23.79%
+31 December 2021,walgreens,walgreens's yearly stock price <b>increased</b> by 16.31%
 31 December 2009,gallagher,gallagher's yearly stock price <b>decreased</b> by 8.35%
 31 December 2010,gallagher,gallagher's yearly stock price <b>increased</b> by 25.49%
 31 December 2011,gallagher,gallagher's yearly stock price <b>increased</b> by 19.57%

@@ -117,7 +117,7 @@ export default {
       let route = this.$route.query //get current url parameters as object
       route.lines = this.lines.length
       let routeString = Object.entries(route).map(e => encodeURIComponent(e[0]) + "=" + encodeURIComponent(e[1])).join("&") //parse a string from that object
-      history.pushState({},null,this.$route.path + 'nokiatwin/#/?' + routeString) //write that to URL (CAUTION: vueX store and URL might be inconsistent)
+      history.pushState({},null,this.$route.path + 'openinc/#/?' + routeString) //write that to URL (CAUTION: vueX store and URL might be inconsistent)
     },
   },
 

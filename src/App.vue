@@ -36,7 +36,7 @@ export default {
       let route = this.$route.query //get current url parameters as object
       route.granularity = "month" //default
       let routeString = Object.entries(route).map(e => encodeURIComponent(e[0]) + "=" + encodeURIComponent(e[1])).join("&") //parse a string from that object
-      history.pushState({},null,this.$route.path + 'nokiatwin/#/?' + routeString) //write that to URL (CAUTION: vueX store and URL might be inconsistent)
+      history.pushState({},null,this.$route.path + 'openinc/#/?' + routeString) //write that to URL (CAUTION: vueX store and URL might be inconsistent)
     }
 
     //set default table (or take from url)
@@ -44,7 +44,7 @@ export default {
       let route = this.$route.query //get current url parameters as object
       route.table = "example" //default
       let routeString = Object.entries(route).map(e => encodeURIComponent(e[0]) + "=" + encodeURIComponent(e[1])).join("&") //parse a string from that object
-      history.pushState({},null,this.$route.path + 'nokiatwin/#/?' + routeString) //write that to URL (CAUTION: vueX store and URL might be inconsistent)
+      history.pushState({},null,this.$route.path + 'openinc/#/?' + routeString) //write that to URL (CAUTION: vueX store and URL might be inconsistent)
       this.$store.commit('setTable','example') //load metrics and filters --> get errors and display them
     } else {
       this.$store.commit('setTable',this.$route.query.table) //load metrics and filters --> get errors and display them

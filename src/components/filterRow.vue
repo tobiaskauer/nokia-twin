@@ -58,6 +58,7 @@
           size="sm"
           :serializer="s => s.key"
           :placeholder="'Add '+col.display"
+          inputClass="xs"
           @hit="addFilter(col,$event)"
         />
       </div>
@@ -152,7 +153,7 @@ export default {
       activeFilters = activeFilters.join(",")
       route[item.filter] = activeFilters //update what you changed
       routeString = Object.entries(route).map(e => encodeURIComponent(e[0]) + "=" + encodeURIComponent(e[1])).join("&") //parse a string from that object
-      history.pushState({},null,this.$route.path + 'nokiatwin/#/?' + routeString) //write that to URL (CAUTION: vueX store and URL might be inconsistent)
+      history.pushState({},null,this.$route.path + 'openinc/#/?' + routeString) //write that to URL (CAUTION: vueX store and URL might be inconsistent)
 
       this.$forceUpdate()
     },
@@ -163,7 +164,7 @@ export default {
       let route = this.$route.query //get current url parameters as object
       route.lines = this.$store.state.lines.length
       let routeString = Object.entries(route).map(e => encodeURIComponent(e[0]) + "=" + encodeURIComponent(e[1])).join("&") //parse a string from that object
-      history.pushState({},null,this.$route.path + 'nokiatwin/#/?' + routeString) //write that to URL (CAUTION: vueX store and URL might be inconsistent)
+      history.pushState({},null,this.$route.path + 'openinc/#/?' + routeString) //write that to URL (CAUTION: vueX store and URL might be inconsistent)
     },
 
     //toggle collapse state when control-collapse is clicked
@@ -279,5 +280,10 @@ ul.controls li.rotate {
 .vbst-item {
   padding: 2px !important;
   font-size: 12px;
+}
+
+.xs{
+  padding: 0 !important;
+  font-size: 12px !important;
 }
 </style>

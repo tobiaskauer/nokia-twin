@@ -54,7 +54,7 @@ export default {
         let route = this.$route.query //get current url parameters as object
         route.metric = item.key //update what you changed
         let routeString = Object.entries(route).map(e => encodeURIComponent(e[0]) + "=" + encodeURIComponent(e[1])).join("&") //parse a string from that object
-        history.pushState({},null,this.$route.path + 'nokiatwin/#/?' + routeString) //write that to URL (CAUTION: vueX store and URL might be inconsistent)
+        history.pushState({},null,this.$route.path + 'openinc/#/?' + routeString) //write that to URL (CAUTION: vueX store and URL might be inconsistent)
         this.$store.commit("writeQuery", {identifier: false, query: {metric: item.key}})
         this.$store.dispatch('getData', {identifier: false})
 

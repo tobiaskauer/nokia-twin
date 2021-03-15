@@ -1,5 +1,5 @@
 module.exports = {
-  publicPath: '/nokiatwin/',
+  publicPath: '/openinc/',
   devServer: {
     host: 'localhost',
     proxy: 'https://social-dynamics.net',
