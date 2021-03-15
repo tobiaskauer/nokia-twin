@@ -2,7 +2,6 @@
 filter_company,Company,NULL,NULL
 filter_employee_title,Role,NULL,NULL
 metric_stress,posts w/ stress (permil),NULL,NULL
-metric_mental_health,posts w/ mental health (permil),NULL,NULL
 metric_cli_basic,posts w/ flu (permil),NULL,NULL
 metric_ptsd,posts w/ PTSD (permil),NULL,NULL
 text_title,Open Inc,,
@@ -10,5 +9,7 @@ text_intro,"Take me to the <a href=""https://social-dynamics.net/MedDL"">project
 text_description,"</br></br></br></br>
 <h1>Introduction</h1>
 Specialized online platforms are increasingly used to discuss and rate the workplace experiences. In this project, we mined reviews from one such a platform for the S&P 500 companies in the U.S. The visualization displays different patterns in reviews across companies, employee role types, and time.</br></br>
-<h>Methodology</h>
-The project use <a href=""https://social-dynamics.net/MedDL/"">MedDL</a>, a previously published method that reliably extracts health mentions from free-from text. MedDL is based on state-of-the-art Recurrent Neural Networks (RNNs) and contextual embeddings (RoBERTa), and it was trained on MedRed, a specialized dataset of labelled Reddit posts. The method analysed 440K company reviews posted during the past 7 years and extracted various mentions of workplace stress, anxiety, and flu. The visualization presents the fraction (in permilles) of total posts mentioning each of these three categories across different breakdowns, i.e., companies, time, and employee roles.",,
+<h2>Methodology</h2>
+The project use <a href=""https://social-dynamics.net/MedDL/"">MedDL</a>, a previously published method that reliably extracts health mentions from free-from text. MedDL is based on state-of-the-art Recurrent Neural Networks (RNNs) and contextual embeddings (RoBERTa), and it was trained on MedRed, a specialized dataset of labelled Reddit posts. The method analysed 440K company reviews posted during the past 7 years and extracted various mentions of workplace stress, anxiety, and flu. The visualization presents the fraction (in permilles) of total posts mentioning each of these three categories across different breakdowns, i.e., companies, time, and employee roles.</br></br>
+The vertical bars represent relevant events to the company. You can hover over them to find out more information. Thickness of the lines in the graph correspons to the number of reviews for the company/role for that period.</br></br>
+When interpreting the graphs, it is important to have in mind that the reviews might be lagging behind the actual events that could have influenced them.",,
