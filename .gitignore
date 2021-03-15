@@ -2,7 +2,7 @@
 .DS_Store
 comparison-api.php
 
-node_modules
+node_modules/*
 
 # local env files
 .env.local
