@@ -1,26 +1,81 @@
 date,filter,text
-1 January 2009,nokia,Nokia Stocks -53% compared to previous year
-1 January 2010,nokia,Nokia Stocks -21% compared to previous year
-1 January 2011,nokia,Nokia Stocks -10% compared to previous year
-1 January 2012,nokia,Nokia Stocks -54% compared to previous year
-November 2012,,Obama is reelected
-1 January 2013,nokia,Nokia Stocks -22% compared to previous year
-1 January 2014,nokia,Nokia Stocks +10% compared to previous year
-1 January 2015,nokia,Nokia Stocks -10% compared to previous year
-1 January 2016,nokia,Nokia Stocks -1% compared to previous year
-1 January 2017,nokia,Nokia Stocks -31% compared to previous year
+20 August 2014,nokia,"Nokia today announced that Michael Halbherr has decided to step down as CEO and as a member of the Nokia Group"
 6 June 2017,nokia,Nokia is attempting to reduce approximately $1 billion in operating costs by 2018 by cutting thousands of jobs in Europe
-1 January 2018,nokia,Nokia Stocks -12% compared to previous year
-12 Feb 2018,nokia,Hundreds of IT jobs are at risk in Finland as Nokia announces plans for more cuts thousands of jobs amid 5G transformation
-1 January 2019,nokia,Nokia Stocks +25% compared to previous year
-16 January 2019,nokia,Nokia Corporation aim to achieve €700 million in cost savings till 2020 that will include layoffs of up to 1330 people in Europe.
-1 January 2020,nokia,Nokia Stocks -28% compared to previous year
-10 June 2010,apple,Apple announced the iPhone 4.
-24 August 2011,apple,Steve Jobs has resigned as Chief Executive Officer
-15 September 2012,apple,Apple announced the iPhone 5.
-5 October 2011,apple,Steve Jobs died following a long battle with pancreatic cancer. 
-9 March 2015,apple,"The Apple Watch, the company's first smartwatch, was introduced. "
-27 October 2016,apple,A new generation of MacBook Pro was announced.
+26 July 2018,nokia,"Nokia reports uninspiring Q2 and admits to losing Verizon markets"
+26 October 2018,nokia,"Nokia Corporation aim to achieve €700 million in cost savings till 2020 that will include layoffs of up to 1330 people in Europe."
+16 February 2012,ericsson,Sony finalizes divorce with Ericsson and renames itself Sony Mobile Communications
+7 Nov 2017,ericsson,Ericsson announced CEO Jan Frykhammar will leave effective today as part of a wider executive team shake-up.
+10 December 2018,ericsson,O2 to sue Ericsson over data outage with millions of compensations
+25 October 2016,apple,Apple's annual profits fall for first time in 15 years as iPhone sales decline
+4 October 2017,apple,Apple caught in latest EU tax crackdownover the failure to collect €13bn of back taxes.
+20 October 2014,jpmorgan,JP Morgan data breach confirmed affecting at least 83 million customers
+15 January 2019,jpmorgan,J.P. Morgan misses profit expectations for the first time in 15 quarters
+14 June 2013,bankofamerica,Bank of America scandal on lying to homeowners and rewarded foreclosures
+13 May 2020,facebook,"Facebook has agreed to pay $52m (£42m) to content moderators as compensation for mental health issues developed on the job."
+26 February 2019,facebook,"Facebook moderators tell of strict scrutiny and PTSD symptoms."
+25 September 2018,facebook,"Former Facebook content moderator sues company for giving her PTSD."
+30 June 2014,facebook,"Robert Booth (2014). "Facebook reveals news feed experiment to control emotions". The Guardian. https://www.theguardian.com/technology/2014/jun/29/facebook-users-emotions-news-feeds"
+19 March 2014,facebook,"Some of the first news about the soul-crushing world of content moderation. University, Department of Communications and Public Affairs, Western. "Western News - Professor uncovers the Internet's hidden labour force". Western News. https://news.westernu.ca/2014/03/professor-uncovers-the-internets-hidden-labour-force/"
+23 October 2014,facebook,"More news about the soul-crushing world of content moderation, where low-wage laborers soak up the worst of humanity, and keep it off your Facebook feed. https://www.wired.com/2014/10/content-moderation/"
+21 May 2017,facebook,"More news about the soul-crushing world of content moderation, where low-wage laborers soak up the worst of humanity, and keep it off your Facebook feed. https://www.theguardian.com/news/2017/may/21/facebook-moderators-quick-guide-job-challenges. The Guardian has been told this adds to the stress of the job and has contributed to the high turnover of moderators, who say they suffer from anxiety and post-traumatic stress."
+19 June 2019,facebook,"More news about the soul-crushing world of content moderation at Facebook. https://www.cnet.com/news/facebook-content-moderation-is-an-ugly-business-heres-who-does-it"
+31 December 2018,nokia,"Nokia total number of employees in 2019 was 98,322, a 4.62% decline from 2018."
+26 December 2014,amazon,"The 2014-2015 flu season in the U.S. was a severe one for people 65 years and older. The season was a relatively early in terms of timing, with influenza activity increasing through November and December, and peaking in late December, when 33% of respiratory specimens tested positive for influenza and 6.0% of outpatient visits to healthcare providers were for influenza like illness (ILI)."
+10 May 2016,wallgreens,"Walgreens launches online mental health services: New platform offers access to video sessions with therapists to assess symptoms for a range of conditions, such as depression, anxiety, bipolar disorder and PTSD; and a library of articles and other content on mental health."
+28 February 2020,wallgreens,"The 2019-2020 flu season in the U.S. extended through February until March 2020. https://www.cdc.gov/flu/weekly/index.htm#S6"
+10 April 2014,homedepot,"Homedepot's payment data systems have been breached"
+13 September 2014,homedepot,"Homedepot confirms it's payment data systems have been breached with 56 million customer credit cards compromised"
+23 August 2016,homedepot,"The court granted final approval to the Home Depot Data Breach settlement. Home Depot has agreed to establish a $13 million Settlement Fund to provide compensation to consumer with documented losses linked to the Home Depot data breach."
+25 October 2016,homedepot,"The appeal to the Home Depot Data Breach settlement was dismissed."
+15 November 2016,homedepot,"Home Depot reported better-than-average performance in the US in the quarter and the fiscal year."
+December 31 2016,homedepot,"The 2016-2017 flu season in the U.S. was more severe than the previous ones."
+22 July 2015,homedepot,"Home Depot acquired Interline Brands from P2 Capital Partners, Goldman Sachs' private equity arm, and the management of Interline Brands for $1.6 billion."
+28 August 2015,homedepot,"Army veteran sues Home Depot, alleging disability discrimination over post-traumatic stress disorder (PTSD)."
+December 5 2019,homedepot,"The Home Depot announced the new slogan How Doers Get More Done"
+02 July 2019,homedepot,"The Home Depot Foundation is supporting Veterans with post-traumatic stress disorder (PTSD) by upgrading The Inner North Star PTSD Retreat Center property."
+December 26 2018,homedepot,"The 2017–2018 United States flu season lasted from late 2017 through early 2018. The 2017–2018 flu season was severe for all US populations and resulted in an estimated 959,000 hospitalizations and 61,099 deaths. This is the highest number of patient claims since the 2009 flu season."
+15 January 2013,jpmorgan,"JPMorgan acquired Bloomspot, a San Francisco-based startup in the deals space for $35 million. Shortly after the acquisition, the service was shut down and Bloomspot's talent was left unused."
+19 November 2013,jpmorgan,"The Justice Department announced that JPMorgan Chase agreed to pay $13 billion to settle investigations into its business practices pertaining to mortgage-backed securities."
+15 August 2013,jpmorgan,"JPMorgan Chase announced that it was being investigated by the United States Department of Justice over its offerings of mortgage-backed securities leading up to the financial crisis of 2007–08."
+7 January 2014,jpmorgan,"JPMorgan agreed to pay a total of $2.05 billion in fines and penalties to settle civil and criminal charges related to its role in the Madoff scandal. The government filed a two-count criminal information charging JPMorgan with Bank Secrecy Act violations, but the charges will be dismissed within two years provided that JPMorgan reforms its anti-money laundering procedures and cooperates with the government in its investigation. The bank agreed to forfeit $1.7 billion."
+20 March 2014,jpmorgan,"Bunker Labs founded with the mission to support and convene military-connected entrepreneurs and small business owners. Military and Veterans Affairs at JPMorgan Chase is working with Bunker Labs to ensure that veterans are aware of the resources that are available to them https://www.jpmorganchase.com/news-stories/twenty-five-percent-veterans-want-to-start-a-business."
+27 July 2014,jpmorgan,"The 2014 JPMorgan Chase data breach was a cyberattack against JPMorgan Chase that is believed to have compromised data associated with over 83 million accounts—76 million households (approximately two out of three households in the country) and 7 million small businesses. The data breach is considered one of the most serious intrusions into an American corporation's information system and one of the largest data breaches in history."
+15 March 2016,jpmorgan,"JPMorgan decided not to finance coal mines and coal power plants in wealthy countries."
+15 October 2018,jpmorgan,"Reuters reported that JP Morgan agreed to pay $5.3 million to settle allegations it violated Cuban Assets Control Regulations, Iranian sanctions and Weapons of Mass Destruction sanctions 87 times, the U.S. Treasury said."
+15 July 2013,jpmorgan,"The Federal Energy Regulatory Commission (FERC) approved a stipulation and consent agreement under which JPMorgan Ventures Energy Corporation (JPMVEC), a subsidiary of JPMorgan Chase & Co., agreed to pay $410 million in penalties and disgorgement to ratepayers for allegations of market manipulation stemming from the company's bidding activities in electricity markets in California and the Midwest from September 2010 through November 2012."
+15 November 2016,jpmorgan,"JPMorgan Chase agreed to pay $264 million in fines to settle civil and criminal charges involving a systematic bribery scheme spanning 2006 to 2013 in which the bank secured business deals in Hong Kong by agreeing to hire hundreds of friends and relatives of Chinese government officials, resulting in more than $100 million in revenue for the bank."
+23 November 2016,jpmorgan,"Gulf War veteran Jerry L Johnson sues JPMorgan for firing him because of PTSD and for disability-harassment."
+15 January 2017,jpmorgan,"The United States sued JPMorgan Chase, accusing it of discriminating against thousands of black and Hispanic mortgage borrowers between 2006 and at least 2009."
+26 December 2018,jpmorgan,"As part of an investigation by the U.S. Securities and Exchange Commission (SEC) into abusive practices related to American depositary receipts (ADRs), JPMorgan agreed to pay more than $135 million to settle charges of improper handling of pre-released ADRs without admitting or denying the SEC's findings."
+20 November 2019,jpmorgan,"JPMorgan Chase & Co. Commits $1 Million to Assist Military Veterans with PTSD."
+14 May 2020,jpmorgan,"Financial Times, citing a report which revealed how companies are treating employees, their supply chains and other stakeholders, following the COVID-19 pandemic, documented that JP Morgan Asset Management alongside Fidelity Investments and Vanguard have been accused of paying lip services to cover human rights violations."
+15 October 2020,jpmorgan,"JPMorgan Chase declared that it had begun to work on achieving carbon neutrality by 2050."
+1 December 2012,bankofamerica,"Bank of America cut around 16,000 jobs in a quicker fashion by the end of 2012 as revenue continued to decline because of new regulations and a slow economy."
+15 August 2014,bankofamerica,"Bank of America agreed to a near–$17 billion deal to settle claims against it relating to the sale of toxic mortgage-linked securities including subprime home loans, in what was believed to be the largest settlement in U.S. corporate history."
+25 August 2014,bankofamerica,"The former assistant manager at an East Los Angeles Bank of America faked kidnapping her and strapping explosives to her. She filed the PTSD claim two days later, staling $565,500 from the bank in total. The whole story was later discovered to be a fake and she is arrested on the insurance fraud charge."
+15 April 2018,bankofamerica,"Bank of America announced that it would stop providing financing to makers of military-style weapons such as the AR-15 rifle."
+24 July 2018,bankofamerica,"Bank of America launched a $20 million Veteran Entrepreneur Lending Program in 2018 to connect U.S. military veteran business owners with affordable capital to help kick-start and grow their businesses."
+9 February 2012,bankofamerica,"It was announced that the five largest mortgage servicers (Ally/GMAC, Bank of America, Citi, JPMorgan Chase, and Wells Fargo) agreed to a historic settlement with the federal government and 49 states. The settlement, known as the National Mortgage Settlement (NMS), required the servicers to provide about $26 billion in relief to distressed homeowners and in direct payments to the states and the federal government."
+October 24 2012,bankofamerica,"American federal prosecutors filed a $1 billion civil lawsuit against Bank of America for mortgage fraud under the False Claims Act, which provides for possible penalties of triple the damages suffered."
+15 March 2014,bankofamerica,"Bank of America settled the suit by agreeing to pay $6.3 billion to Fannie Mae and Freddie Mac and to buy back around $3.2 billion worth of mortgage bonds."
+15 April 2014,bankofamerica,"A $7.5 million settlement was reached in April 2014 with former chief financial officer for Bank of America, Joe L. Price, over allegations that the bank's management withheld material information related to its 2008 merger with Merrill Lynch."
+6 May 2015,bankofamerica,"Bank of America announced it would reduce its financial exposure to coal companies. The announcement came following pressure from universities and environmental groups."
+27 July 2017,apple,"Apple discontinued the iconic iPod nano and iPod shuffle lines of devices."
+27 July 2013,apple,"News of the NSA’s PRISM program rocked the country when it was revealed that NSA created a $20 million spy program, that has been allowed to directly access citizens’ private data on, among others, Apple servers."
+20 August 2013,apple,"President Obama hosted a meeting with Tim Cook, AT&T CEO Randall Stephenson, Google computer scientist Vint Cerf and other tech executives and civil liberties leaders for a closed-door meeting about government surveillance."
+29 January 2019,apple,"Apple reported its first decline in revenues and profits in a decade."
+15 May 2013,apple,"Apple entered the top ten of the Fortune 500 list of companies for the first time, rising 11 places above its 2012 ranking to take the sixth position."
+01 April 2014,apple,"The Ashton Kutcher's movie about Steve Jobs is widely released."
+20 May 2013,apple,"A probe into Apple's tax-reduction methods in offshore havens, conducted in 2013, resulted in a 40-page memorandum, in which the U.S. Senate claimed that Apple had not paid corporate taxes for five years due to its deals with the Irish government and its subsidiaries."
+21 March 2016,apple,"Apple introduced the first-generation iPhone SE that has a 4-inch screen size last used with the 5S and has nearly the same internal hardware as the 6S."
+27 July 2016,apple,"Apple announced that one billion iPhones had been sold.
+12 September 12 2018,apple,Apple introduced the iPhone XS, iPhone XS Max and iPhone XR."
+2 August 2018,apple,"Apple became the first publicly traded U.S. company to reach a $1 trillion market value."
+12 September 2018,apple,"Apple introduced the Apple Watch Series 4, featuring new display, electrocardiogram, and fall detection."
+10 September 2019,apple,"Apple introduced the Apple Watch Series 5, featuring a new magnetometer, a faster processor, and a new always-on display. The Series 4 was discontinued."
+16 September 2020,apple,"Apple introduced the Apple Watch Series 6, with an emphasis on fitness, featuring blood oxygen measurement and ECGs, among other fitness features. They also introduced the Apple Watch SE on the 18th of the same month."
+15 March 2014,apple,"California Flu Death Toll Rises Past 300, 10 Times More Than Last Year. https://www.cdc.gov/mmwr/preview/mmwrhtml/mm6322a2.htm#Fig3"
+08 April 2019,apple,"Spike in Influenza coded deaths in California https://www.cdph.ca.gov/Programs/CID/DCDC/CDPH%20Document%20Library/Immunization/Annual2018-19.pdf"
 31 December 2009,generaldynamics,generaldynamics's yearly stock price <b>decreased</b> by 26%
 31 December 2010,generaldynamics,generaldynamics's yearly stock price <b>increased</b> by 22%
 31 December 2011,generaldynamics,generaldynamics's yearly stock price <b>increased</b> by 5%
@@ -520,6 +575,54 @@ November 2012,,Obama is reelected
 31 December 2019,lambweston,lambweston's yearly stock price <b>increased</b> by 8%
 31 December 2020,lambweston,lambweston's yearly stock price <b>decreased</b> by 1%
 31 December 2021,lambweston,lambweston's yearly stock price <b>increased</b> by 11%
+31 December 1974,cvshealth,cvshealth's yearly stock price <b>decreased</b> by 64%
+31 December 1975,cvshealth,cvshealth's yearly stock price <b>increased</b> by 79%
+31 December 1976,cvshealth,cvshealth's yearly stock price <b>increased</b> by 56%
+31 December 1977,cvshealth,cvshealth's yearly stock price <b>increased</b> by 8%
+31 December 1978,cvshealth,cvshealth's yearly stock price <b>increased</b> by 15%
+31 December 1979,cvshealth,cvshealth's yearly stock price <b>increased</b> by 1%
+31 December 1980,cvshealth,cvshealth's yearly stock price <b>increased</b> by 15%
+31 December 1981,cvshealth,cvshealth's yearly stock price <b>increased</b> by 27%
+31 December 1982,cvshealth,cvshealth's yearly stock price <b>increased</b> by 23%
+31 December 1983,cvshealth,cvshealth's yearly stock price <b>increased</b> by 48%
+31 December 1984,cvshealth,cvshealth's yearly stock price <b>decreased</b> by 4%
+31 December 1985,cvshealth,cvshealth's yearly stock price <b>increased</b> by 25%
+31 December 1986,cvshealth,cvshealth's yearly stock price <b>increased</b> by 41%
+31 December 1987,cvshealth,cvshealth's yearly stock price <b>increased</b> by 12%
+31 December 1988,cvshealth,cvshealth's yearly stock price <b>increased</b> by 4%
+31 December 1989,cvshealth,cvshealth's yearly stock price <b>increased</b> by 37%
+31 December 1990,cvshealth,cvshealth's yearly stock price <b>increased</b> by 4%
+31 December 1991,cvshealth,cvshealth's yearly stock price <b>increased</b> by 8%
+31 December 1992,cvshealth,cvshealth's yearly stock price <b>increased</b> by 8%
+31 December 1993,cvshealth,cvshealth's yearly stock price <b>decreased</b> by 4%
+31 December 1994,cvshealth,cvshealth's yearly stock price <b>decreased</b> by 16%
+31 December 1995,cvshealth,cvshealth's yearly stock price <b>decreased</b> by 5%
+31 December 1996,cvshealth,cvshealth's yearly stock price <b>increased</b> by 20%
+31 December 1997,cvshealth,cvshealth's yearly stock price <b>increased</b> by 55%
+31 December 1998,cvshealth,cvshealth's yearly stock price <b>increased</b> by 55%
+31 December 1999,cvshealth,cvshealth's yearly stock price <b>increased</b> by 12%
+31 December 2000,cvshealth,cvshealth's yearly stock price <b>decreased</b> by 6%
+31 December 2001,cvshealth,cvshealth's yearly stock price <b>increased</b> by 4%
+31 December 2002,cvshealth,cvshealth's yearly stock price <b>decreased</b> by 33%
+31 December 2003,cvshealth,cvshealth's yearly stock price <b>decreased</b> by 1%
+31 December 2004,cvshealth,cvshealth's yearly stock price <b>increased</b> by 41%
+31 December 2005,cvshealth,cvshealth's yearly stock price <b>increased</b> by 35%
+31 December 2006,cvshealth,cvshealth's yearly stock price <b>increased</b> by 12%
+31 December 2007,cvshealth,cvshealth's yearly stock price <b>increased</b> by 22%
+31 December 2008,cvshealth,cvshealth's yearly stock price <b>increased</b> by 0%
+31 December 2009,cvshealth,cvshealth's yearly stock price <b>decreased</b> by 13%
+31 December 2010,cvshealth,cvshealth's yearly stock price <b>increased</b> by 4%
+31 December 2011,cvshealth,cvshealth's yearly stock price <b>increased</b> by 12%
+31 December 2012,cvshealth,cvshealth's yearly stock price <b>increased</b> by 28%
+31 December 2013,cvshealth,cvshealth's yearly stock price <b>increased</b> by 31%
+31 December 2014,cvshealth,cvshealth's yearly stock price <b>increased</b> by 36%
+31 December 2015,cvshealth,cvshealth's yearly stock price <b>increased</b> by 31%
+31 December 2016,cvshealth,cvshealth's yearly stock price <b>decreased</b> by 7%
+31 December 2017,cvshealth,cvshealth's yearly stock price <b>decreased</b> by 15%
+31 December 2018,cvshealth,cvshealth's yearly stock price <b>decreased</b> by 6%
+31 December 2019,cvshealth,cvshealth's yearly stock price <b>decreased</b> by 11%
+31 December 2020,cvshealth,cvshealth's yearly stock price <b>increased</b> by 8%
+31 December 2021,cvshealth,cvshealth's yearly stock price <b>increased</b> by 15%
 31 December 2010,dollargeneral,dollargeneral's yearly stock price <b>increased</b> by 21%
 31 December 2011,dollargeneral,dollargeneral's yearly stock price <b>increased</b> by 22%
 31 December 2012,dollargeneral,dollargeneral's yearly stock price <b>increased</b> by 40%
@@ -644,6 +747,47 @@ November 2012,,Obama is reelected
 31 December 2019,exelon,exelon's yearly stock price <b>increased</b> by 18%
 31 December 2020,exelon,exelon's yearly stock price <b>decreased</b> by 13%
 31 December 2021,exelon,exelon's yearly stock price <b>increased</b> by 9%
+31 December 1981,wallgreens,wallgreens's yearly stock price <b>increased</b> by 40%
+31 December 1982,wallgreens,wallgreens's yearly stock price <b>increased</b> by 42%
+31 December 1983,wallgreens,wallgreens's yearly stock price <b>increased</b> by 93%
+31 December 1984,wallgreens,wallgreens's yearly stock price <b>increased</b> by 12%
+31 December 1985,wallgreens,wallgreens's yearly stock price <b>increased</b> by 40%
+31 December 1986,wallgreens,wallgreens's yearly stock price <b>increased</b> by 29%
+31 December 1987,wallgreens,wallgreens's yearly stock price <b>increased</b> by 12%
+31 December 1988,wallgreens,wallgreens's yearly stock price <b>decreased</b> by 12%
+31 December 1989,wallgreens,wallgreens's yearly stock price <b>increased</b> by 33%
+31 December 1990,wallgreens,wallgreens's yearly stock price <b>increased</b> by 12%
+31 December 1991,wallgreens,wallgreens's yearly stock price <b>increased</b> by 43%
+31 December 1992,wallgreens,wallgreens's yearly stock price <b>increased</b> by 17%
+31 December 1993,wallgreens,wallgreens's yearly stock price <b>increased</b> by 9%
+31 December 1994,wallgreens,wallgreens's yearly stock price <b>increased</b> by 1%
+31 December 1995,wallgreens,wallgreens's yearly stock price <b>increased</b> by 31%
+31 December 1996,wallgreens,wallgreens's yearly stock price <b>increased</b> by 38%
+31 December 1997,wallgreens,wallgreens's yearly stock price <b>increased</b> by 49%
+31 December 1998,wallgreens,wallgreens's yearly stock price <b>increased</b> by 66%
+31 December 1999,wallgreens,wallgreens's yearly stock price <b>increased</b> by 31%
+31 December 2000,wallgreens,wallgreens's yearly stock price <b>increased</b> by 20%
+31 December 2001,wallgreens,wallgreens's yearly stock price <b>increased</b> by 15%
+31 December 2002,wallgreens,wallgreens's yearly stock price <b>decreased</b> by 5%
+31 December 2003,wallgreens,wallgreens's yearly stock price <b>decreased</b> by 10%
+31 December 2004,wallgreens,wallgreens's yearly stock price <b>increased</b> by 13%
+31 December 2005,wallgreens,wallgreens's yearly stock price <b>increased</b> by 26%
+31 December 2006,wallgreens,wallgreens's yearly stock price <b>decreased</b> by 0%
+31 December 2007,wallgreens,wallgreens's yearly stock price <b>decreased</b> by 1%
+31 December 2008,wallgreens,wallgreens's yearly stock price <b>decreased</b> by 24%
+31 December 2009,wallgreens,wallgreens's yearly stock price <b>decreased</b> by 1%
+31 December 2010,wallgreens,wallgreens's yearly stock price <b>increased</b> by 7%
+31 December 2011,wallgreens,wallgreens's yearly stock price <b>increased</b> by 19%
+31 December 2012,wallgreens,wallgreens's yearly stock price <b>decreased</b> by 10%
+31 December 2013,wallgreens,wallgreens's yearly stock price <b>increased</b> by 51%
+31 December 2014,wallgreens,wallgreens's yearly stock price <b>increased</b> by 36%
+31 December 2015,wallgreens,wallgreens's yearly stock price <b>increased</b> by 31%
+31 December 2016,wallgreens,wallgreens's yearly stock price <b>decreased</b> by 3%
+31 December 2017,wallgreens,wallgreens's yearly stock price <b>decreased</b> by 1%
+31 December 2018,wallgreens,wallgreens's yearly stock price <b>decreased</b> by 9%
+31 December 2019,wallgreens,wallgreens's yearly stock price <b>decreased</b> by 15%
+31 December 2020,wallgreens,wallgreens's yearly stock price <b>decreased</b> by 24%
+31 December 2021,wallgreens,wallgreens's yearly stock price <b>increased</b> by 16%
 31 December 2015,paycom,paycom's yearly stock price <b>increased</b> by 101%
 31 December 2016,paycom,paycom's yearly stock price <b>increased</b> by 18%
 31 December 2017,paycom,paycom's yearly stock price <b>increased</b> by 61%
@@ -1138,6 +1282,28 @@ November 2012,,Obama is reelected
 31 December 2019,philipmorrisinternational,philipmorrisinternational's yearly stock price <b>decreased</b> by 3%
 31 December 2020,philipmorrisinternational,philipmorrisinternational's yearly stock price <b>increased</b> by 2%
 31 December 2021,philipmorrisinternational,philipmorrisinternational's yearly stock price <b>increased</b> by 11%
+31 December 1987,costco,costco's yearly stock price <b>increased</b> by 16%
+31 December 1988,costco,costco's yearly stock price <b>decreased</b> by 9%
+31 December 1989,costco,costco's yearly stock price <b>increased</b> by 12%
+31 December 1990,costco,costco's yearly stock price <b>decreased</b> by 12%
+31 December 1991,costco,costco's yearly stock price <b>increased</b> by 42%
+31 December 1992,costco,costco's yearly stock price <b>decreased</b> by 28%
+31 December 1993,costco,costco's yearly stock price <b>decreased</b> by 8%
+31 December 1994,costco,costco's yearly stock price <b>decreased</b> by 8%
+31 December 1995,costco,costco's yearly stock price <b>decreased</b> by 2%
+31 December 1996,costco,costco's yearly stock price <b>increased</b> by 28%
+31 December 1997,costco,costco's yearly stock price <b>increased</b> by 70%
+31 December 1998,costco,costco's yearly stock price <b>increased</b> by 64%
+31 December 1999,costco,costco's yearly stock price <b>increased</b> by 45%
+31 December 2000,costco,costco's yearly stock price <b>increased</b> by 0%
+31 December 2001,costco,costco's yearly stock price <b>decreased</b> by 1%
+31 December 2002,costco,costco's yearly stock price <b>decreased</b> by 6%
+31 December 2003,costco,costco's yearly stock price <b>decreased</b> by 11%
+31 December 2004,costco,costco's yearly stock price <b>increased</b> by 25%
+31 December 2005,costco,costco's yearly stock price <b>increased</b> by 12%
+31 December 2006,costco,costco's yearly stock price <b>increased</b> by 16%
+31 December 2007,costco,costco's yearly stock price <b>increased</b> by 15%
+31 December 2008,costco,costco's yearly stock price <b>increased</b> by 8%
 31 December 2009,costco,costco's yearly stock price <b>decreased</b> by 20%
 31 December 2010,costco,costco's yearly stock price <b>increased</b> by 22%
 31 December 2011,costco,costco's yearly stock price <b>increased</b> by 31%
@@ -1150,7 +1316,7 @@ November 2012,,Obama is reelected
 31 December 2018,costco,costco's yearly stock price <b>increased</b> by 28%
 31 December 2019,costco,costco's yearly stock price <b>increased</b> by 27%
 31 December 2020,costco,costco's yearly stock price <b>increased</b> by 27%
-31 December 2021,costco,costco's yearly stock price <b>increased</b> by 12%
+31 December 2021,costco,costco's yearly stock price <b>increased</b> by 9%
 31 December 2009,ebay,ebay's yearly stock price <b>decreased</b> by 24%
 31 December 2010,ebay,ebay's yearly stock price <b>increased</b> by 33%
 31 December 2011,ebay,ebay's yearly stock price <b>increased</b> by 27%
@@ -2161,47 +2327,6 @@ November 2012,,Obama is reelected
 31 December 2019,kraftheinz,kraftheinz's yearly stock price <b>decreased</b> by 43%
 31 December 2020,kraftheinz,kraftheinz's yearly stock price <b>decreased</b> by 0%
 31 December 2021,kraftheinz,kraftheinz's yearly stock price <b>increased</b> by 12%
-31 December 1981,wallgreens,wallgreens's yearly stock price <b>increased</b> by 40%
-31 December 1982,wallgreens,wallgreens's yearly stock price <b>increased</b> by 42%
-31 December 1983,wallgreens,wallgreens's yearly stock price <b>increased</b> by 93%
-31 December 1984,wallgreens,wallgreens's yearly stock price <b>increased</b> by 12%
-31 December 1985,wallgreens,wallgreens's yearly stock price <b>increased</b> by 40%
-31 December 1986,wallgreens,wallgreens's yearly stock price <b>increased</b> by 29%
-31 December 1987,wallgreens,wallgreens's yearly stock price <b>increased</b> by 12%
-31 December 1988,wallgreens,wallgreens's yearly stock price <b>decreased</b> by 12%
-31 December 1989,wallgreens,wallgreens's yearly stock price <b>increased</b> by 33%
-31 December 1990,wallgreens,wallgreens's yearly stock price <b>increased</b> by 12%
-31 December 1991,wallgreens,wallgreens's yearly stock price <b>increased</b> by 43%
-31 December 1992,wallgreens,wallgreens's yearly stock price <b>increased</b> by 17%
-31 December 1993,wallgreens,wallgreens's yearly stock price <b>increased</b> by 9%
-31 December 1994,wallgreens,wallgreens's yearly stock price <b>increased</b> by 1%
-31 December 1995,wallgreens,wallgreens's yearly stock price <b>increased</b> by 31%
-31 December 1996,wallgreens,wallgreens's yearly stock price <b>increased</b> by 38%
-31 December 1997,wallgreens,wallgreens's yearly stock price <b>increased</b> by 49%
-31 December 1998,wallgreens,wallgreens's yearly stock price <b>increased</b> by 66%
-31 December 1999,wallgreens,wallgreens's yearly stock price <b>increased</b> by 31%
-31 December 2000,wallgreens,wallgreens's yearly stock price <b>increased</b> by 20%
-31 December 2001,wallgreens,wallgreens's yearly stock price <b>increased</b> by 15%
-31 December 2002,wallgreens,wallgreens's yearly stock price <b>decreased</b> by 5%
-31 December 2003,wallgreens,wallgreens's yearly stock price <b>decreased</b> by 10%
-31 December 2004,wallgreens,wallgreens's yearly stock price <b>increased</b> by 13%
-31 December 2005,wallgreens,wallgreens's yearly stock price <b>increased</b> by 26%
-31 December 2006,wallgreens,wallgreens's yearly stock price <b>decreased</b> by 0%
-31 December 2007,wallgreens,wallgreens's yearly stock price <b>decreased</b> by 1%
-31 December 2008,wallgreens,wallgreens's yearly stock price <b>decreased</b> by 24%
-31 December 2009,wallgreens,wallgreens's yearly stock price <b>decreased</b> by 1%
-31 December 2010,wallgreens,wallgreens's yearly stock price <b>increased</b> by 7%
-31 December 2011,wallgreens,wallgreens's yearly stock price <b>increased</b> by 19%
-31 December 2012,wallgreens,wallgreens's yearly stock price <b>decreased</b> by 10%
-31 December 2013,wallgreens,wallgreens's yearly stock price <b>increased</b> by 51%
-31 December 2014,wallgreens,wallgreens's yearly stock price <b>increased</b> by 36%
-31 December 2015,wallgreens,wallgreens's yearly stock price <b>increased</b> by 31%
-31 December 2016,wallgreens,wallgreens's yearly stock price <b>decreased</b> by 3%
-31 December 2017,wallgreens,wallgreens's yearly stock price <b>decreased</b> by 1%
-31 December 2018,wallgreens,wallgreens's yearly stock price <b>decreased</b> by 9%
-31 December 2019,wallgreens,wallgreens's yearly stock price <b>decreased</b> by 15%
-31 December 2020,wallgreens,wallgreens's yearly stock price <b>decreased</b> by 24%
-31 December 2021,wallgreens,wallgreens's yearly stock price <b>increased</b> by 16%
 31 December 2009,gallagher,gallagher's yearly stock price <b>decreased</b> by 8%
 31 December 2010,gallagher,gallagher's yearly stock price <b>increased</b> by 25%
 31 December 2011,gallagher,gallagher's yearly stock price <b>increased</b> by 20%
@@ -2982,6 +3107,42 @@ November 2012,,Obama is reelected
 31 December 2020,corteva,corteva's yearly stock price <b>increased</b> by 8%
 31 December 2021,corteva,corteva's yearly stock price <b>increased</b> by 46%
 31 December 2021,centurylink,centurylink's yearly stock price <b>decreased</b> by 16%
+31 December 1986,bestbuy,bestbuy's yearly stock price <b>increased</b> by 163%
+31 December 1987,bestbuy,bestbuy's yearly stock price <b>decreased</b> by 3%
+31 December 1988,bestbuy,bestbuy's yearly stock price <b>decreased</b> by 42%
+31 December 1989,bestbuy,bestbuy's yearly stock price <b>decreased</b> by 12%
+31 December 1990,bestbuy,bestbuy's yearly stock price <b>increased</b> by 9%
+31 December 1991,bestbuy,bestbuy's yearly stock price <b>increased</b> by 122%
+31 December 1992,bestbuy,bestbuy's yearly stock price <b>increased</b> by 26%
+31 December 1993,bestbuy,bestbuy's yearly stock price <b>increased</b> by 125%
+31 December 1994,bestbuy,bestbuy's yearly stock price <b>increased</b> by 80%
+31 December 1995,bestbuy,bestbuy's yearly stock price <b>decreased</b> by 21%
+31 December 1996,bestbuy,bestbuy's yearly stock price <b>decreased</b> by 27%
+31 December 1997,bestbuy,bestbuy's yearly stock price <b>decreased</b> by 3%
+31 December 1998,bestbuy,bestbuy's yearly stock price <b>increased</b> by 352%
+31 December 1999,bestbuy,bestbuy's yearly stock price <b>increased</b> by 174%
+31 December 2000,bestbuy,bestbuy's yearly stock price <b>increased</b> by 10%
+31 December 2001,bestbuy,bestbuy's yearly stock price <b>decreased</b> by 9%
+31 December 2002,bestbuy,bestbuy's yearly stock price <b>decreased</b> by 1%
+31 December 2003,bestbuy,bestbuy's yearly stock price <b>increased</b> by 16%
+31 December 2004,bestbuy,bestbuy's yearly stock price <b>increased</b> by 27%
+31 December 2005,bestbuy,bestbuy's yearly stock price <b>increased</b> by 19%
+31 December 2006,bestbuy,bestbuy's yearly stock price <b>increased</b> by 26%
+31 December 2007,bestbuy,bestbuy's yearly stock price <b>decreased</b> by 8%
+31 December 2008,bestbuy,bestbuy's yearly stock price <b>decreased</b> by 18%
+31 December 2009,bestbuy,bestbuy's yearly stock price <b>decreased</b> by 4%
+31 December 2010,bestbuy,bestbuy's yearly stock price <b>increased</b> by 9%
+31 December 2011,bestbuy,bestbuy's yearly stock price <b>decreased</b> by 25%
+31 December 2012,bestbuy,bestbuy's yearly stock price <b>decreased</b> by 30%
+31 December 2013,bestbuy,bestbuy's yearly stock price <b>increased</b> by 56%
+31 December 2014,bestbuy,bestbuy's yearly stock price <b>increased</b> by 5%
+31 December 2015,bestbuy,bestbuy's yearly stock price <b>increased</b> by 20%
+31 December 2016,bestbuy,bestbuy's yearly stock price <b>increased</b> by 4%
+31 December 2017,bestbuy,bestbuy's yearly stock price <b>increased</b> by 59%
+31 December 2018,bestbuy,bestbuy's yearly stock price <b>increased</b> by 38%
+31 December 2019,bestbuy,bestbuy's yearly stock price <b>decreased</b> by 1%
+31 December 2020,bestbuy,bestbuy's yearly stock price <b>increased</b> by 37%
+31 December 2021,bestbuy,bestbuy's yearly stock price <b>increased</b> by 23%
 31 December 2009,chubb,chubb's yearly stock price <b>decreased</b> by 12%
 31 December 2010,chubb,chubb's yearly stock price <b>increased</b> by 19%
 31 December 2011,chubb,chubb's yearly stock price <b>increased</b> by 23%
@@ -4411,6 +4572,46 @@ November 2012,,Obama is reelected
 31 December 2019,mcdonalds,mcdonalds's yearly stock price <b>increased</b> by 29%
 31 December 2020,mcdonalds,mcdonalds's yearly stock price <b>increased</b> by 2%
 31 December 2021,mcdonalds,mcdonalds's yearly stock price <b>increased</b> by 1%
+31 December 1982,ericsson,ericsson's yearly stock price <b>increased</b> by 9%
+31 December 1983,ericsson,ericsson's yearly stock price <b>increased</b> by 101%
+31 December 1984,ericsson,ericsson's yearly stock price <b>decreased</b> by 25%
+31 December 1985,ericsson,ericsson's yearly stock price <b>decreased</b> by 27%
+31 December 1986,ericsson,ericsson's yearly stock price <b>increased</b> by 17%
+31 December 1987,ericsson,ericsson's yearly stock price <b>increased</b> by 5%
+31 December 1988,ericsson,ericsson's yearly stock price <b>increased</b> by 16%
+31 December 1989,ericsson,ericsson's yearly stock price <b>increased</b> by 122%
+31 December 1990,ericsson,ericsson's yearly stock price <b>increased</b> by 91%
+31 December 1991,ericsson,ericsson's yearly stock price <b>decreased</b> by 18%
+31 December 1992,ericsson,ericsson's yearly stock price <b>decreased</b> by 23%
+31 December 1993,ericsson,ericsson's yearly stock price <b>increased</b> by 86%
+31 December 1994,ericsson,ericsson's yearly stock price <b>increased</b> by 23%
+31 December 1995,ericsson,ericsson's yearly stock price <b>increased</b> by 50%
+31 December 1996,ericsson,ericsson's yearly stock price <b>increased</b> by 24%
+31 December 1997,ericsson,ericsson's yearly stock price <b>increased</b> by 67%
+31 December 1998,ericsson,ericsson's yearly stock price <b>increased</b> by 26%
+31 December 1999,ericsson,ericsson's yearly stock price <b>increased</b> by 36%
+31 December 2000,ericsson,ericsson's yearly stock price <b>increased</b> by 124%
+31 December 2001,ericsson,ericsson's yearly stock price <b>decreased</b> by 66%
+31 December 2002,ericsson,ericsson's yearly stock price <b>decreased</b> by 65%
+31 December 2003,ericsson,ericsson's yearly stock price <b>decreased</b> by 44%
+31 December 2004,ericsson,ericsson's yearly stock price <b>increased</b> by 136%
+31 December 2005,ericsson,ericsson's yearly stock price <b>increased</b> by 15%
+31 December 2006,ericsson,ericsson's yearly stock price <b>increased</b> by 10%
+31 December 2007,ericsson,ericsson's yearly stock price <b>increased</b> by 4%
+31 December 2008,ericsson,ericsson's yearly stock price <b>decreased</b> by 42%
+31 December 2009,ericsson,ericsson's yearly stock price <b>decreased</b> by 5%
+31 December 2010,ericsson,ericsson's yearly stock price <b>increased</b> by 17%
+31 December 2011,ericsson,ericsson's yearly stock price <b>increased</b> by 15%
+31 December 2012,ericsson,ericsson's yearly stock price <b>decreased</b> by 22%
+31 December 2013,ericsson,ericsson's yearly stock price <b>increased</b> by 34%
+31 December 2014,ericsson,ericsson's yearly stock price <b>increased</b> by 5%
+31 December 2015,ericsson,ericsson's yearly stock price <b>decreased</b> by 8%
+31 December 2016,ericsson,ericsson's yearly stock price <b>decreased</b> by 29%
+31 December 2017,ericsson,ericsson's yearly stock price <b>decreased</b> by 13%
+31 December 2018,ericsson,ericsson's yearly stock price <b>increased</b> by 24%
+31 December 2019,ericsson,ericsson's yearly stock price <b>increased</b> by 18%
+31 December 2020,ericsson,ericsson's yearly stock price <b>increased</b> by 11%
+31 December 2021,ericsson,ericsson's yearly stock price <b>increased</b> by 30%
 31 December 2009,agilenttech,agilenttech's yearly stock price <b>decreased</b> by 27%
 31 December 2010,agilenttech,agilenttech's yearly stock price <b>increased</b> by 49%
 31 December 2011,agilenttech,agilenttech's yearly stock price <b>increased</b> by 27%
@@ -4641,3 +4842,4 @@ November 2012,,Obama is reelected
 31 December 2020,alaskaairlines,alaskaairlines's yearly stock price <b>decreased</b> by 32%
 31 December 2021,alaskaairlines,alaskaairlines's yearly stock price <b>increased</b> by 27%
 31 December 2020,hartford,hartford's yearly stock price <b>decreased</b> by 7%
+
