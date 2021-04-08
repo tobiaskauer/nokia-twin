@@ -1,4 +1,4 @@
-# twin-dashboard
+# openinc-dashboard
 
 
 ## Project setup
